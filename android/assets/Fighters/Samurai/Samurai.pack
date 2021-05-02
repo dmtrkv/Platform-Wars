@@ -1,0 +1,75 @@
+
+SamuraiAnimations.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+RunAndJump
+  rotate: false
+  xy: 1, 1819
+  size: 2000, 200
+  orig: 2000, 200
+  offset: 0, 0
+  index: -1
+Idle
+  rotate: false
+  xy: 1, 1617
+  size: 1600, 200
+  orig: 1600, 200
+  offset: 0, 0
+  index: -1
+Run
+  rotate: false
+  xy: 1, 1415
+  size: 1600, 200
+  orig: 1600, 200
+  offset: 0, 0
+  index: -1
+Attack1
+  rotate: false
+  xy: 1, 1213
+  size: 1200, 200
+  orig: 1200, 200
+  offset: 0, 0
+  index: -1
+Attack2
+  rotate: false
+  xy: 1, 1011
+  size: 1200, 200
+  orig: 1200, 200
+  offset: 0, 0
+  index: -1
+Death
+  rotate: false
+  xy: 1, 809
+  size: 1200, 200
+  orig: 1200, 200
+  offset: 0, 0
+  index: -1
+Take Hit - white silhouette
+  rotate: false
+  xy: 1, 607
+  size: 800, 200
+  orig: 800, 200
+  offset: 0, 0
+  index: -1
+Take Hit
+  rotate: false
+  xy: 1, 405
+  size: 800, 200
+  orig: 800, 200
+  offset: 0, 0
+  index: -1
+Fall
+  rotate: false
+  xy: 1, 203
+  size: 400, 200
+  orig: 400, 200
+  offset: 0, 0
+  index: -1
+Jump
+  rotate: false
+  xy: 1, 1
+  size: 400, 200
+  orig: 400, 200
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="36">
+ <tileset firstgid="1" source="BrightDay.tsx"/>
+ <tileset firstgid="881" source="TileSet.tsx"/>
+ <tileset firstgid="7281" source="castle-tileset.tsx"/>
+ <tileset firstgid="7409" source="platformtileset.tsx"/>
+ <layer id="1" name="background" width="240" height="13">
+  <data encoding="base64" compression="zlib">
+   eJztwzENAAAMA6DOv9DaqIp9kNBLqqqqqqqqqqqqqqqq+nhUEgwm
+  </data>
+ </layer>
+ <layer id="3" name="graphics" width="240" height="13">
+  <data encoding="base64" compression="zlib">
+   eJztWVlOw0AMzUGScIvywXIL+GK7AZwMuAiLBKVchsWIjrCMZ8b2eKpslp6atFk89nu2kzbN9O2h5fEIeAI8C1DLL+rDO8HcTJqXVB4XG7bF9GjVKdUMhxr+Y7/Cfd4Am+32FPgoib9nPudY88Zm65aHJLccJP3XU0fBX6zVjcC/oZtWhwE0f9rZyIrFhmOpnuaFEk7kuEuBtT2WWVpaRz16sLQ372qmmqNZ6yx3XuBNTUi4EfM5ptOYVrlrWp7zNLOnNYceSMVHM2Nxs7Rn3qdqeK2e8crxDvOc5vpFCEvPwPfD+vPiLafp2HOeVJ+pZwnuXAl3pbrLIaw3t4aatUFSJ6ZkXIys8aKx466rxS3gDnCf2Pbu3Vbexnp3qrZJ9ampl56zLM2f9r2ylxZxjDkOa95vjtE0sdT2Me2sKa2ZEu3i7dJ6I1lzrK9yqKGhnM+xOaZ03ZwerPrM1TuuHlhnkrFp9rX9DxpTT15xc7L2PA5a7eLtkvpToz97IDeb4vnZo99LapNEn9prlv5PaDFtnHLw1q6Vix+AT2b/68fHju9N9JhcnedyUKJdqmOPPiflp7RvaXu0ZDaWcC/HfW2Np7GwxlqyFk990Thq3ndLoNU01uuqb5r9/m9/jb7juBh+4+pgC/rrkE7Dfg/Y6/icpI7h/hei53tp1zpXa/mo7Tec/rT9UaKzWKy5e3H9vcYMUTqTeekLx9FS4zXQvi84AS2e9vnvYr9dw/ZN//t5APo7RBoM+0eA447PUeqYwJEz+P4ccAG4BFxtj6uhXU0/Lp1tUxqpxQGrViT3K7mGp669dK+J3y58D36vugULFowV3xygINw=
+  </data>
+ </layer>
+ <objectgroup id="4" name="ground">
+  <object id="29" x="0.25" y="192" width="3839.63" height="16"/>
+ </objectgroup>
+ <objectgroup id="5" name="bricks">
+  <object id="30" x="880.667" y="96.3333" width="143" height="15.3333"/>
+  <object id="31" x="864.667" y="112.333" width="190.333" height="15.3333"/>
+  <object id="32" x="848.333" y="128" width="239.333" height="16"/>
+  <object id="33" x="832" y="144.333" width="287.667" height="16.3333"/>
+  <object id="34" x="817" y="160.667" width="334.333" height="15"/>
+  <object id="35" x="800.333" y="176.333" width="383.333" height="15"/>
+ </objectgroup>
+ <objectgroup id="6" name="buffs"/>
+</map>
