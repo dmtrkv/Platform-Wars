@@ -138,5 +138,10 @@ public class Samurai extends Sprite {
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
+
+        EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-10 / Main.PPM, 37 / Main.PPM), new Vector2(10 / Main.PPM, 37 / Main.PPM));
+        fdef.shape = head;
+        b2body.createFixture(fdef).setUserData("head");
     }
 }

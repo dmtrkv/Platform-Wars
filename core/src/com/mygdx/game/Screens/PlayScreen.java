@@ -26,6 +26,7 @@ import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Samurai;
 import com.mygdx.game.Tools.B2WorldCreator;
+import com.mygdx.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
@@ -66,6 +67,8 @@ public class PlayScreen implements Screen {
         player = new Samurai(world, this);
 
         new B2WorldCreator(world, map);
+
+        world.setContactListener(new WorldContactListener());
 
     }
 

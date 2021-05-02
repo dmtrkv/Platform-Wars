@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="36">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="47">
  <tileset firstgid="1" source="BrightDay.tsx"/>
  <tileset firstgid="881" source="TileSet.tsx"/>
  <tileset firstgid="7281" source="castle-tileset.tsx"/>
  <tileset firstgid="7409" source="platformtileset.tsx"/>
  <layer id="1" name="background" width="240" height="13">
   <data encoding="base64" compression="zlib">
-   eJztwzENAAAMA6DOv9DaqIp9kNBLqqqqqqqqqqqqqqqq+nhUEgwm
+   eJzt07ENgDAMRUGzRyZOmAXYKmuQGqgoCJauOMly9ZvXl4j+A1uJ2IejzN8CvKNjyE/HkJ+OIR/dQj66hXx0C/noFr5VR2ttWMv9rg+/dvnN3g8AAABAHifmsQVb
   </data>
  </layer>
  <layer id="3" name="graphics" width="240" height="13">
@@ -24,6 +24,15 @@
   <object id="33" x="832" y="144.333" width="287.667" height="16.3333"/>
   <object id="34" x="817" y="160.667" width="334.333" height="15"/>
   <object id="35" x="800.333" y="176.333" width="383.333" height="15"/>
+  <object id="38" x="208.091" y="128" width="255.727" height="15.8182"/>
+  <object id="39" x="544.75" y="0.25" width="47" height="15.25"/>
+  <object id="40" x="576.75" y="16.25" width="46.5" height="14.25"/>
+  <object id="41" x="608.75" y="32.5" width="46.5" height="14.5"/>
+  <object id="42" x="640.25" y="48.75" width="46.5" height="14.5"/>
+  <object id="43" x="607.75" y="64" width="47.5" height="15"/>
+  <object id="44" x="576.5" y="80.75" width="47.25" height="14.25"/>
+  <object id="45" x="544" y="96" width="47" height="14.75"/>
+  <object id="46" x="512" y="112.25" width="47.5" height="15.25"/>
  </objectgroup>
  <objectgroup id="6" name="buffs"/>
 </map>
