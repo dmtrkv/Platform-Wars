@@ -44,31 +44,31 @@ public class Samurai extends Sprite {
         Array<TextureRegion> frames = new Array<TextureRegion>();
 
         for (int i = 0; i < 8; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 225));
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
         }
 
         samuraiRun = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         for (int i = 8; i < 10; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 225));
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
         }
         samuraiJump = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         for (int i = 10; i < 18; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 225));
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
         }
         samuraiStand = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         for (int i = 18; i < 20; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 225));
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
         }
         samuraiFall = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
-        samuraiStandDefault = new TextureRegion(getTexture(), 0, 0, 200, 225);
+        samuraiStandDefault = new TextureRegion(getTexture(), 0, 0, 200, 220);
 
         defineSamurai();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
@@ -134,14 +134,24 @@ public class Samurai extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(8 / Main.PPM);
+        shape.setRadius(10 / Main.PPM);
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-10 / Main.PPM, 37 / Main.PPM), new Vector2(10 / Main.PPM, 37 / Main.PPM));
+        head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
         fdef.shape = head;
         b2body.createFixture(fdef).setUserData("head");
+
+        EdgeShape left = new EdgeShape();
+        left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
+        fdef.shape = left;
+        b2body.createFixture(fdef).setUserData("left");
+
+        EdgeShape right = new EdgeShape();
+        right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
+        fdef.shape = right;
+        b2body.createFixture(fdef).setUserData("right");
     }
 }
