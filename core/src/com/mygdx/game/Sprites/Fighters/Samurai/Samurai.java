@@ -20,7 +20,7 @@ public class Samurai extends Sprite {
     public Body b2body;
     private TextureRegion samuraiIdleDefault;
 
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, DOUBLEJUMPING}
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING}
 
     public static State currentState;
     public static State previousState;
@@ -105,7 +105,6 @@ public class Samurai extends Sprite {
         TextureRegion region;
         switch (currentState) {
             case JUMPING:
-            case DOUBLEJUMPING:
                 region = samuraiJump.getKeyFrame(stateTimer);
                 break;
             case RUNNING:
@@ -138,25 +137,20 @@ public class Samurai extends Sprite {
         return region;
     }
 
-    public static boolean canJump () {
-        if (currentState == State.FALLING) {
-            return false;
-        }
-        return currentState != State.DOUBLEJUMPING;
+    public static boolean canJump() {
+        return currentState != State.FALLING && currentState != State.JUMPING;
     }
 
     private State getState(float dt) {
         if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 36) {
                 attackFrame = 0;
+                return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;
                 return State.ATTACKING;
             }
-        } if (currentState == State.JUMPING) {
-            return State.DOUBLEJUMPING;
-        }
-        if (b2body.getLinearVelocity().y > 0) {
+        } else if (b2body.getLinearVelocity().y > 0) {
             return State.JUMPING;
         } else if (b2body.getLinearVelocity().y < 0) {
             return State.FALLING;
