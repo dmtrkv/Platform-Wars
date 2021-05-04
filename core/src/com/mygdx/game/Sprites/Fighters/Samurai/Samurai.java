@@ -138,7 +138,7 @@ public class Samurai extends Sprite {
     }
 
     public static boolean canJump() {
-        return currentState != State.FALLING && currentState != State.JUMPING;
+        return currentState != State.FALLING && currentState != State.JUMPING && currentState != State.ATTACKING;
     }
 
     private State getState(float dt) {
