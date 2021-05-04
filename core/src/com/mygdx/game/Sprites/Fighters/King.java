@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites.Fighters.Samurai;
+package com.mygdx.game.Sprites.Fighters;
 
 
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -15,25 +15,26 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class Samurai extends Sprite {
+public class King extends Sprite {
     public World world;
     public Body b2body;
-    private TextureRegion samuraiIdleDefault;
+    private TextureRegion kingIdleDefault;
 
     public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING}
 
     public static State currentState;
     public static State previousState;
-    private Animation<TextureRegion> samuraiRun;
-    private Animation<TextureRegion> samuraiJump;
-    private Animation<TextureRegion> samuraiIdle;
-    private Animation<TextureRegion> samuraiFall;
-    private Animation<TextureRegion> samuraiAttack;
+    private Animation<TextureRegion> kingRun;
+    private Animation<TextureRegion> kingJump;
+    private Animation<TextureRegion> kingIdle;
+    private Animation<TextureRegion> kingFall;
+    private Animation<TextureRegion> kingAttack;
     private float stateTimer;
     private boolean runningRight;
     private float attackFrame;
 
-    public Samurai(World world, PlayScreen screen) {
+
+    public King(World world, PlayScreen screen) {
         super(screen.getAtlas().findRegion("RunAndJump"));
         this.world = world;
 
@@ -56,44 +57,44 @@ public class Samurai extends Sprite {
 
         // run animation
         for (int i = 0; i < 8; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+            frames.add(new TextureRegion(getTexture(), i * 160, 0, 160, 111));
         }
-        samuraiRun = new Animation<TextureRegion>(0.1f, frames);
+        kingRun = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         // jump animation
         for (int i = 8; i < 10; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+            frames.add(new TextureRegion(getTexture(), i * 160, 0, 160, 111));
         }
-        samuraiJump = new Animation<TextureRegion>(0.1f, frames);
+        kingJump = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         // idle animation
         for (int i = 10; i < 18; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+            frames.add(new TextureRegion(getTexture(), i * 160, 0, 160, 111));
         }
-        samuraiIdle = new Animation<TextureRegion>(0.1f, frames);
+        kingIdle = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         // fall animation
         for (int i = 18; i < 20; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+            frames.add(new TextureRegion(getTexture(), i * 160, 0, 160, 111));
         }
-        samuraiFall = new Animation<TextureRegion>(0.1f, frames);
+        kingFall = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
         // attack animation
         for (int i = 20; i < 26; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+            frames.add(new TextureRegion(getTexture(), i * 160, 0, 160, 111));
         }
-        samuraiAttack = new Animation<TextureRegion>(0.1f, frames);
+        kingAttack = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
-        samuraiIdleDefault = new TextureRegion(getTexture(), 0, 0, 200, 220);
+        kingIdleDefault = new TextureRegion(getTexture(), 0, 0, 160, 111);
 
-        defineSamurai();
-        setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
-        setRegion(samuraiIdleDefault);
+        defineKing();
+        setBounds(0, 0, 160 / Main.PPM, 160 / Main.PPM);
+        setRegion(kingIdleDefault);
     }
 
     public static void attack() {
@@ -105,22 +106,22 @@ public class Samurai extends Sprite {
         TextureRegion region;
         switch (currentState) {
             case JUMPING:
-                region = samuraiJump.getKeyFrame(stateTimer);
+                region = kingJump.getKeyFrame(stateTimer);
                 break;
             case RUNNING:
-                region = samuraiRun.getKeyFrame(stateTimer, true);
+                region = kingRun.getKeyFrame(stateTimer, true);
                 break;
             case FALLING:
-                region = samuraiFall.getKeyFrame(stateTimer, true);
+                region = kingFall.getKeyFrame(stateTimer, true);
                 break;
             default:
-                region = samuraiIdleDefault;
+                region = kingIdleDefault;
                 break;
             case STANDING:
-                region = samuraiIdle.getKeyFrame(stateTimer, true);
+                region = kingIdle.getKeyFrame(stateTimer, true);
                 break;
             case ATTACKING:
-                region = samuraiAttack.getKeyFrame(stateTimer, true);
+                region = kingAttack.getKeyFrame(stateTimer, true);
                 break;
         }
 
@@ -161,7 +162,7 @@ public class Samurai extends Sprite {
         }
     }
 
-    public void defineSamurai() {
+    public void defineKing() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(32 / Main.PPM, 32 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -190,3 +191,4 @@ public class Samurai extends Sprite {
         b2body.createFixture(fdef).setUserData("right");
     }
 }
+

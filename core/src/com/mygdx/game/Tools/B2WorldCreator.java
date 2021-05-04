@@ -10,8 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
-import com.mygdx.game.Sprites.Brick;
-import com.mygdx.game.Sprites.Buff;
+import com.mygdx.game.Sprites.World.Brick;
 
 public class B2WorldCreator {
     public B2WorldCreator (World world, TiledMap map) {
