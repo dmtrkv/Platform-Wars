@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -12,12 +13,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
-import com.mygdx.game.Sprites.Samurai;
+import com.mygdx.game.Sprites.Fighters.Samurai.Samurai;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 
@@ -26,6 +29,10 @@ public class PlayScreen implements Screen {
     private Main game;
 
     private TextureAtlas atlas;
+    private Stage stage;
+    private TextButton button;
+    private TextButton.TextButtonStyle textButtonStyle;
+    private BitmapFont font;
 
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -58,14 +65,26 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         // b2dr.setDrawBodies(false);
         player = new Samurai(world, this);
-
-        
-
-
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
 
+
+//        stage = new Stage(gamePort);
+//        Gdx.input.setInputProcessor(stage);
+
+//        font = new BitmapFont();
+//        textButtonStyle = new TextButton.TextButtonStyle();
+//        textButtonStyle.font = font;
+//        button = new TextButton("BUTTON", textButtonStyle);
+//
+//
+//        Table table = new Table();
+//        table.add(button);
+//        table.row();
+//        table.setFillParent(true);
+//        table.center().center();
+//        stage.addActor(table);
     }
 
     public TextureAtlas getAtlas() {
@@ -79,7 +98,9 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 2.5f), player.b2body.getWorldCenter(), true);
+            if (player.canJump()) {
+                player.b2body.applyLinearImpulse(new Vector2(0, 2.5f), player.b2body.getWorldCenter(), true);
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 2) {
@@ -88,6 +109,11 @@ public class PlayScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -2) {
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            Samurai.attack();
+            Gdx.app.log("clicked", "button");
         }
     }
 
@@ -120,8 +146,8 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
         game.batch.end();
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-
+//        stage.act(Gdx.graphics.getDeltaTime());
+//        stage.draw();
     }
 
     @Override

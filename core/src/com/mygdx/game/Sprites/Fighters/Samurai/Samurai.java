@@ -1,4 +1,4 @@
-package com.mygdx.game.Sprites;
+package com.mygdx.game.Sprites.Fighters.Samurai;
 
 
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -18,61 +18,32 @@ import com.mygdx.game.Screens.PlayScreen;
 public class Samurai extends Sprite {
     public World world;
     public Body b2body;
-    private TextureRegion samuraiStandDefault;
+    private TextureRegion samuraiIdleDefault;
 
-    public enum State {FALLING, JUMPING, STANDING, RUNNING}
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, DOUBLEJUMPING}
 
-    ;
-    public State currentState;
-    public State previousState;
+    public static State currentState;
+    public static State previousState;
     private Animation<TextureRegion> samuraiRun;
     private Animation<TextureRegion> samuraiJump;
-    private Animation<TextureRegion> samuraiStand;
+    private Animation<TextureRegion> samuraiIdle;
     private Animation<TextureRegion> samuraiFall;
+    private Animation<TextureRegion> samuraiAttack;
     private float stateTimer;
     private boolean runningRight;
+    private float attackFrame;
 
     public Samurai(World world, PlayScreen screen) {
-        super(screen.getAtlas().findRegion("Run"));
+        super(screen.getAtlas().findRegion("RunAndJump"));
         this.world = world;
 
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
+        attackFrame = 0;
 
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-
-        for (int i = 0; i < 8; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-
-        samuraiRun = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
-
-        for (int i = 8; i < 10; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiJump = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
-
-        for (int i = 10; i < 18; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiStand = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
-
-        for (int i = 18; i < 20; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiFall = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
-
-        samuraiStandDefault = new TextureRegion(getTexture(), 0, 0, 200, 220);
-
-        defineSamurai();
-        setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
-        setRegion(samuraiStandDefault);
+        initAnimations();
     }
 
     public void update(float dt) {
@@ -80,11 +51,61 @@ public class Samurai extends Sprite {
         setRegion(getFrame(dt));
     }
 
+    public void initAnimations() {
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        // run animation
+        for (int i = 0; i < 8; i++) {
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+        }
+        samuraiRun = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
+        // jump animation
+        for (int i = 8; i < 10; i++) {
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+        }
+        samuraiJump = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
+        // idle animation
+        for (int i = 10; i < 18; i++) {
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+        }
+        samuraiIdle = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
+        // fall animation
+        for (int i = 18; i < 20; i++) {
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+        }
+        samuraiFall = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
+        // attack animation
+        for (int i = 20; i < 26; i++) {
+            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+        }
+        samuraiAttack = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
+        samuraiIdleDefault = new TextureRegion(getTexture(), 0, 0, 200, 220);
+
+        defineSamurai();
+        setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
+        setRegion(samuraiIdleDefault);
+    }
+
+    public static void attack() {
+        previousState = State.ATTACKING;
+    }
+
     private TextureRegion getFrame(float dt) {
-        currentState = getState();
+        currentState = getState(dt);
         TextureRegion region;
         switch (currentState) {
             case JUMPING:
+            case DOUBLEJUMPING:
                 region = samuraiJump.getKeyFrame(stateTimer);
                 break;
             case RUNNING:
@@ -94,10 +115,13 @@ public class Samurai extends Sprite {
                 region = samuraiFall.getKeyFrame(stateTimer, true);
                 break;
             default:
-                region = samuraiStandDefault;
+                region = samuraiIdleDefault;
                 break;
             case STANDING:
-                region = samuraiStand.getKeyFrame(stateTimer, true);
+                region = samuraiIdle.getKeyFrame(stateTimer, true);
+                break;
+            case ATTACKING:
+                region = samuraiAttack.getKeyFrame(stateTimer, true);
                 break;
         }
 
@@ -114,7 +138,24 @@ public class Samurai extends Sprite {
         return region;
     }
 
-    private State getState() {
+    public static boolean canJump () {
+        if (currentState == State.FALLING) {
+            return false;
+        }
+        return currentState != State.DOUBLEJUMPING;
+    }
+
+    private State getState(float dt) {
+        if (previousState == State.ATTACKING) {
+            if (attackFrame > dt * 36) {
+                attackFrame = 0;
+            } else {
+                attackFrame = attackFrame + dt;
+                return State.ATTACKING;
+            }
+        } if (currentState == State.JUMPING) {
+            return State.DOUBLEJUMPING;
+        }
         if (b2body.getLinearVelocity().y > 0) {
             return State.JUMPING;
         } else if (b2body.getLinearVelocity().y < 0) {
