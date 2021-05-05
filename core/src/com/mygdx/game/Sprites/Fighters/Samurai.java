@@ -1,6 +1,7 @@
 package com.mygdx.game.Sprites.Fighters;
 
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,7 +36,6 @@ public class Samurai extends Sprite {
 
 
     public Samurai(World world, PlayScreen screen) {
-        super(screen.getAtlas().findRegion("RunAndJump"));
         this.world = world;
 
         currentState = State.STANDING;
@@ -52,58 +52,45 @@ public class Samurai extends Sprite {
         setRegion(getFrame(dt));
     }
 
-    public void initAnimations() {
+    public Animation<TextureRegion> createAnimation(String animation, int framesNum) {
         Array<TextureRegion> frames = new Array<TextureRegion>();
 
-        // run animation
-        for (int i = 0; i < 8; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
+        for (int i = 0; i < framesNum; i++) {
+            frames.add(new TextureRegion(new Texture(
+                    String.format("Fighters/Samurai/%s.png", animation)),
+                    i * 200, 0, 200, 220));
         }
-        samuraiRun = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
 
-        // jump animation
-        for (int i = 8; i < 10; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiJump = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
+        return new Animation<TextureRegion>(0.1f, frames);
+    }
 
-        // idle animation
-        for (int i = 10; i < 18; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiIdle = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
+    public void initAnimations() {
+        samuraiRun = createAnimation("Run", 8);
 
-        // fall animation
-        for (int i = 18; i < 20; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiFall = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
+        samuraiJump = createAnimation("Jump", 2);
 
-        // attack animation
-        for (int i = 20; i < 26; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 200, 0, 200, 220));
-        }
-        samuraiAttack = new Animation<TextureRegion>(0.1f, frames);
-        frames.clear();
+        samuraiIdle = createAnimation("Idle", 8);
 
-        samuraiIdleDefault = new TextureRegion(getTexture(), 0, 0, 200, 220);
+        samuraiFall = createAnimation("Fall", 2);
+
+        samuraiAttack = createAnimation("Attack1", 6);
+
+        samuraiIdleDefault = new TextureRegion(new Texture("Fighters/Samurai/Idle.png"),
+                0, 0, 200, 220);
 
         defineSamurai();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
         setRegion(samuraiIdleDefault);
     }
 
-    public static void attack() {
+    public void attack() {
         previousState = State.ATTACKING;
     }
 
     private TextureRegion getFrame(float dt) {
         currentState = getState(dt);
         TextureRegion region;
+
         switch (currentState) {
             case JUMPING:
                 region = samuraiJump.getKeyFrame(stateTimer);
@@ -128,6 +115,7 @@ public class Samurai extends Sprite {
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
             region.flip(true, false);
             runningRight = false;
+
         } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
             region.flip(true, false);
             runningRight = true;
@@ -138,13 +126,13 @@ public class Samurai extends Sprite {
         return region;
     }
 
-    public static boolean canJump() {
+    public boolean canJump() {
         return currentState != State.FALLING && currentState != State.JUMPING && currentState != State.ATTACKING;
     }
 
     private State getState(float dt) {
         if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 36) {
+            if (attackFrame > dt * 34) {
                 attackFrame = 0;
                 return State.STANDING;
             } else {
@@ -164,7 +152,7 @@ public class Samurai extends Sprite {
 
     public void defineSamurai() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(100 / Main.PPM, 32 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

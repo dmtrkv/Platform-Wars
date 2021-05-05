@@ -31,7 +31,6 @@ public class PlayScreen implements Screen {
 
     private final Main game;
 
-    private final TextureAtlas atlas;
     private final Stage stage;
     private final TextButton button;
     private final TextButton.TextButtonStyle textButtonStyle;
@@ -50,12 +49,10 @@ public class PlayScreen implements Screen {
     private final World world;
     private final Box2DDebugRenderer b2dr;
 
-    private Samurai player1;
-    private King player2;
-
+    private King player1;
+    private Samurai player2;
 
     public PlayScreen(Main game) {
-        atlas = new TextureAtlas("Fighters/Samurai/Samurai.pack");
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -68,8 +65,9 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        b2dr.setDrawBodies(false);
-        player1 = new Samurai(world, this);
+        // b2dr.setDrawBodies(false);
+        player1 = new King(world, this);
+        player2 = new Samurai(world, this);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -99,10 +97,6 @@ public class PlayScreen implements Screen {
         });
     }
 
-    public TextureAtlas getAtlas() {
-        return atlas;
-    }
-
     @Override
     public void show() {
 
@@ -110,7 +104,7 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            if (Samurai.canJump()) {
+            if (player1.canJump()) {
                 player1.b2body.applyLinearImpulse(new Vector2(0, 3.5f), player1.b2body.getWorldCenter(), true);
             }
         }
@@ -124,7 +118,7 @@ public class PlayScreen implements Screen {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            Samurai.attack();
+            player1.attack();
             player1.b2body.setLinearVelocity(0f, 0f);
         }
     }
@@ -133,6 +127,7 @@ public class PlayScreen implements Screen {
         handleInput(dt);
 
         player1.update(dt);
+        player2.update(dt);
         world.step(1 / 60f, 6, 2);
 
         if (player1.b2body.getPosition().x > 2 && player1.b2body.getPosition().x < 6) {
@@ -158,6 +153,7 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         player1.draw(game.batch);
+        player2.draw(game.batch);
         game.batch.end();
 
 
