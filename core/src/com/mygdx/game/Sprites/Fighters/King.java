@@ -21,7 +21,7 @@ public class King extends Sprite {
     public World world;
     public Body b2body;
 
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE}
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE, DEAD}
 
     public State currentState;
     public State previousState;
@@ -31,6 +31,7 @@ public class King extends Sprite {
     protected Animation<TextureRegion> Fall;
     protected Animation<TextureRegion> Attack;
     protected Animation<TextureRegion> TakeDamage;
+    protected Animation<TextureRegion> Death;
     public int health;
     protected float stateTimer;
     public boolean runningRight;
@@ -82,6 +83,8 @@ public class King extends Sprite {
 
         TakeDamage = createAnimation("TakeDamage", 4);
 
+        Death = createAnimation("Death", 6);
+
         defineKing();
         setBounds(0, 0, 160 / Main.PPM, 111 / Main.PPM);
     }
@@ -91,8 +94,10 @@ public class King extends Sprite {
     }
 
     public void takeDamage() {
-        previousState = State.TAKINGDAMAGE;
-        health -= 10;
+        if (currentState != State.DEAD) {
+            previousState = State.TAKINGDAMAGE;
+            health -= 10;
+        }
     }
 
     private TextureRegion getFrame(float dt) {
@@ -118,6 +123,9 @@ public class King extends Sprite {
             case TAKINGDAMAGE:
                 region = TakeDamage.getKeyFrame(stateTimer, true);
                 break;
+            case DEAD:
+                region = Death.getKeyFrame(stateTimer);
+                break;
         }
 
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
@@ -135,10 +143,18 @@ public class King extends Sprite {
     }
 
     public boolean canJump() {
-        return currentState != State.FALLING && currentState != State.JUMPING && currentState != State.ATTACKING;
+        if ((currentState != State.FALLING) && (currentState != State.JUMPING)
+                && (currentState != State.ATTACKING) && (currentState != State.DEAD)
+                && (currentState != State.TAKINGDAMAGE)) {
+            return true;
+        }
+        return false;
     }
 
     private State getState(float dt) {
+        if (health == 0) {
+            return State.DEAD;
+        }
         if (previousState == State.TAKINGDAMAGE) {
             if (damageFrame > dt * 18) {
                 damageFrame = 0;
@@ -176,7 +192,7 @@ public class King extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Main.PPM);
         fdef.filter.categoryBits = Main.KING_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);

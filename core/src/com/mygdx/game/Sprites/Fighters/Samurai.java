@@ -23,7 +23,7 @@ public class Samurai extends Sprite {
     public World world;
     public Body b2body;
 
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE}
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE, DEAD}
 
     public State currentState;
     public State previousState;
@@ -33,6 +33,7 @@ public class Samurai extends Sprite {
     protected Animation<TextureRegion> Fall;
     protected Animation<TextureRegion> Attack;
     protected Animation<TextureRegion> TakeDamage;
+    protected Animation<TextureRegion> Death;
     public int health;
     protected float stateTimer;
     public boolean runningRight;
@@ -49,9 +50,48 @@ public class Samurai extends Sprite {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 100;
+        health = 50;
         damageFrame = 0;
         initAnimations();
+    }
+
+    public void moveRight() {
+        if (currentState != State.DEAD)
+            b2body.applyLinearImpulse(new Vector2(0.1f, 0), b2body.getWorldCenter(), true);
+    }
+
+    public void moveLeft() {
+        if (currentState != State.DEAD)
+            b2body.applyLinearImpulse(new Vector2(-0.1f, 0), b2body.getWorldCenter(), true);
+    }
+
+    public void jump() {
+        if (currentState != State.DEAD)
+            if (canJump()) {
+                b2body.applyLinearImpulse(new Vector2(0, 5f), b2body.getWorldCenter(), true);
+            }
+    }
+
+    public void attack() {
+        if (currentState != State.DEAD) {
+            b2body.setLinearVelocity(0f, 0f);
+
+            previousState = State.ATTACKING;
+            BodyDef bdef = new BodyDef();
+            bdef.position.set(100 / Main.PPM, 32 / Main.PPM);
+            bdef.type = BodyDef.BodyType.StaticBody;
+            b2body = world.createBody(bdef);
+
+            FixtureDef fdef = new FixtureDef();
+            fdef.filter.categoryBits = Main.SAMURAI_BIT;
+            fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT;
+
+            EdgeShape attack = new EdgeShape();
+            attack.set(new Vector2(-20 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 34 / Main.PPM));
+
+            fdef.shape = attack;
+            b2body.createFixture(fdef).setUserData("attack");
+        }
     }
 
     public void update(float dt) {
@@ -84,17 +124,17 @@ public class Samurai extends Sprite {
 
         TakeDamage = createAnimation("TakeDamage", 4);
 
+        Death = createAnimation("Death", 6);
+
         defineSamurai();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
     }
 
     public void takeDamage() {
-        previousState = State.TAKINGDAMAGE;
-        health -= 10;
-    }
-
-    public void attack() {
-        previousState = State.ATTACKING;
+        if (currentState != State.DEAD) {
+            previousState = State.TAKINGDAMAGE;
+            health -= 10;
+        }
     }
 
     private TextureRegion getFrame(float dt) {
@@ -120,6 +160,8 @@ public class Samurai extends Sprite {
             case TAKINGDAMAGE:
                 region = TakeDamage.getKeyFrame(stateTimer, true);
                 break;
+            case DEAD:
+                region = Death.getKeyFrame(stateTimer);
         }
 
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
@@ -137,10 +179,18 @@ public class Samurai extends Sprite {
     }
 
     public boolean canJump() {
-        return currentState != State.FALLING && currentState != State.JUMPING && currentState != State.ATTACKING;
+        if ((currentState != State.FALLING) && (currentState != State.JUMPING)
+                && (currentState != State.ATTACKING) && (currentState != State.DEAD)
+                && (currentState != State.TAKINGDAMAGE)) {
+            return true;
+        }
+        return false;
     }
 
     private State getState(float dt) {
+        if (health == 0) {
+            return State.DEAD;
+        }
         if (previousState == State.TAKINGDAMAGE) {
             if (damageFrame > dt * 18) {
                 damageFrame = 0;
@@ -178,7 +228,7 @@ public class Samurai extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(10 / Main.PPM);
         fdef.filter.categoryBits = Main.SAMURAI_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);

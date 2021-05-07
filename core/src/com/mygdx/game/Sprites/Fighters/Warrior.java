@@ -16,12 +16,15 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
+import java.util.concurrent.TimeoutException;
+
 public class Warrior extends Sprite {
 
     public World world;
     public Body b2body;
+    public Body attack;
 
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE}
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE, DEAD}
 
     public State currentState;
     public State previousState;
@@ -31,6 +34,7 @@ public class Warrior extends Sprite {
     protected Animation<TextureRegion> Fall;
     protected Animation<TextureRegion> Attack;
     protected Animation<TextureRegion> TakeDamage;
+    protected Animation<TextureRegion> Death;
     public int health;
     protected float stateTimer;
     public boolean runningRight;
@@ -47,9 +51,55 @@ public class Warrior extends Sprite {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 100;
+        health = 50;
         damageFrame = 0;
         initAnimations();
+    }
+
+    public void moveRight() {
+        if (currentState != State.DEAD)
+            b2body.applyLinearImpulse(new Vector2(0.25f, 0), b2body.getWorldCenter(), true);
+    }
+
+    public void moveLeft() {
+        if (currentState != State.DEAD)
+            b2body.applyLinearImpulse(new Vector2(-0.25f, 0), b2body.getWorldCenter(), true);
+    }
+
+    public void jump() {
+        if (currentState != State.DEAD)
+            if (canJump()) {
+                b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
+            }
+    }
+
+    public void attack() {
+        if (currentState != State.DEAD) {
+            b2body.setLinearVelocity(0f, 0f);
+
+            previousState = State.ATTACKING;
+
+            BodyDef bdef = new BodyDef();
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y / 2);
+            bdef.type = BodyDef.BodyType.DynamicBody;
+            attack = world.createBody(bdef);
+
+            FixtureDef attackDef = new FixtureDef();
+            attackDef.filter.categoryBits = Main.WARRIOR_ATTACK;
+            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT;
+            attackDef.isSensor = true;
+
+            EdgeShape attackShape = new EdgeShape();
+
+            if (runningRight) {
+                attackShape.set(new Vector2(55 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+            } else {
+                attackShape.set(new Vector2(-55 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
+            }
+
+            attackDef.shape = attackShape;
+            attack.createFixture(attackDef);
+        }
     }
 
     public void update(float dt) {
@@ -82,18 +132,19 @@ public class Warrior extends Sprite {
 
         TakeDamage = createAnimation("TakeDamage", 4);
 
+        Death = createAnimation("Death", 6);
+
         defineWarrior();
         setBounds(0, 0, 150 / Main.PPM, 150 / Main.PPM);
 
     }
 
-    public void attack() {
-        previousState = State.ATTACKING;
-    }
 
     public void takeDamage() {
-        previousState = State.TAKINGDAMAGE;
-        health -= 10;
+        if (currentState != State.DEAD) {
+            previousState = State.TAKINGDAMAGE;
+            health -= 10;
+        }
     }
 
     private TextureRegion getFrame(float dt) {
@@ -119,6 +170,9 @@ public class Warrior extends Sprite {
             case TAKINGDAMAGE:
                 region = TakeDamage.getKeyFrame(stateTimer, true);
                 break;
+            case DEAD:
+                region = Death.getKeyFrame(stateTimer);
+                break;
         }
 
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
@@ -136,10 +190,18 @@ public class Warrior extends Sprite {
     }
 
     public boolean canJump() {
-        return currentState != State.FALLING && currentState != State.JUMPING && currentState != State.ATTACKING;
+        if ((currentState != State.FALLING) && (currentState != State.JUMPING)
+                && (currentState != State.ATTACKING) && (currentState != State.DEAD)
+                && (currentState != State.TAKINGDAMAGE)) {
+            return true;
+        }
+        return false;
     }
 
     private State getState(float dt) {
+        if (health == 0) {
+            return State.DEAD;
+        }
         if (previousState == State.TAKINGDAMAGE) {
             if (damageFrame > dt * 18) {
                 damageFrame = 0;
@@ -151,6 +213,9 @@ public class Warrior extends Sprite {
         } else if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 18) {
                 attackFrame = 0;
+                for (int i = 0; i < attack.getFixtureList().size; i++) {
+                    attack.destroyFixture(attack.getFixtureList().get(i));
+                }
                 return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;

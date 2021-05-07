@@ -25,18 +25,35 @@ public class WorldContactListener implements ContactListener {
                 } else {
                     ((Warrior) fixB.getUserData()).takeDamage();
                 }
+                break;
             case Main.SAMURAI_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
                     ((Samurai) fixA.getUserData()).takeDamage();
                 } else {
                     ((Samurai) fixB.getUserData()).takeDamage();
                 }
+                break;
             case Main.KING_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
                     ((King) fixA.getUserData()).takeDamage();
                 } else {
                     ((King) fixB.getUserData()).takeDamage();
                 }
+                break;
+            case Main.WARRIOR_ATTACK | Main.SAMURAI_BIT:
+                if (fixA.getFilterData().categoryBits == Main.SAMURAI_BIT) {
+                    ((Samurai) fixA.getUserData()).takeDamage();
+                } else {
+                    ((Samurai) fixB.getUserData()).takeDamage();
+                }
+                break;
+            case Main.WARRIOR_ATTACK | Main.KING_BIT:
+                if (fixA.getFilterData().categoryBits == Main.KING_BIT) {
+                    ((King) fixA.getUserData()).takeDamage();
+                } else {
+                    ((King) fixB.getUserData()).takeDamage();
+                }
+                break;
         }
     }
 

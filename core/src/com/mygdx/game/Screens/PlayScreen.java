@@ -50,9 +50,9 @@ public class PlayScreen implements Screen {
     private final World world;
     private final Box2DDebugRenderer b2dr;
 
-    private King player1;
+    private Samurai player1;
     private King player2;
-    private Samurai player3;
+    private Warrior player3;
 
     public PlayScreen(Main game) {
         this.game = game;
@@ -68,9 +68,9 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
         // b2dr.setDrawBodies(false);
-        player1 = new King(world, this);
+        player1 = new Samurai(world, this);
         player2 = new King(world, this);
-        player3 = new Samurai(world, this);
+        player3 = new Warrior(world, this);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -107,22 +107,19 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            if (player1.canJump()) {
-                player1.b2body.applyLinearImpulse(new Vector2(0, 3.5f), player1.b2body.getWorldCenter(), true);
-            }
+            player1.jump();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D) && player1.b2body.getLinearVelocity().x <= 2) {
-            player1.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player1.b2body.getWorldCenter(), true);
+            player1.moveRight();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A) && player1.b2body.getLinearVelocity().x >= -2) {
-            player1.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player1.b2body.getWorldCenter(), true);
+            player1.moveLeft();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             player1.attack();
-            player1.b2body.setLinearVelocity(0f, 0f);
         }
     }
 
