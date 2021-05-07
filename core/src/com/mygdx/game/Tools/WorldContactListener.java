@@ -1,20 +1,14 @@
 package com.mygdx.game.Tools;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.Main;
-import com.mygdx.game.Sprites.Fighters.Fighter;
 import com.mygdx.game.Sprites.Fighters.King;
+import com.mygdx.game.Sprites.Fighters.Samurai;
 import com.mygdx.game.Sprites.Fighters.Warrior;
-import com.mygdx.game.Sprites.World.InteractiveTileObject;
-
-import sun.nio.cs.ext.MacArabic;
 
 public class WorldContactListener implements ContactListener {
     @Override
@@ -27,9 +21,21 @@ public class WorldContactListener implements ContactListener {
         switch (cDef) {
             case Main.WARRIOR_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
-                    ((Warrior) fixA.getUserData()).onSpikeHeat();
+                    ((Warrior) fixA.getUserData()).takeDamage();
                 } else {
-                    ((Warrior) fixB.getUserData()).onSpikeHeat();
+                    ((Warrior) fixB.getUserData()).takeDamage();
+                }
+            case Main.SAMURAI_BIT | Main.SPIKE_BIT:
+                if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
+                    ((Samurai) fixA.getUserData()).takeDamage();
+                } else {
+                    ((Samurai) fixB.getUserData()).takeDamage();
+                }
+            case Main.KING_BIT | Main.SPIKE_BIT:
+                if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
+                    ((King) fixA.getUserData()).takeDamage();
+                } else {
+                    ((King) fixB.getUserData()).takeDamage();
                 }
         }
     }

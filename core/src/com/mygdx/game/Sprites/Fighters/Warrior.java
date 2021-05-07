@@ -3,8 +3,10 @@ package com.mygdx.game.Sprites.Fighters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
@@ -14,20 +16,41 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class Warrior extends Fighter {
+public class Warrior extends Sprite {
+
+    public World world;
+    public Body b2body;
+
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE}
+
+    public State currentState;
+    public State previousState;
+    protected Animation<TextureRegion> Run;
+    protected Animation<TextureRegion> Jump;
+    protected Animation<TextureRegion> Idle;
+    protected Animation<TextureRegion> Fall;
+    protected Animation<TextureRegion> Attack;
+    protected Animation<TextureRegion> TakeDamage;
+    public int health;
+    protected float stateTimer;
+    public boolean runningRight;
+    protected float attackFrame;
+    protected float damageFrame;
 
     public Warrior(World world, PlayScreen screen) {
-        this.world = world;
-        health = 100;
         currentState = State.STANDING;
         previousState = State.STANDING;
-        stateTimer = 0;
+
+        this.world = world;
         runningRight = true;
+
+        stateTimer = 0;
         attackFrame = 0;
+
+        health = 100;
         damageFrame = 0;
         initAnimations();
     }
-
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
@@ -66,12 +89,6 @@ public class Warrior extends Fighter {
 
     public void attack() {
         previousState = State.ATTACKING;
-    }
-
-    @Override
-    public void onSpikeHeat() {
-        health -= 10;
-        previousState = State.TAKINGDAMAGE;
     }
 
     public void takeDamage() {

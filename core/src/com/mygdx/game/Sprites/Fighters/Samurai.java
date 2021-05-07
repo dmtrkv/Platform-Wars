@@ -3,6 +3,7 @@ package com.mygdx.game.Sprites.Fighters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -15,17 +16,41 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class Samurai extends Fighter {
+import sun.java2d.pipe.SpanIterator;
+
+public class Samurai extends Sprite {
+
+    public World world;
+    public Body b2body;
+
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE}
+
+    public State currentState;
+    public State previousState;
+    protected Animation<TextureRegion> Run;
+    protected Animation<TextureRegion> Jump;
+    protected Animation<TextureRegion> Idle;
+    protected Animation<TextureRegion> Fall;
+    protected Animation<TextureRegion> Attack;
+    protected Animation<TextureRegion> TakeDamage;
+    public int health;
+    protected float stateTimer;
+    public boolean runningRight;
+    protected float attackFrame;
+    protected float damageFrame;
 
     public Samurai(World world, PlayScreen screen) {
-        this.world = world;
-
         currentState = State.STANDING;
         previousState = State.STANDING;
-        stateTimer = 0;
+
+        this.world = world;
         runningRight = true;
+
+        stateTimer = 0;
         attackFrame = 0;
 
+        health = 100;
+        damageFrame = 0;
         initAnimations();
     }
 
@@ -57,9 +82,15 @@ public class Samurai extends Fighter {
 
         Attack = createAnimation("Attack1", 6);
 
+        TakeDamage = createAnimation("TakeDamage", 4);
+
         defineSamurai();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
+    }
 
+    public void takeDamage() {
+        previousState = State.TAKINGDAMAGE;
+        health -= 10;
     }
 
     public void attack() {
@@ -69,7 +100,6 @@ public class Samurai extends Fighter {
     private TextureRegion getFrame(float dt) {
         currentState = getState(dt);
         TextureRegion region;
-
         switch (currentState) {
             case JUMPING:
                 region = Jump.getKeyFrame(stateTimer);
@@ -86,6 +116,9 @@ public class Samurai extends Fighter {
                 break;
             case ATTACKING:
                 region = Attack.getKeyFrame(stateTimer, true);
+                break;
+            case TAKINGDAMAGE:
+                region = TakeDamage.getKeyFrame(stateTimer, true);
                 break;
         }
 
@@ -108,8 +141,16 @@ public class Samurai extends Fighter {
     }
 
     private State getState(float dt) {
-        if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 33) {
+        if (previousState == State.TAKINGDAMAGE) {
+            if (damageFrame > dt * 18) {
+                damageFrame = 0;
+                return State.STANDING;
+            } else {
+                damageFrame = damageFrame + dt;
+                return State.TAKINGDAMAGE;
+            }
+        } else if (previousState == State.ATTACKING) {
+            if (attackFrame > dt * 18) {
                 attackFrame = 0;
                 return State.STANDING;
             } else {
@@ -136,28 +177,25 @@ public class Samurai extends Fighter {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(10 / Main.PPM);
+        fdef.filter.categoryBits = Main.SAMURAI_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT;
 
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
         head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
         fdef.shape = head;
-        b2body.createFixture(fdef).setUserData("Samurai");
+        b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape left = new EdgeShape();
         left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
         fdef.shape = left;
-        b2body.createFixture(fdef).setUserData("Samurai");
+        b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape right = new EdgeShape();
         right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
         fdef.shape = right;
-        b2body.createFixture(fdef).setUserData("Samurai");
-    }
-
-    @Override
-    public void onSpikeHeat() {
-
+        b2body.createFixture(fdef).setUserData(this);
     }
 }
