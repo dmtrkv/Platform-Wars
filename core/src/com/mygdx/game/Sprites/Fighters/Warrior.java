@@ -49,7 +49,7 @@ public class Warrior extends Sprite {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 50;
+        health = 1000000;
         damageFrame = 0;
         initAnimations();
     }
@@ -60,7 +60,8 @@ public class Warrior extends Sprite {
     }
 
     public void moveLeft() {
-        if (currentState != State.DEAD)
+        if (currentState != State.DEAD && currentState != State.JUMPING
+                && currentState != State.FALLING && currentState != State.ATTACKING)
             b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
     }
 

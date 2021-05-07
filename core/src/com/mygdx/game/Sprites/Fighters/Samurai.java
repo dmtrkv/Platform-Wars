@@ -114,26 +114,6 @@ public class Samurai extends Sprite {
                     i * 200, 0, 200, 220));
         }
 
-//        if (!animation.equals("Attack2")) {
-//            for (int i = 0; i < framesNum; i++) {
-//                frames.add(new TextureRegion(new Texture(
-//                        String.format("Fighters/Samurai/%s.png", animation)),
-//                        i * 200, 0, 200, 220));
-//            }
-//        } else {
-//            for (int i = 0; i < 1; i++) {
-//                frames.add(new TextureRegion(new Texture(
-//                        String.format("Fighters/Samurai/%s.png", animation)),
-//                        i * 200, 0, 200, 220));
-//            }
-//
-//            for (int i = 3; i < 6; i++) {
-//                frames.add(new TextureRegion(new Texture(
-//                        String.format("Fighters/Samurai/%s.png", animation)),
-//                        i * 200, 0, 200, 220));
-//            }
-//        }
-
         return new Animation<TextureRegion>(0.1f, frames);
     }
 

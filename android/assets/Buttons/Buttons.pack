@@ -3,43 +3,59 @@ Buttons.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Button
-  rotate: false
-  xy: 1, 733
-  size: 516, 242
-  orig: 516, 242
-  offset: 0, 0
-  index: -1
-Button_pressed
-  rotate: false
-  xy: 1, 489
-  size: 516, 242
-  orig: 516, 242
-  offset: 0, 0
-  index: -1
-Green Oval Button
-  rotate: false
-  xy: 1, 245
-  size: 516, 242
-  orig: 516, 242
-  offset: 0, 0
-  index: -1
-Red Oval Button
+attackIdle
   rotate: false
   xy: 1, 1
-  size: 516, 242
-  orig: 516, 242
+  size: 21, 22
+  orig: 21, 22
   offset: 0, 0
   index: -1
-
-Buttons2.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-Silver Oval Button
+attackPressed
   rotate: false
-  xy: 1, 1
-  size: 516, 242
-  orig: 516, 242
+  xy: 24, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+jumpIdle
+  rotate: false
+  xy: 47, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+jumpPressed
+  rotate: false
+  xy: 70, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+leftIdle
+  rotate: false
+  xy: 93, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+leftPressed
+  rotate: false
+  xy: 116, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+rightIdle
+  rotate: false
+  xy: 139, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+rightPressed
+  rotate: false
+  xy: 162, 1
+  size: 21, 22
+  orig: 21, 22
   offset: 0, 0
   index: -1
