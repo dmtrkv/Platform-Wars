@@ -5,72 +5,141 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
-import com.mygdx.game.Sprites.Samurai;
+import com.mygdx.game.Sprites.Fighters.King;
+import com.mygdx.game.Sprites.Fighters.Samurai;
+import com.mygdx.game.Sprites.Fighters.Warrior;
 import com.mygdx.game.Tools.B2WorldCreator;
+import com.mygdx.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
-    private Main game;
+    private final Main game;
 
-    private TextureAtlas atlas;
+    private Stage stage;
+    private TextButton moveLeftButton;
+    private TextButton moveRightButton;
+    private TextButton jumpButton;
+    private TextButton attackButton;
 
-    private OrthographicCamera gameCam;
-    private Viewport gamePort;
-    private Hud hud;
+    private final OrthographicCamera gameCam;
+    private final Viewport gamePort;
+    private final Hud hud;
 
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
+    private final TiledMap map;
+    private final OrthogonalTiledMapRenderer renderer;
 
-    private World world;
-    private Box2DDebugRenderer b2dr;
+    private final World world;
+    private final Box2DDebugRenderer b2dr;
 
-    private Samurai player;
-
+    private final King player1;
+    private final Warrior player2;
+    private final Samurai player3;
 
     public PlayScreen(Main game) {
-        atlas = new TextureAtlas("Fighters/Samurai/Samurai.pack");
-
         this.game = game;
         gameCam = new OrthographicCamera();
-        gamePort = new FitViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
+        gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
         hud = new Hud(game.batch);
 
-        mapLoader = new TmxMapLoader();
+        TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("map/map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Main.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        b2dr.setDrawBodies(false);
-        player = new Samurai(world, this);
-
+        // b2dr.setDrawBodies(false);
+        player1 = new King(world, this);
+        player2 = new Warrior(world, this);
+        player3 = new Samurai(world, this);
         new B2WorldCreator(world, map);
 
+        world.setContactListener(new WorldContactListener());
+
+        initButtons();
     }
 
-    public TextureAtlas getAtlas() {
-        return atlas;
+    public void initButtons() {
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        BitmapFont font = new BitmapFont();
+        Skin button_skin = new Skin();
+
+        TextureAtlas button_textureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
+        button_skin.addRegions(button_textureAtlas);
+
+        TextButton.TextButtonStyle moveLeftButtonStyle = new TextButton.TextButtonStyle();
+        moveLeftButtonStyle.font = font;
+        moveLeftButtonStyle.up = button_skin.getDrawable("leftIdle"); //Не нажатая кнопка
+        moveLeftButtonStyle.down = button_skin.getDrawable("leftPressed"); //Нажатая кнопка
+        moveLeftButton = new TextButton("", moveLeftButtonStyle);
+        moveLeftButton.setSize(100, 100); //Размер кнопки, скорее всего надо изменить
+        moveLeftButton.setPosition(10, 10);
+
+
+        TextButton.TextButtonStyle moveRightButtonStyle = new TextButton.TextButtonStyle();
+        moveRightButtonStyle.font = font;
+        moveRightButtonStyle.up = button_skin.getDrawable("rightIdle"); //Не нажатая кнопка
+        moveRightButtonStyle.down = button_skin.getDrawable("rightPressed"); //Нажатая кнопка
+        moveRightButton = new TextButton("", moveRightButtonStyle);
+        moveRightButton.setSize(100, 100); //Размер кнопки, скорее всего надо изменить
+        moveRightButton.setPosition(120, 10);
+
+        TextButton.TextButtonStyle jumpButtonStyle = new TextButton.TextButtonStyle();
+        jumpButtonStyle.font = font;
+        jumpButtonStyle.up = button_skin.getDrawable("jumpIdle"); //Не нажатая кнопка
+        jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
+        jumpButton = new TextButton("", jumpButtonStyle);
+        jumpButton.setSize(100, 100);
+        jumpButton.setPosition(990, 10);
+
+        TextButton.TextButtonStyle attackButtonStyle = new TextButton.TextButtonStyle();
+        attackButtonStyle.font = font;
+        attackButtonStyle.up = button_skin.getDrawable("attackIdle"); //Не нажатая кнопка
+        attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
+        attackButton = new TextButton("", attackButtonStyle);
+        attackButton.setSize(100, 100);
+        attackButton.setPosition(1100, 10);
+
+        stage.addActor(moveLeftButton);
+        stage.addActor(moveRightButton);
+        stage.addActor(jumpButton);
+        stage.addActor(attackButton);
+
+        jumpButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                player1.jump();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+
+        attackButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                player1.attack();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
     }
 
     @Override
@@ -80,25 +149,40 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 2.5f), player.b2body.getWorldCenter(), true);
+            player1.jump();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 2) {
-            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && player1.b2body.getLinearVelocity().x <= 2) {
+            player1.moveRight();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -2) {
-            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && player1.b2body.getLinearVelocity().x >= -2) {
+            player1.moveLeft();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            player1.attack();
+        }
+
+        if (moveRightButton.isPressed()) {
+            player1.moveRight();
+        }
+
+        if (moveLeftButton.isPressed()) {
+            player1.moveLeft();
         }
     }
 
     public void update(float dt) {
         handleInput(dt);
+        player1.update(dt);
+        player2.update(dt);
+        player3.update(dt);
+        world.step(1 / 60f, 6, 2);
 
-        player.update(dt);
-        world.step(1/60f, 6, 2);
-
-        gameCam.position.x = player.b2body.getPosition().x;
+        if (player1.b2body.getPosition().x > 2 && player1.b2body.getPosition().x < 6) {
+            gameCam.position.x = player1.b2body.getPosition().x;
+        }
 
         gameCam.update();
         renderer.setView(gameCam);
@@ -118,11 +202,12 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        player.draw(game.batch);
+        player1.draw(game.batch);
+        player2.draw(game.batch);
+        player3.draw(game.batch);
         game.batch.end();
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        stage.draw();
     }
 
     @Override
