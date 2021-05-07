@@ -17,44 +17,100 @@ attackPressed
   orig: 21, 22
   offset: 0, 0
   index: -1
-jumpIdle
+backIdle
   rotate: false
   xy: 47, 1
   size: 21, 22
   orig: 21, 22
   offset: 0, 0
   index: -1
-jumpPressed
+backPressed
   rotate: false
   xy: 70, 1
   size: 21, 22
   orig: 21, 22
   offset: 0, 0
   index: -1
-leftIdle
+jumpIdle
   rotate: false
   xy: 93, 1
   size: 21, 22
   orig: 21, 22
   offset: 0, 0
   index: -1
-leftPressed
+jumpPressed
   rotate: false
   xy: 116, 1
   size: 21, 22
   orig: 21, 22
   offset: 0, 0
   index: -1
-rightIdle
+leftIdle
   rotate: false
   xy: 139, 1
   size: 21, 22
   orig: 21, 22
   offset: 0, 0
   index: -1
-rightPressed
+leftPressed
   rotate: false
   xy: 162, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+localIdle
+  rotate: false
+  xy: 185, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+localPressed
+  rotate: false
+  xy: 208, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+onlineIdle
+  rotate: false
+  xy: 231, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+onlinePressed
+  rotate: false
+  xy: 254, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+playIdle
+  rotate: false
+  xy: 277, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+playPressed
+  rotate: false
+  xy: 300, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+rightIdle
+  rotate: false
+  xy: 323, 1
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+rightPressed
+  rotate: false
+  xy: 346, 1
   size: 21, 22
   orig: 21, 22
   offset: 0, 0
