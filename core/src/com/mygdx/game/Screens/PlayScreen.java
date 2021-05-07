@@ -51,8 +51,8 @@ public class PlayScreen implements Screen {
     private final Box2DDebugRenderer b2dr;
 
     private Samurai player1;
-    private King player2;
-    private Warrior player3;
+    private Warrior player2;
+    private King player3;
 
     public PlayScreen(Main game) {
         this.game = game;
@@ -69,8 +69,8 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         // b2dr.setDrawBodies(false);
         player1 = new Samurai(world, this);
-        player2 = new King(world, this);
-        player3 = new Warrior(world, this);
+        player2 = new Warrior(world, this);
+        player3 = new King(world, this);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());

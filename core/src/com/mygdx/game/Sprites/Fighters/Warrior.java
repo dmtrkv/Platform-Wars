@@ -16,8 +16,6 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-import java.util.concurrent.TimeoutException;
-
 public class Warrior extends Sprite {
 
     public World world;
@@ -58,23 +56,23 @@ public class Warrior extends Sprite {
 
     public void moveRight() {
         if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(0.25f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(0.225f, 0), b2body.getWorldCenter(), true);
     }
 
     public void moveLeft() {
         if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(-0.25f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
     }
 
     public void jump() {
         if (currentState != State.DEAD)
             if (canJump()) {
-                b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(0, 3.8f), b2body.getWorldCenter(), true);
             }
     }
 
     public void attack() {
-        if (currentState != State.DEAD) {
+        if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
             b2body.setLinearVelocity(0f, 0f);
 
             previousState = State.ATTACKING;
@@ -85,16 +83,16 @@ public class Warrior extends Sprite {
             attack = world.createBody(bdef);
 
             FixtureDef attackDef = new FixtureDef();
-            attackDef.filter.categoryBits = Main.WARRIOR_ATTACK;
+            attackDef.filter.categoryBits = Main.WARRIOR_ATTACK_BIT;
             attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT;
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
 
             if (runningRight) {
-                attackShape.set(new Vector2(55 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+                attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
             } else {
-                attackShape.set(new Vector2(-55 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
+                attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
             }
 
             attackDef.shape = attackShape;
@@ -242,7 +240,7 @@ public class Warrior extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(9 / Main.PPM);
         fdef.filter.categoryBits = Main.WARRIOR_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.SAMURAI_ATTACK_BIT | Main.KING_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);

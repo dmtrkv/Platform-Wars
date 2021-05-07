@@ -21,7 +21,9 @@ public class Main extends Game {
 	public static final short DESTROYED_BIT = 16;
 	public static final short SAMURAI_BIT = 32;
 	public static final short KING_BIT = 64;
-	public static final short WARRIOR_ATTACK = 128;
+	public static final short WARRIOR_ATTACK_BIT = 128;
+	public static final short SAMURAI_ATTACK_BIT = 256;
+	public static final short KING_ATTACK_BIT = 512;
 
 	@Override
 	public void create () {

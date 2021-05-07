@@ -19,6 +19,8 @@ public class WorldContactListener implements ContactListener {
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef) {
+            case Main.KING_ATTACK_BIT | Main.WARRIOR_BIT:
+            case Main.SAMURAI_ATTACK_BIT | Main.WARRIOR_BIT:
             case Main.WARRIOR_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
                     ((Warrior) fixA.getUserData()).takeDamage();
@@ -26,28 +28,18 @@ public class WorldContactListener implements ContactListener {
                     ((Warrior) fixB.getUserData()).takeDamage();
                 }
                 break;
+            case Main.KING_ATTACK_BIT | Main.SAMURAI_BIT:
+            case Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_BIT:
             case Main.SAMURAI_BIT | Main.SPIKE_BIT:
-                if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
-                    ((Samurai) fixA.getUserData()).takeDamage();
-                } else {
-                    ((Samurai) fixB.getUserData()).takeDamage();
-                }
-                break;
-            case Main.KING_BIT | Main.SPIKE_BIT:
-                if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
-                    ((King) fixA.getUserData()).takeDamage();
-                } else {
-                    ((King) fixB.getUserData()).takeDamage();
-                }
-                break;
-            case Main.WARRIOR_ATTACK | Main.SAMURAI_BIT:
                 if (fixA.getFilterData().categoryBits == Main.SAMURAI_BIT) {
                     ((Samurai) fixA.getUserData()).takeDamage();
                 } else {
                     ((Samurai) fixB.getUserData()).takeDamage();
                 }
                 break;
-            case Main.WARRIOR_ATTACK | Main.KING_BIT:
+            case Main.KING_BIT | Main.SPIKE_BIT:
+            case Main.SAMURAI_ATTACK_BIT | Main.KING_BIT:
+            case Main.WARRIOR_ATTACK_BIT | Main.KING_BIT:
                 if (fixA.getFilterData().categoryBits == Main.KING_BIT) {
                     ((King) fixA.getUserData()).takeDamage();
                 } else {

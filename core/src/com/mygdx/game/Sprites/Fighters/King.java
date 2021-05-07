@@ -20,6 +20,7 @@ import com.mygdx.game.Screens.PlayScreen;
 public class King extends Sprite {
     public World world;
     public Body b2body;
+    public Body attack;
 
     public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE, DEAD}
 
@@ -53,6 +54,49 @@ public class King extends Sprite {
         initAnimations();
     }
 
+    public void moveRight() {
+        if (currentState != State.DEAD)
+            b2body.applyLinearImpulse(new Vector2(0.225f, 0), b2body.getWorldCenter(), true);
+    }
+
+    public void moveLeft() {
+        if (currentState != State.DEAD)
+            b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
+    }
+
+    public void jump() {
+        if (currentState != State.DEAD)
+            if (canJump()) {
+                b2body.applyLinearImpulse(new Vector2(0, 3.8f), b2body.getWorldCenter(), true);
+            }
+    }
+
+    public void attack() {
+        if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
+            b2body.setLinearVelocity(0f, 0f);
+
+            previousState = State.ATTACKING;
+
+            BodyDef bdef = new BodyDef();
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y / 2);
+            bdef.type = BodyDef.BodyType.DynamicBody;
+            attack = world.createBody(bdef);
+
+            FixtureDef attackDef = new FixtureDef();
+            attackDef.filter.categoryBits = Main.KING_ATTACK_BIT;
+            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT;
+            attackDef.isSensor = true;
+
+            EdgeShape attackShape = new EdgeShape();
+
+            attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM),
+                    new Vector2(-40 / Main.PPM, 34 / Main.PPM));
+
+            attackDef.shape = attackShape;
+            attack.createFixture(attackDef);
+        }
+    }
+
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
@@ -79,7 +123,7 @@ public class King extends Sprite {
 
         Fall = createAnimation("Fall", 2);
 
-        Attack = createAnimation("Attack1", 4);
+        Attack = createAnimation("Attack2", 4);
 
         TakeDamage = createAnimation("TakeDamage", 4);
 
@@ -87,10 +131,6 @@ public class King extends Sprite {
 
         defineKing();
         setBounds(0, 0, 160 / Main.PPM, 111 / Main.PPM);
-    }
-
-    public void attack() {
-        previousState = State.ATTACKING;
     }
 
     public void takeDamage() {
@@ -192,7 +232,7 @@ public class King extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Main.PPM);
         fdef.filter.categoryBits = Main.KING_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
