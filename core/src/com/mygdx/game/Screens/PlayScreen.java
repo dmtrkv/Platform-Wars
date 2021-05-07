@@ -110,7 +110,7 @@ public class PlayScreen implements Screen {
         jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
         jumpButton = new TextButton("", jumpButtonStyle);
         jumpButton.setSize(100, 100);
-        jumpButton.setPosition(990, 10);
+        jumpButton.setPosition(Gdx.graphics.getWidth() - 220, 10);
 
         TextButton.TextButtonStyle attackButtonStyle = new TextButton.TextButtonStyle();
         attackButtonStyle.font = font;
@@ -118,7 +118,7 @@ public class PlayScreen implements Screen {
         attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
         attackButton = new TextButton("", attackButtonStyle);
         attackButton.setSize(100, 100);
-        attackButton.setPosition(1100, 10);
+        attackButton.setPosition(Gdx.graphics.getWidth() - 110, 10);
 
         stage.addActor(moveLeftButton);
         stage.addActor(moveRightButton);
