@@ -1,12 +1,10 @@
 package com.mygdx.game.Sprites.Fighters;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
@@ -16,40 +14,20 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class King extends Fighter {
-    public World world;
-    public Body b2body;
+public class Warrior extends Fighter {
 
-    @Override
-    public void onSpikeHeat() {
-
-    }
-
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING}
-
-    public static State currentState;
-    public static State previousState;
-    private Animation<TextureRegion> Run;
-    private Animation<TextureRegion> Jump;
-    private Animation<TextureRegion> Idle;
-    private Animation<TextureRegion> Fall;
-    private Animation<TextureRegion> Attack;
-    private float stateTimer;
-    private boolean runningRight;
-    private float attackFrame;
-
-
-    public King(World world, PlayScreen screen) {
+    public Warrior(World world, PlayScreen screen) {
         this.world = world;
-
+        health = 100;
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
         attackFrame = 0;
-
+        damageFrame = 0;
         initAnimations();
     }
+
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
@@ -61,8 +39,8 @@ public class King extends Fighter {
 
         for (int i = 0; i < framesNum; i++) {
             frames.add(new TextureRegion(new Texture(
-                    String.format("Fighters/King/%s.png", animation)),
-                    i * 160, 40, 160, 111));
+                    String.format("Fighters/Warrior/%s.png", animation)),
+                    i * 150, 10, 150, 150));
         }
 
         return new Animation<TextureRegion>(0.1f, frames);
@@ -77,20 +55,33 @@ public class King extends Fighter {
 
         Fall = createAnimation("Fall", 2);
 
-        Attack = createAnimation("Attack1", 4);
+        Attack = createAnimation("Attack3", 4);
 
-        defineKing();
-        setBounds(0, 0, 160 / Main.PPM, 111 / Main.PPM);
+        TakeDamage = createAnimation("TakeDamage", 4);
+
+        defineWarrior();
+        setBounds(0, 0, 150 / Main.PPM, 150 / Main.PPM);
+
     }
 
     public void attack() {
         previousState = State.ATTACKING;
     }
 
+    @Override
+    public void onSpikeHeat() {
+        health -= 10;
+        previousState = State.TAKINGDAMAGE;
+    }
+
+    public void takeDamage() {
+        previousState = State.TAKINGDAMAGE;
+        health -= 10;
+    }
+
     private TextureRegion getFrame(float dt) {
         currentState = getState(dt);
         TextureRegion region;
-
         switch (currentState) {
             case JUMPING:
                 region = Jump.getKeyFrame(stateTimer);
@@ -107,6 +98,9 @@ public class King extends Fighter {
                 break;
             case ATTACKING:
                 region = Attack.getKeyFrame(stateTimer, true);
+                break;
+            case TAKINGDAMAGE:
+                region = TakeDamage.getKeyFrame(stateTimer, true);
                 break;
         }
 
@@ -129,7 +123,15 @@ public class King extends Fighter {
     }
 
     private State getState(float dt) {
-        if (previousState == State.ATTACKING) {
+        if (previousState == State.TAKINGDAMAGE) {
+            if (damageFrame > dt * 18) {
+                damageFrame = 0;
+                return State.STANDING;
+            } else {
+                damageFrame = damageFrame + dt;
+                return State.TAKINGDAMAGE;
+            }
+        } else if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 18) {
                 attackFrame = 0;
                 return State.STANDING;
@@ -148,37 +150,34 @@ public class King extends Fighter {
         }
     }
 
-    public void defineKing() {
+    public void defineWarrior() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(200 / Main.PPM, 32 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(12 / Main.PPM);
+        shape.setRadius(9 / Main.PPM);
+        fdef.filter.categoryBits = Main.WARRIOR_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT;
 
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-12 / Main.PPM, 40 / Main.PPM), new Vector2(12 / Main.PPM, 40 / Main.PPM));
+        head.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 30 / Main.PPM));
         fdef.shape = head;
-        b2body.createFixture(fdef).setUserData("King");
+        b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape left = new EdgeShape();
-        left.set(new Vector2(-12 / Main.PPM, 40 / Main.PPM), new Vector2(-12 / Main.PPM, 0 / Main.PPM));
+        left.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(-9 / Main.PPM, 0 / Main.PPM));
         fdef.shape = left;
-        b2body.createFixture(fdef).setUserData("King");
+        b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape right = new EdgeShape();
-        right.set(new Vector2(12 / Main.PPM, 40 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
+        right.set(new Vector2(9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 0 / Main.PPM));
         fdef.shape = right;
-        b2body.createFixture(fdef).setUserData("King");
-    }
-
-    public void onCollision() {
-        Gdx.app.log("collision", "warrior");
+        b2body.createFixture(fdef).setUserData(this);
     }
 }
-

@@ -3,7 +3,6 @@ package com.mygdx.game.Sprites.Fighters;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -16,24 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class Samurai extends Sprite {
-    public World world;
-    public Body b2body;
-    private TextureRegion samuraiIdleDefault;
-
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING}
-
-    public static State currentState;
-    public static State previousState;
-    private Animation<TextureRegion> samuraiRun;
-    private Animation<TextureRegion> samuraiJump;
-    private Animation<TextureRegion> samuraiIdle;
-    private Animation<TextureRegion> samuraiFall;
-    private Animation<TextureRegion> samuraiAttack;
-    private float stateTimer;
-    private boolean runningRight;
-    private float attackFrame;
-
+public class Samurai extends Fighter {
 
     public Samurai(World world, PlayScreen screen) {
         this.world = world;
@@ -65,22 +47,19 @@ public class Samurai extends Sprite {
     }
 
     public void initAnimations() {
-        samuraiRun = createAnimation("Run", 8);
+        Run = createAnimation("Run", 8);
 
-        samuraiJump = createAnimation("Jump", 2);
+        Jump = createAnimation("Jump", 2);
 
-        samuraiIdle = createAnimation("Idle", 8);
+        Idle = createAnimation("Idle", 8);
 
-        samuraiFall = createAnimation("Fall", 2);
+        Fall = createAnimation("Fall", 2);
 
-        samuraiAttack = createAnimation("Attack1", 6);
-
-        samuraiIdleDefault = new TextureRegion(new Texture("Fighters/Samurai/Idle.png"),
-                0, 0, 200, 220);
+        Attack = createAnimation("Attack1", 6);
 
         defineSamurai();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
-        setRegion(samuraiIdleDefault);
+
     }
 
     public void attack() {
@@ -93,22 +72,20 @@ public class Samurai extends Sprite {
 
         switch (currentState) {
             case JUMPING:
-                region = samuraiJump.getKeyFrame(stateTimer);
+                region = Jump.getKeyFrame(stateTimer);
                 break;
             case RUNNING:
-                region = samuraiRun.getKeyFrame(stateTimer, true);
+                region = Run.getKeyFrame(stateTimer, true);
                 break;
             case FALLING:
-                region = samuraiFall.getKeyFrame(stateTimer, true);
+                region = Fall.getKeyFrame(stateTimer, true);
                 break;
             default:
-                region = samuraiIdleDefault;
-                break;
             case STANDING:
-                region = samuraiIdle.getKeyFrame(stateTimer, true);
+                region = Idle.getKeyFrame(stateTimer, true);
                 break;
             case ATTACKING:
-                region = samuraiAttack.getKeyFrame(stateTimer, true);
+                region = Attack.getKeyFrame(stateTimer, true);
                 break;
         }
 
@@ -132,7 +109,7 @@ public class Samurai extends Sprite {
 
     private State getState(float dt) {
         if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 34) {
+            if (attackFrame > dt * 33) {
                 attackFrame = 0;
                 return State.STANDING;
             } else {
@@ -166,16 +143,21 @@ public class Samurai extends Sprite {
         EdgeShape head = new EdgeShape();
         head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
         fdef.shape = head;
-        b2body.createFixture(fdef).setUserData("head");
+        b2body.createFixture(fdef).setUserData("Samurai");
 
         EdgeShape left = new EdgeShape();
         left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
         fdef.shape = left;
-        b2body.createFixture(fdef).setUserData("left");
+        b2body.createFixture(fdef).setUserData("Samurai");
 
         EdgeShape right = new EdgeShape();
         right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
         fdef.shape = right;
-        b2body.createFixture(fdef).setUserData("right");
+        b2body.createFixture(fdef).setUserData("Samurai");
+    }
+
+    @Override
+    public void onSpikeHeat() {
+
     }
 }

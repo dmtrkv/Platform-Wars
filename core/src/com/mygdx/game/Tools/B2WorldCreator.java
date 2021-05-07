@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Main;
 import com.mygdx.game.Sprites.World.Brick;
+import com.mygdx.game.Sprites.World.Spike;
 
 public class B2WorldCreator {
     public B2WorldCreator (World world, TiledMap map) {
@@ -29,6 +30,7 @@ public class B2WorldCreator {
                     (rect.getY() + rect.getHeight() / 2) / Main.PPM);
 
             body = world.createBody(bdef);
+            body.setUserData("Ground");
 
             shape.setAsBox(rect.getWidth() / 2 / Main.PPM, rect.getHeight() / 2 / Main.PPM);
             fdef.shape = shape;
@@ -36,17 +38,16 @@ public class B2WorldCreator {
         }
 
          // bricks
-
         for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             new Brick(world, map, rect);
         }
 
-        // buffs
+        // spikes
+        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            new Spike(world, map, rect);
+        }
 
-//        for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
-//            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-//            new Buff(world, map, rect);
-//        }
     }
 }

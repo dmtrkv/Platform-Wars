@@ -24,6 +24,7 @@ import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
+import com.mygdx.game.Sprites.Fighters.Warrior;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 
@@ -49,8 +50,9 @@ public class PlayScreen implements Screen {
     private final World world;
     private final Box2DDebugRenderer b2dr;
 
-    private Samurai player1;
+    private Warrior player1;
     private King player2;
+    private Samurai player3;
 
     public PlayScreen(Main game) {
         this.game = game;
@@ -66,8 +68,9 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
         // b2dr.setDrawBodies(false);
-        player1 = new Samurai(world, this);
+        player1 = new Warrior(world, this);
         player2 = new King(world, this);
+        player3 = new Samurai(world, this);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -125,9 +128,9 @@ public class PlayScreen implements Screen {
 
     public void update(float dt) {
         handleInput(dt);
-
         player1.update(dt);
         player2.update(dt);
+        player3.update(dt);
         world.step(1 / 60f, 6, 2);
 
         if (player1.b2body.getPosition().x > 2 && player1.b2body.getPosition().x < 6) {
@@ -154,6 +157,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player1.draw(game.batch);
         player2.draw(game.batch);
+        player3.draw(game.batch);
         game.batch.end();
 
 
