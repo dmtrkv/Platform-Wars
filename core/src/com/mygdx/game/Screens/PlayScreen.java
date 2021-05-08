@@ -61,7 +61,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map/map2.tmx");
+        map = mapLoader.load("map/map1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Main.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
