@@ -50,9 +50,9 @@ public class PlayScreen implements Screen {
     private final World world;
     private final Box2DDebugRenderer b2dr;
 
-    private final King player1;
-    private final Warrior player2;
-    private final Samurai player3;
+    private final Warrior player1;
+    private final Samurai player2;
+    private final King player3;
 
     public PlayScreen(Main game) {
         this.game = game;
@@ -61,16 +61,16 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map/map.tmx");
+        map = mapLoader.load("map/map2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Main.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        // b2dr.setDrawBodies(false);
-        player1 = new King(world, this);
-        player2 = new Warrior(world, this);
-        player3 = new Samurai(world, this);
+        b2dr.setDrawBodies(false);
+        player1 = new Warrior(world, this);
+        player2 = new Samurai(world, this);
+        player3 = new King(world, this);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -110,7 +110,7 @@ public class PlayScreen implements Screen {
         jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
         jumpButton = new TextButton("", jumpButtonStyle);
         jumpButton.setSize(100, 100);
-        jumpButton.setPosition(990, 10);
+        jumpButton.setPosition(Gdx.graphics.getWidth() - 220, 10);
 
         TextButton.TextButtonStyle attackButtonStyle = new TextButton.TextButtonStyle();
         attackButtonStyle.font = font;
@@ -118,7 +118,7 @@ public class PlayScreen implements Screen {
         attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
         attackButton = new TextButton("", attackButtonStyle);
         attackButton.setSize(100, 100);
-        attackButton.setPosition(1100, 10);
+        attackButton.setPosition(Gdx.graphics.getWidth() - 110, 10);
 
         stage.addActor(moveLeftButton);
         stage.addActor(moveRightButton);

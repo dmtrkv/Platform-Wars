@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="197">
- <tileset firstgid="1" source="tilesheet_pagoda.tsx"/>
- <tileset firstgid="225" source="BrightDay.tsx"/>
- <tileset firstgid="1105" source="castle-tileset.tsx"/>
- <tileset firstgid="1233" source="platformtileset.tsx"/>
- <tileset firstgid="2380" source="TileSet.tsx"/>
- <tileset firstgid="8780" source="tilesheet_dungeon.tsx"/>
- <tileset firstgid="8920" source="tilesheet_grass.tsx"/>
- <tileset firstgid="9144" source="IceDay.tsx"/>
- <tileset firstgid="10024" source="dark_castle_tileset.tsx"/>
+ <tileset firstgid="1" source="tilemaps/BrightDay.tsx"/>
+ <tileset firstgid="881" source="tilemaps/castle-tileset.tsx"/>
+ <tileset firstgid="1009" source="tilemaps/platformtileset.tsx"/>
+ <tileset firstgid="2156" source="tilemaps/TileSet.tsx"/>
+ <tileset firstgid="8556" source="tilemaps/tilesheet_dungeon.tsx"/>
+ <tileset firstgid="8696" source="tilemaps/tilesheet_pagoda.tsx"/>
+ <tileset firstgid="8920" source="tilemaps/dark_castle_tileset.tsx"/>
  <objectgroup id="6" name="ground">
   <object id="142" x="0" y="192.043" width="256" height="16"/>
   <object id="143" x="368" y="191.909" width="432" height="16"/>
@@ -41,37 +39,37 @@
  </objectgroup>
  <layer id="1" name="background" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJyl1jlOxDAUxnHbbB0nYBEN+yKxXQHRcBcaei7ADhJH4AKUSByBhp1BgIRExV5MM/AhO+LNm2fnjVP8FCmRY/8VJc6sM2YO5mEBFoPe4Nl6J8FB8OKanRKHzGrCsmCIqdtWZ8wWbMMO7MIe7Ie1anpS42NdZY1lXVLbpqIl1bMRUXbfVGPOM9POG+s5FsTatHPlPLNbjLuDGtxn9NRsK6lN26lt5F1XuHYNNzavqVsgtWk6q7Sd43gBlzbdlLrPtGsmtWk6q7Q1rG/hNG1S05HQpe2s0jbsfAsldbXTVzQ9GmOe4IFpp0/btuJ8C8W7yho1bcV+84qON3iHD/iEL/iO9Gnb1pxvoXhXqjG3h+qDfhiAQVgntG2N0ELxrlQjbfoBg3MWHHRAJ3SFuXrc//5J0aal8I4V+P9HPdImrYl3pRrp+BEYhTEYhwmYhKkw14yTvw1SE103Jf2j/O2Dv7j/ZhM=
+   eJyl1jlOAzEUxnEbJCQqAoEiTdhDxwlYRBOWsEhsV0A03IUmPRdgB4kjcAFKJI5Aw07gi8ajvHl59rx4ip+mGHnsv2bx7Fpj9mAfDuDQmXcGnGeTuHcG+7JebMcDcxpwLFhhKoJXk3UJV3ANN3ALd26tmp7QeF9XXmNel9R2oWgJ9Zx75F031Bhzz7Tz+nqeTDdfm3aumHv2g3G/0IK/iJ6W6Sa1aTu1jbzrE+e+4NvENdUEUpums0jbG47v8GHCTaHrbNssqU3TWaSt6lo4TZvU9Ch0aTuLtNVt0kJJXb30pU3YVkw/WKaXPm3biU1aKN6V16hpS/ebISjBMIxAGUZhzNOnbWvapIXiXaHG2B5qARZhCZbhjNC2tdfSZHhXqJE2jcMETMIUTMMMzLq55mxn/6Ro05F7x1L8/6PieSalNfGuUCMdvwprsA4b0IBN2HJz7Vj52yA10XVT0j9Kex/8B15Idwc=
   </data>
  </layer>
  <layer id="5" name="background2" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJzt0ckJgDAQheE5uG9duGt5lpQGLCmV+IKKGjQ5iIIyP3yXDAwjEnHcvxOLrybo+9/AcdzzeS6RDwGEEEEMCaSQGd6ls+0Zndk+NbftvpoP3vE2254cCiihghoaaKGD3vAutbv11Ny22zTf32bbc7f1P5x5swlIBhd2
+   eJzt0csJgDAQRdEhxkZc+Ncu/Gt57qzKinwgYoQYA6KgzIWzSWCYECKO+3eTt/pq2/5ffgPHcc/nS6IAQogghgRSyCA3nAu5z5mdlZqwmH12P7rH3a7mFFBCBTU00EIHPQyGc/UduoTFbNO9utvVnLtt/6DzZgsfNR94
   </data>
  </layer>
  <layer id="2" name="graphics" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJzNlrtOwzAYhX9QKBI7MHAZEhBz2yQIiTuCBV4C8QhMZWDgIkEfAHVlYGThVZi5iCJ4CW7nF79l17XTJO3QI31yY7vOObEdh0jrIyT6DKmwLsAlOLM4B/dBvjFuxohWpLQ1QZ2+XD593s36XvmuwBbYtdgBDYHzMG8Yp22Nxd5NRqmTChj33760bC+9clxnjMXPqClZqihjsAwSg7rRN+96Kbq2VH9XDmbPMaZ9zTk4a1VIqDtHUyjrM69Ujm0DNSdZUv7UfNgZVI67wVvu0iE4Mmh48Ikz8Hwo3zXBl+NkwP77Fb/K+PVk7mn2nUpp7/dj+s8wbDlYvKZ868m1R4YxA6tojiw9YYKfPefVC+pfc55lZdSi/Dlagk9f8PktXqdw6ExXdNsP6n+lLYyIokiXq1jca2AdPAQavt4Am2AB/RYjXbpk57D3uXmGZGkG95uV74EEGVIjxxzq50Eb/mrwUY90Oen4hjDF7TH6JZEuWe/yXE7RfuvI4ZuPffQ/ACN85su9+Te/LB6D8qT4f2PJT9zn+EX4AzsFj50=
+   eJzNlUlOwzAUhg1p4RJMNZsWCmLD3LJguAC0FUJMa2BRlgwSzQm67QJxDG7BhquwQtDC/9QX2TziNC6D+kufnNjOy//bdaOU0YhWalQrb93gmVtwJbgGT0G6Go8ZpRZ0t5UaEr7ifLq82/298t1hbAWUBGugzlAeYhjXgahF3m1ec19pg04u3Xr4SHrplaORsAa0RiHvQx7tLJgHRYuZlOsp6/r8tqL5cTmIsv5eU96HnDXPFGNyhEy/PtMqyrFqEe1JkiJ/0X7IDFGO+z/wLLWPdxxY1B24RBkalu8C48px+Q+ZfPSGs/suzjT5nmP/8ryf6W6GQctBCh1nwnVGBjEDyTdHktr4X+84vlcf1B/zbfotNT1yNBmXxuBznL0uZZVazpqxCfRP8tgmamxp0x6i/wgcg+fAQPcn4BRsY96ONm2cZA55zu1vSJLW8b4Se60iQ83KUUb/BgjALmrtadMu9tgnGq9gXlWblpTh5x7Qtjz24xzzL0AOaK5B11PgJeifGp4vTLup/LC+D58oRZpY
   </data>
  </layer>
  <layer id="7" name="graphics2" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJzNlk1OwzAQhR9SUiEOAPsEEOvSBtao4gRsWZauqfhrTwBFAlYIlvx0yS04CVdAwJY3ylgxJk6rgqM+6dPYTi3NszOTAv+jvRQY4DcXU+y9jXM+E2CB8YPxletvEfDF8RLyeUjZOe8o+3EezfpLVODzccjY93BCTslICa2zEiT3qju5R3EfLY7bSlPZJhnZQD0eqrTKd24tLX9mzli8Gh/nyqLGTH9zV0OuPXJAdnXeIV0dt+ih7fEh8vkwiI+E+9M07J08kKcJPHv2Sg2P1YMgtZ7pWM6mqz6a9LBJhgF9zKojcgx/fbtIz5hHH1K7W8jPXqKp7WFcjO1alyg+Rqivd00jk4v4sOvaZoCftT4vubuSHmT6mcl9jPJar6Nf/UWmn3XIe5Lfj+Qt33XpgT2du7qMCmytV/TGULJ73aMT3XW7510x92vlxvM/YZKWG8BKY/bcQ+gbmj5dUg==
+   eJxjYKAOKFFiYCjAghuUCOvdxgLBYkC1ikBaFEjvBmImIFscSDNC+bQEyG62hOJaFggNEz/LjMC4/JEBVJeJA+cCcR4QN0IxrUG+EiYGuR1fnExQQsSHNpCtA8WaUKwPxLpALE8nP+ADLkD7XXG4ARbGIL/C/FEPxf8VIbQuVE0/HfwRB7QjFohtoXZZA+kYKDsESIficQMuf8AwyB9OQOxM4ziZATR7FgE8G4f9oDw8B+oHEBaDuhvEjoOGBYgfBMTBQFw4wGkLG8gGuikHT/5GxwWD1B+gvKsHDXs9pLw9iwXBRs7r+lB/NCrRr+wiBsDcoo2Wr5FxgRJqXh8sbkcHoDIIVp7B3D4HR16nR3lFCYCVZylALAyNH5C7RaFlYByUjw5WMyMwMnAbAP8il3Uz0Wh0ceQybx3Q7euheAOOdgIhYMbKwGDOSh1/UAsAAAtrbV4=
   </data>
  </layer>
  <layer id="11" name="graphics3" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYKAcVALxIxYIrcgKYYPooQY0gNgciGNZIX5BxiMZRA+0A3AAFmUGBlblgXYFYfBViYHhmxKELQZ1L4gPE38MzC+iFPpjsIaFFTAv2UGxGtB9T1ggfjZThpQTIAALhyggWwQo7jwI/QEC1gTKtM9KCPZEddq6hRJAyB+jYGDAYM3DpAJYHlZXRpR7sLz+HaksfMyC0AMrF5DLyqEIYG0fedah2QbCBQDr0SMI
+   eJxjYKAcFCgxMDCxQGhHFggbRA81IA90vx4Q10L9goxHMggapP5XAbpLdZC6DRmIAt0oBnWnGZQG8WHizMD0ZkqhPwZrWEQB/RYHxW5A97GwQPwcBi0zQAAWDoFAbALEyYPQHyAQTaBME0Zyt6Mybd1CCSDkj1EwMGCw5mFSASwPuyOVe7C8Lo4kxoyUDmHlAnJZORQBrO1jP0TbQLgAAIAzEdQ=
   </data>
  </layer>
  <layer id="9" name="clouds" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYBj84JkSA8NzpYF2BQPDWhZUPJRABRSDQOdAOmQUDFkAy4eE6FEwCkbBKBgFwwcAALXvEKQ=
+   eJxjYBj8gE2JgYFdaaBdwcBwlhkVDyWQrwTBINAwCMJyFAw9AMuHhOhRMApGwSgYBcMHAAAPUgbr
   </data>
  </layer>
  <layer id="10" name="clouds2" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFIw10DrQDSACPlBgYHisNtCtoBzoG2gEkgifAuHiqhJseBaNgFIyCUTC8AADNRQtP
+   eJxjYBgFIw00KA20C4gHTEC3Mg8h95IK6oeY31iA7mVVwk2PglEwCkbBKBheAACs4gLB
   </data>
  </layer>
 </map>

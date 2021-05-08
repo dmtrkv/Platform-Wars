@@ -130,7 +130,7 @@ public class King extends Sprite {
         Death = createAnimation("Death", 6);
 
         defineKing();
-        setBounds(0, 0, 160 / Main.PPM, 111 / Main.PPM);
+        setBounds(0, 0, 160 / Main.PPM, 90 / Main.PPM);
     }
 
     public void takeDamage() {
@@ -238,17 +238,17 @@ public class King extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-12 / Main.PPM, 39 / Main.PPM), new Vector2(12 / Main.PPM, 39 / Main.PPM));
+        head.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 34 / Main.PPM));
         fdef.shape = head;
         b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape left = new EdgeShape();
-        left.set(new Vector2(-12 / Main.PPM, 39 / Main.PPM), new Vector2(-12 / Main.PPM, 0 / Main.PPM));
+        left.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(-12 / Main.PPM, 0 / Main.PPM));
         fdef.shape = left;
         b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape right = new EdgeShape();
-        right.set(new Vector2(12 / Main.PPM, 39 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
+        right.set(new Vector2(12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
         fdef.shape = right;
         b2body.createFixture(fdef).setUserData(this);
     }

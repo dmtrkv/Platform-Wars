@@ -2,7 +2,7 @@ package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Screen;
 
-public class chooseFighterScreen implements Screen {
+public class СhooseFighterScreen implements Screen {
     @Override
     public void show() {
 
