@@ -210,6 +210,9 @@ public class Samurai extends Sprite {
         } else if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 30) {
                 attackFrame = 0;
+                for (int i = 0; i < attack.getFixtureList().size; i++) {
+                    attack.destroyFixture(attack.getFixtureList().get(i));
+                }
                 return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;
