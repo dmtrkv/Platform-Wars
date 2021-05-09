@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="26">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="27">
  <tileset firstgid="1" source="tilemaps/castle-tileset.tsx"/>
  <tileset firstgid="129" source="tilemaps/dark_castle_tileset.tsx"/>
  <tileset firstgid="371" source="tilemaps/platformtileset.tsx"/>
@@ -18,6 +18,7 @@
   <object id="13" x="64.1818" y="0.909091" width="80" height="48"/>
   <object id="14" x="144" y="0" width="48" height="32"/>
   <object id="15" x="192.545" y="-0.545455" width="32" height="16"/>
+  <object id="26" x="224.625" y="0.125" width="60.25" height="0.8125"/>
  </objectgroup>
  <objectgroup id="7" name="bricks">
   <object id="16" x="176.5" y="96.5" width="304" height="16"/>

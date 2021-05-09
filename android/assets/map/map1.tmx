@@ -7,6 +7,7 @@
  <tileset firstgid="8556" source="tilemaps/tilesheet_dungeon.tsx"/>
  <tileset firstgid="8696" source="tilemaps/tilesheet_pagoda.tsx"/>
  <tileset firstgid="8920" source="tilemaps/dark_castle_tileset.tsx"/>
+ <tileset firstgid="9162" source="tilemaps/tilesheet_grass.tsx"/>
  <objectgroup id="6" name="ground">
   <object id="142" x="0" y="192.043" width="256" height="16"/>
   <object id="143" x="368" y="191.909" width="432" height="16"/>
@@ -54,22 +55,22 @@
  </layer>
  <layer id="7" name="graphics2" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYKAOKFFiYCjAghuUCOvdxgLBYkC1ikBaFEjvBmImIFscSDNC+bQEyG62hOJaFggNEz/LjMC4/JEBVJeJA+cCcR4QN0IxrUG+EiYGuR1fnExQQsSHNpCtA8WaUKwPxLpALE8nP+ADLkD7XXG4ARbGIL/C/FEPxf8VIbQuVE0/HfwRB7QjFohtoXZZA+kYKDsESIficQMuf8AwyB9OQOxM4ziZATR7FgE8G4f9oDw8B+oHEBaDuhvEjoOGBYgfBMTBQFw4wGkLG8gGuikHT/5GxwWD1B+gvKsHDXs9pLw9iwXBRs7r+lB/NCrRr+wiBsDcoo2Wr5FxgRJqXh8sbkcHoDIIVp7B3D4HR16nR3lFCYCVZylALAyNH5C7RaFlYByUjw5WMyMwMnAbAP8il3Uz0Wh0ceQybx3Q7euheAOOdgIhYMbKwGDOSh1/UAsAAAtrbV4=
+   eJxjYKAOKFFiYCjAghuUCOvdxgLBYkC1ikD6hTIDA6cKAwMTkP0cyGYEiu8mwhxKALKbLaG4lgVCw8TPMiMwLn9kANVl4sC5QJwHxI1QTGuQr4SJQW7HFycTlBDxoQ1k60CxJhTrA7EuEMvTyQ/4gAvQflccboCFMcivMH/UQ/F/RQitC1XTTwd/xAHtiAViW6hd1kA6BsoOAdKheNyAyx8wDPKHCDC/iKrQNk5mAM2eRQDPxmE/KA/PgfoBlL9BWBfKj4OGhSTQ/SpArArEhQOctrCBbKCbcvDkb3QMKjMGoz9AeVcPGvZ6SHl7FguCjZzX9aH+aFSiX9lFDIC5RRstXyPjAiXUvD5Y3I4OQGWQGDDdi6sg3D4HR16nR3lFCVAD+kEdiFOA7hSGxg/I3aLQMjAOykcHq5kRGBm4DYB/kcu6mWg0ujhymbcO6Pb1ULwBRzuBEDBjZWAwZ6WOP6gFABVPbnI=
   </data>
  </layer>
  <layer id="11" name="graphics3" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYKAcFCgxMDCxQGhHFggbRA81IA90vx4Q10L9goxHMggapP5XAbpLdZC6DRmIAt0oBnWnGZQG8WHizMD0ZkqhPwZrWEQB/RYHxW5A97GwQPwcBi0zQAAWDoFAbALEyYPQHyAQTaBME0Zyt6Mybd1CCSDkj1EwMGCw5mFSASwPuyOVe7C8Lo4kxoyUDmHlAnJZORQBrO1jP0TbQLgAAIAzEdQ=
+   eJxjYKAcFCgxMDCxQGhHFggbRA81IA90vx4Q10L9goxHMggapP5XAbpLdZC6DRmIAt34UpmB4TkQc6hAxF5A+SCaGZjeTCn0xzegOd+VKXcrtUEU0G9xUCwB9DsLkBYD+lVDBVJOgMBzaFiAwsgEKMeuMrBuxgWiCZRpwkhx6DgI4wIGCPljFAwMGKx5mFTABsy/ycC84K4EyesgAMvr4khizEjpEFYuiCLJD0UAa/vYD9E2EC4AAJpsGqs=
   </data>
  </layer>
  <layer id="9" name="clouds" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYBj8gE2JgYFdaaBdwcBwlhkVDyWQrwTBINAwCMJyFAw9AMuHhOhRMApGwSgYBcMHAAAPUgbr
+   eJxjYBj8gE2JgYFdaaBdwcBwlhkVDyWQrwTBINAwCMJyFAw9cEOZgeGmMmF6FIyCUTAKRsHwAQDQxA8p
   </data>
  </layer>
  <layer id="10" name="clouds2" width="50" height="13">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFIw00KA20C4gHTEC3Mg8h95IK6oeY31iA7mVVwk2PglEwCkbBKBheAACs4gLB
+   eJxjYBia4IYyA8NNZeLFSVVDrv20AtS0r0GJOuagA2q5EdkcJqBbmUlwL7luoHd8wkA9jeKC2uAaMGyuKxNPj4JRMApGwSgYHgAAoeoe7g==
   </data>
  </layer>
 </map>
