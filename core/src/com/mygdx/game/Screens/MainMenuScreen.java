@@ -35,15 +35,15 @@ public class MainMenuScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         BitmapFont font = new BitmapFont();
-        Skin button_skin = new Skin();
+        Skin buttonSkin = new Skin();
 
         TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
-        button_skin.addRegions(buttonTextureAtlas);
+        buttonSkin.addRegions(buttonTextureAtlas);
 
         TextButton.TextButtonStyle startGameButtonStyle = new TextButton.TextButtonStyle();
         startGameButtonStyle.font = font;
-        startGameButtonStyle.up = button_skin.getDrawable("playIdle"); //Не нажатая кнопка
-        startGameButtonStyle.down = button_skin.getDrawable("playPressed"); //Нажатая кнопка
+        startGameButtonStyle.up = buttonSkin.getDrawable("playIdle"); //Не нажатая кнопка
+        startGameButtonStyle.down = buttonSkin.getDrawable("playPressed"); //Нажатая кнопка
         startGameButton = new TextButton("", startGameButtonStyle);
         startGameButton.setSize(200, 200); //Размер кнопки, скорее всего надо изменить
         startGameButton.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2,
@@ -54,7 +54,7 @@ public class MainMenuScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new ChooseScreen(game));
+                game.setScreen(new ChooseFighterScreen(game));
             }
         });
     }
@@ -74,7 +74,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        gamePort.update(width, height);
     }
 
     @Override
