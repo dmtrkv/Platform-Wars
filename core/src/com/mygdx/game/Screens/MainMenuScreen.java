@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -39,8 +37,8 @@ public class MainMenuScreen implements Screen {
         BitmapFont font = new BitmapFont();
         Skin button_skin = new Skin();
 
-        TextureAtlas button_textureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
-        button_skin.addRegions(button_textureAtlas);
+        TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
+        button_skin.addRegions(buttonTextureAtlas);
 
         TextButton.TextButtonStyle startGameButtonStyle = new TextButton.TextButtonStyle();
         startGameButtonStyle.font = font;
@@ -56,7 +54,7 @@ public class MainMenuScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PlayScreen(game));
+                game.setScreen(new ChooseScreen(game));
             }
         });
     }

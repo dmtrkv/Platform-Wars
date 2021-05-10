@@ -13,13 +13,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
@@ -84,8 +82,8 @@ public class PlayScreen implements Screen {
         BitmapFont font = new BitmapFont();
         Skin button_skin = new Skin();
 
-        TextureAtlas button_textureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
-        button_skin.addRegions(button_textureAtlas);
+        TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
+        button_skin.addRegions(buttonTextureAtlas);
 
         TextButton.TextButtonStyle moveLeftButtonStyle = new TextButton.TextButtonStyle();
         moveLeftButtonStyle.font = font;
