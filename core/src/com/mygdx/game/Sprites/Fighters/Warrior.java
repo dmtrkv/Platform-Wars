@@ -145,7 +145,7 @@ public class Warrior extends Sprite {
 
         Death = createAnimation("Death", 6);
 
-        defineWarrior();
+        define();
         setBounds(0, 0, 150 / Main.PPM, 150 / Main.PPM);
 
     }
@@ -243,7 +243,7 @@ public class Warrior extends Sprite {
         }
     }
 
-    public void defineWarrior() {
+    public void define() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(200 / Main.PPM, 32 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;

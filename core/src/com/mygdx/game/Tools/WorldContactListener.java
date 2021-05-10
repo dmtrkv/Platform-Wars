@@ -9,6 +9,7 @@ import com.mygdx.game.Main;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
 import com.mygdx.game.Sprites.Fighters.Warrior;
+import com.mygdx.game.Sprites.Fighters.Wizard;
 
 public class WorldContactListener implements ContactListener {
     @Override

@@ -24,6 +24,7 @@ import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
+import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Sprites.Fighters.Warrior;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
@@ -51,6 +52,7 @@ public class PlayScreen implements Screen {
     private final King king;
     private final Samurai samurai;
     private final Warrior warrior;
+    private final Wizard wizard;
     private final String fighter;
 
     public PlayScreen(Main game, String fighter) {
@@ -71,8 +73,9 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         // b2dr.setDrawBodies(false);
         king = new King(world, this);
-        samurai = new Samurai(world, this);
+        samurai = new Samurai(world);
         warrior = new Warrior(world, this);
+        wizard = new Wizard(world);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -242,6 +245,7 @@ public class PlayScreen implements Screen {
         king.update(dt);
         samurai.update(dt);
         warrior.update(dt);
+        wizard.update(dt);
         world.step(1 / 60f, 6, 2);
 
         switch (fighter) {
@@ -283,6 +287,7 @@ public class PlayScreen implements Screen {
         king.draw(game.batch);
         samurai.draw(game.batch);
         warrior.draw(game.batch);
+        wizard.draw(game.batch);
         game.batch.end();
 
         stage.draw();

@@ -39,7 +39,7 @@ public class Samurai extends Sprite {
     protected float attackFrame;
     protected float damageFrame;
 
-    public Samurai(World world, PlayScreen screen) {
+    public Samurai(World world) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
@@ -134,7 +134,7 @@ public class Samurai extends Sprite {
 
         Death = createAnimation("Death", 6);
 
-        defineSamurai();
+        define();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
     }
 
@@ -229,7 +229,7 @@ public class Samurai extends Sprite {
         }
     }
 
-    public void defineSamurai() {
+    public void define() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(100 / Main.PPM, 32 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
