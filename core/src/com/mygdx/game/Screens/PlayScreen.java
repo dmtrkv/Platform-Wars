@@ -55,7 +55,10 @@ public class PlayScreen implements Screen {
     private final Wizard wizard;
     private final String fighter;
 
-    public PlayScreen(Main game, String fighter) {
+    public PlayScreen(Main game, String fighter, String mapName) {
+        if (mapName == "map3") {
+            Main.V_HEIGHT = 256;
+        }
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -63,9 +66,8 @@ public class PlayScreen implements Screen {
 
         this.fighter = fighter;
         Gdx.app.log("Fighter", fighter);
-
         TmxMapLoader mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map/map2.tmx");
+        map = mapLoader.load(String.format("map/%s.tmx", mapName));
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Main.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
