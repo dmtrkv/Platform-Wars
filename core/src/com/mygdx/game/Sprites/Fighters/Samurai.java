@@ -78,7 +78,7 @@ public class Samurai extends Sprite {
             previousState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
-            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y / 2);
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
             bdef.type = BodyDef.BodyType.DynamicBody;
             attack = world.createBody(bdef);
 
@@ -88,6 +88,7 @@ public class Samurai extends Sprite {
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
+            attack.setGravityScale(0.25f);
 
             if (runningRight) {
                 attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 0 / Main.PPM));
@@ -209,6 +210,9 @@ public class Samurai extends Sprite {
         } else if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 30) {
                 attackFrame = 0;
+                for (int i = 0; i < attack.getFixtureList().size; i++) {
+                    attack.destroyFixture(attack.getFixtureList().get(i));
+                }
                 return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;

@@ -55,14 +55,23 @@ public class Warrior extends Sprite {
     }
 
     public void moveRight() {
-        if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(0.225f, 0), b2body.getWorldCenter(), true);
+        if (currentState != State.DEAD && currentState != State.ATTACKING) {
+            if (currentState == State.JUMPING || currentState == State.FALLING) {
+                b2body.applyLinearImpulse(new Vector2(0.15f, 0), b2body.getWorldCenter(), true);
+            } else {
+                b2body.applyLinearImpulse(new Vector2(0.225f, 0), b2body.getWorldCenter(), true);
+            }
+        }
     }
 
     public void moveLeft() {
-        if (currentState != State.DEAD && currentState != State.JUMPING
-                && currentState != State.FALLING && currentState != State.ATTACKING)
-            b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
+        if (currentState != State.DEAD && currentState != State.ATTACKING) {
+            if (currentState == State.JUMPING || currentState == State.FALLING) {
+                b2body.applyLinearImpulse(new Vector2(-0.15f, 0), b2body.getWorldCenter(), true);
+            } else {
+                b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
+            }
+        }
     }
 
     public void jump() {
@@ -79,7 +88,7 @@ public class Warrior extends Sprite {
             previousState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
-            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y / 2);
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
             bdef.type = BodyDef.BodyType.DynamicBody;
             attack = world.createBody(bdef);
 
@@ -89,9 +98,12 @@ public class Warrior extends Sprite {
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
+            attack.setGravityScale(0.25f);
+
 
             if (runningRight) {
                 attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+
             } else {
                 attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
             }

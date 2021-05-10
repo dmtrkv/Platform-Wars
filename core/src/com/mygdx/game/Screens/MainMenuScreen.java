@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -37,15 +35,15 @@ public class MainMenuScreen implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         BitmapFont font = new BitmapFont();
-        Skin button_skin = new Skin();
+        Skin buttonSkin = new Skin();
 
-        TextureAtlas button_textureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
-        button_skin.addRegions(button_textureAtlas);
+        TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
+        buttonSkin.addRegions(buttonTextureAtlas);
 
         TextButton.TextButtonStyle startGameButtonStyle = new TextButton.TextButtonStyle();
         startGameButtonStyle.font = font;
-        startGameButtonStyle.up = button_skin.getDrawable("playIdle"); //Не нажатая кнопка
-        startGameButtonStyle.down = button_skin.getDrawable("playPressed"); //Нажатая кнопка
+        startGameButtonStyle.up = buttonSkin.getDrawable("playIdle"); //Не нажатая кнопка
+        startGameButtonStyle.down = buttonSkin.getDrawable("playPressed"); //Нажатая кнопка
         startGameButton = new TextButton("", startGameButtonStyle);
         startGameButton.setSize(200, 200); //Размер кнопки, скорее всего надо изменить
         startGameButton.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2,
@@ -56,7 +54,7 @@ public class MainMenuScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PlayScreen(game));
+                game.setScreen(new ChooseFighterScreen(game));
             }
         });
     }
@@ -76,7 +74,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        gamePort.update(width, height);
     }
 
     @Override

@@ -78,7 +78,9 @@ public class King extends Sprite {
             previousState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
-            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y / 2);
+            attack.setGravityScale(0.0f);
+
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
             bdef.type = BodyDef.BodyType.DynamicBody;
             attack = world.createBody(bdef);
 
@@ -87,7 +89,8 @@ public class King extends Sprite {
             attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT;
             attackDef.isSensor = true;
 
-            EdgeShape attackShape = new EdgeShape();
+            EdgeShape attackShape = new EdgeShape();attack.setGravityScale(0.25f);
+
 
             attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM),
                     new Vector2(-40 / Main.PPM, 34 / Main.PPM));
