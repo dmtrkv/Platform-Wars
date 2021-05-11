@@ -145,6 +145,9 @@ public class PlayScreen implements Screen {
                     case "Warrior":
                         warrior.jump();
                         break;
+                    case "Wizard":
+                        wizard.jump();
+                        break;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -162,6 +165,9 @@ public class PlayScreen implements Screen {
                         break;
                     case "Warrior":
                         warrior.attack();
+                        break;
+                    case "Wizard":
+                        wizard.attack();
                         break;
                 }
                 return super.touchDown(event, x, y, pointer, button);
@@ -190,10 +196,10 @@ public class PlayScreen implements Screen {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                     king.attack();
                 }
-                if (moveRightButton.isPressed()) {
+                if (moveRightButton.isPressed() && king.b2body.getLinearVelocity().x <= 2) {
                     king.moveRight();
                 }
-                if (moveLeftButton.isPressed()) {
+                if (moveLeftButton.isPressed() && king.b2body.getLinearVelocity().x >= -2) {
                     king.moveLeft();
                 }
                 break;
@@ -202,19 +208,19 @@ public class PlayScreen implements Screen {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     samurai.jump();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.D) && king.b2body.getLinearVelocity().x <= 2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && samurai.b2body.getLinearVelocity().x <= 2) {
                     samurai.moveRight();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.A) && king.b2body.getLinearVelocity().x >= -2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && samurai.b2body.getLinearVelocity().x >= -2) {
                     samurai.moveLeft();
                 }
                 if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                     samurai.attack();
                 }
-                if (moveRightButton.isPressed()) {
+                if (moveRightButton.isPressed() && samurai.b2body.getLinearVelocity().x <= 2) {
                     samurai.moveRight();
                 }
-                if (moveLeftButton.isPressed()) {
+                if (moveLeftButton.isPressed() && samurai.b2body.getLinearVelocity().x >= -2) {
                     samurai.moveLeft();
                 }
                 break;
@@ -223,20 +229,40 @@ public class PlayScreen implements Screen {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     warrior.jump();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.D) && king.b2body.getLinearVelocity().x <= 2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && warrior.b2body.getLinearVelocity().x <= 2) {
                     warrior.moveRight();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.A) && king.b2body.getLinearVelocity().x >= -2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && warrior.b2body.getLinearVelocity().x >= -2) {
                     warrior.moveLeft();
                 }
                 if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                     warrior.attack();
                 }
-                if (moveRightButton.isPressed()) {
+                if (moveRightButton.isPressed() && warrior.b2body.getLinearVelocity().x <= 2) {
                     warrior.moveRight();
                 }
-                if (moveLeftButton.isPressed()) {
+                if (moveLeftButton.isPressed() && warrior.b2body.getLinearVelocity().x >= -2) {
                     warrior.moveLeft();
+                }
+                break;
+            case "Wizard":
+                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                    wizard.jump();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && wizard.b2body.getLinearVelocity().x <= 2) {
+                    wizard.moveRight();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && wizard.b2body.getLinearVelocity().x >= -2) {
+                    wizard.moveLeft();
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+                    wizard.attack();
+                }
+                if (moveRightButton.isPressed() && wizard.b2body.getLinearVelocity().x <= 2) {
+                    wizard.moveRight();
+                }
+                if (moveLeftButton.isPressed() && wizard.b2body.getLinearVelocity().x >= -2) {
+                    wizard.moveLeft();
                 }
                 break;
         }
@@ -264,6 +290,11 @@ public class PlayScreen implements Screen {
             case "Warrior":
                 if (warrior.b2body.getPosition().x > 2 && warrior.b2body.getPosition().x < 6) {
                     gameCam.position.x = warrior.b2body.getPosition().x;
+                }
+                break;
+            case "Wizard":
+                if (wizard.b2body.getPosition().x > 2 && wizard.b2body.getPosition().x < 6) {
+                    gameCam.position.x = wizard.b2body.getPosition().x;
                 }
                 break;
         }

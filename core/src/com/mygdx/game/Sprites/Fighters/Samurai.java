@@ -84,7 +84,7 @@ public class Samurai extends Sprite {
 
             FixtureDef attackDef = new FixtureDef();
             attackDef.filter.categoryBits = Main.SAMURAI_ATTACK_BIT;
-            attackDef.filter.maskBits = Main.WARRIOR_BIT | Main.KING_BIT;
+            attackDef.filter.maskBits = Main.WARRIOR_BIT | Main.KING_BIT | Main.WIZARD_BIT;
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
@@ -200,7 +200,7 @@ public class Samurai extends Sprite {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 30) {
+            if (damageFrame > dt * 18) {
                 damageFrame = 0;
                 return State.STANDING;
             } else {
@@ -239,7 +239,7 @@ public class Samurai extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(10 / Main.PPM);
         fdef.filter.categoryBits = Main.SAMURAI_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.KING_ATTACK_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.KING_ATTACK_BIT | Main.WIZARD_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);

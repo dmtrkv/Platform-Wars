@@ -56,18 +56,18 @@ public class Wizard extends Sprite {
 
     public void moveRight() {
         if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(0.1f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(0.15f, 0), b2body.getWorldCenter(), true);
     }
 
     public void moveLeft() {
         if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(-0.1f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(-0.15f, 0), b2body.getWorldCenter(), true);
     }
 
     public void jump() {
         if (currentState != State.DEAD)
             if (canJump()) {
-                b2body.applyLinearImpulse(new Vector2(0, 5f), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
             }
     }
 
@@ -128,7 +128,7 @@ public class Wizard extends Sprite {
 
         Fall = createAnimation("Fall", 2);
 
-        Attack = createAnimation("Attack2", 8);
+        Attack = createAnimation("Attack1", 8);
 
         TakeDamage = createAnimation("TakeDamage", 4);
 
@@ -200,7 +200,7 @@ public class Wizard extends Sprite {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 30) {
+            if (damageFrame > dt * 18) {
                 damageFrame = 0;
                 return State.STANDING;
             } else {
@@ -208,7 +208,7 @@ public class Wizard extends Sprite {
                 return State.TAKINGDAMAGE;
             }
         } else if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 30) {
+            if (attackFrame > dt * 35) {
                 attackFrame = 0;
                 for (int i = 0; i < attack.getFixtureList().size; i++) {
                     attack.destroyFixture(attack.getFixtureList().get(i));

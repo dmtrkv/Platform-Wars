@@ -20,6 +20,7 @@ public class WorldContactListener implements ContactListener {
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef) {
+            case Main.WARRIOR_BIT | Main.WIZARD_ATTACK_BIT:
             case Main.KING_ATTACK_BIT | Main.WARRIOR_BIT:
             case Main.SAMURAI_ATTACK_BIT | Main.WARRIOR_BIT:
             case Main.WARRIOR_BIT | Main.SPIKE_BIT:
@@ -29,6 +30,7 @@ public class WorldContactListener implements ContactListener {
                     ((Warrior) fixB.getUserData()).takeDamage();
                 }
                 break;
+            case Main.SAMURAI_BIT | Main.WIZARD_ATTACK_BIT:
             case Main.KING_ATTACK_BIT | Main.SAMURAI_BIT:
             case Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_BIT:
             case Main.SAMURAI_BIT | Main.SPIKE_BIT:
@@ -38,6 +40,7 @@ public class WorldContactListener implements ContactListener {
                     ((Samurai) fixB.getUserData()).takeDamage();
                 }
                 break;
+            case Main.KING_BIT | Main.WIZARD_ATTACK_BIT:
             case Main.KING_BIT | Main.SPIKE_BIT:
             case Main.SAMURAI_ATTACK_BIT | Main.KING_BIT:
             case Main.WARRIOR_ATTACK_BIT | Main.KING_BIT:
@@ -45,6 +48,16 @@ public class WorldContactListener implements ContactListener {
                     ((King) fixA.getUserData()).takeDamage();
                 } else {
                     ((King) fixB.getUserData()).takeDamage();
+                }
+                break;
+            case Main.WIZARD_BIT | Main.SPIKE_BIT:
+            case Main.WIZARD_BIT | Main.SAMURAI_ATTACK_BIT:
+            case Main.WIZARD_BIT | Main.WARRIOR_ATTACK_BIT:
+            case Main.WIZARD_BIT | Main.KING_ATTACK_BIT:
+                if (fixA.getFilterData().categoryBits == Main.WIZARD_BIT) {
+                    ((Wizard) fixA.getUserData()).takeDamage();
+                } else {
+                    ((Wizard) fixB.getUserData()).takeDamage();
                 }
                 break;
         }

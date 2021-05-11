@@ -78,7 +78,6 @@ public class King extends Sprite {
             previousState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
-            attack.setGravityScale(0.0f);
 
             bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
             bdef.type = BodyDef.BodyType.DynamicBody;
@@ -86,11 +85,11 @@ public class King extends Sprite {
 
             FixtureDef attackDef = new FixtureDef();
             attackDef.filter.categoryBits = Main.KING_ATTACK_BIT;
-            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT;
+            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT | Main.WIZARD_BIT;
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();attack.setGravityScale(0.25f);
-
+            attack.setGravityScale(0.25f);
 
             attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM),
                     new Vector2(-40 / Main.PPM, 34 / Main.PPM));
@@ -114,7 +113,7 @@ public class King extends Sprite {
                     i * 160, 37, 160, 111));
         }
 
-        return new Animation<TextureRegion>(0.1f, frames);
+        return new Animation<>(0.1f, frames);
     }
 
     public void initAnimations() {
@@ -227,7 +226,7 @@ public class King extends Sprite {
 
     public void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(40 / Main.PPM, 40 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -235,7 +234,7 @@ public class King extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Main.PPM);
         fdef.filter.categoryBits = Main.KING_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_ATTACK_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_ATTACK_BIT | Main.WIZARD_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);

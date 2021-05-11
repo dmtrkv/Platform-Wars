@@ -49,7 +49,7 @@ public class Warrior extends Sprite {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 1000000;
+        health = 100;
         damageFrame = 0;
         initAnimations();
     }
@@ -94,7 +94,7 @@ public class Warrior extends Sprite {
 
             FixtureDef attackDef = new FixtureDef();
             attackDef.filter.categoryBits = Main.WARRIOR_ATTACK_BIT;
-            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT;
+            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT | Main.WIZARD_BIT;
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
@@ -253,7 +253,7 @@ public class Warrior extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(9 / Main.PPM);
         fdef.filter.categoryBits = Main.WARRIOR_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.SAMURAI_ATTACK_BIT | Main.KING_ATTACK_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.SAMURAI_ATTACK_BIT | Main.KING_ATTACK_BIT | Main.WIZARD_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
