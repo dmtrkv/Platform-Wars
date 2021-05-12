@@ -28,6 +28,8 @@ public class Main extends Game {
 	public static final short KING_ATTACK_BIT = 512;
 	public static final short WIZARD_BIT = 1024;
 	public static final short WIZARD_ATTACK_BIT = 2048;
+	public static final short HUNTRESS_BIT = 4096;
+	public static final short HUNTRESS_ATTACK_BIT = 8192;
 
 
 	@Override

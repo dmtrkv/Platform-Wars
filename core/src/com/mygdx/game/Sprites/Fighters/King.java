@@ -17,29 +17,9 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class King extends Sprite {
-    public World world;
-    public Body b2body;
-    public Body attack;
+public class King extends Fighter {
 
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE, DEAD}
-
-    public State currentState;
-    public State previousState;
-    protected Animation<TextureRegion> Run;
-    protected Animation<TextureRegion> Jump;
-    protected Animation<TextureRegion> Idle;
-    protected Animation<TextureRegion> Fall;
-    protected Animation<TextureRegion> Attack;
-    protected Animation<TextureRegion> TakeDamage;
-    protected Animation<TextureRegion> Death;
-    public int health;
-    protected float stateTimer;
-    public boolean runningRight;
-    protected float attackFrame;
-    protected float damageFrame;
-
-    public King(World world, PlayScreen screen) {
+    public King(World world) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
@@ -67,7 +47,7 @@ public class King extends Sprite {
     public void jump() {
         if (currentState != State.DEAD)
             if (canJump()) {
-                b2body.applyLinearImpulse(new Vector2(0, 3.8f), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
             }
     }
 
@@ -85,7 +65,7 @@ public class King extends Sprite {
 
             FixtureDef attackDef = new FixtureDef();
             attackDef.filter.categoryBits = Main.KING_ATTACK_BIT;
-            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT | Main.WIZARD_BIT;
+            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT | Main.WIZARD_BIT | Main.HUNTRESS_BIT;
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();attack.setGravityScale(0.25f);
@@ -97,11 +77,6 @@ public class King extends Sprite {
             attackDef.shape = attackShape;
             attack.createFixture(attackDef);
         }
-    }
-
-    public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(dt));
     }
 
     public Animation<TextureRegion> createAnimation(String animation, int framesNum) {
@@ -135,6 +110,7 @@ public class King extends Sprite {
         setBounds(0, 0, 160 / Main.PPM, 90 / Main.PPM);
     }
 
+    @Override
     public void takeDamage() {
         if (currentState != State.DEAD) {
             previousState = State.TAKINGDAMAGE;
@@ -142,58 +118,8 @@ public class King extends Sprite {
         }
     }
 
-    private TextureRegion getFrame(float dt) {
-        currentState = getState(dt);
-        TextureRegion region;
-        switch (currentState) {
-            case JUMPING:
-                region = Jump.getKeyFrame(stateTimer);
-                break;
-            case RUNNING:
-                region = Run.getKeyFrame(stateTimer, true);
-                break;
-            case FALLING:
-                region = Fall.getKeyFrame(stateTimer, true);
-                break;
-            default:
-            case STANDING:
-                region = Idle.getKeyFrame(stateTimer, true);
-                break;
-            case ATTACKING:
-                region = Attack.getKeyFrame(stateTimer, true);
-                break;
-            case TAKINGDAMAGE:
-                region = TakeDamage.getKeyFrame(stateTimer, true);
-                break;
-            case DEAD:
-                region = Death.getKeyFrame(stateTimer);
-                break;
-        }
-
-        if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
-            region.flip(true, false);
-            runningRight = false;
-
-        } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
-            region.flip(true, false);
-            runningRight = true;
-        }
-
-        stateTimer = currentState == previousState ? stateTimer + dt : 0;
-        previousState = currentState;
-        return region;
-    }
-
-    public boolean canJump() {
-        if ((currentState != State.FALLING) && (currentState != State.JUMPING)
-                && (currentState != State.ATTACKING) && (currentState != State.DEAD)
-                && (currentState != State.TAKINGDAMAGE)) {
-            return true;
-        }
-        return false;
-    }
-
-    private State getState(float dt) {
+    @Override
+    protected State getState(float dt) {
         if (health == 0) {
             return State.DEAD;
         }
@@ -234,7 +160,9 @@ public class King extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(12 / Main.PPM);
         fdef.filter.categoryBits = Main.KING_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_ATTACK_BIT | Main.WIZARD_ATTACK_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT
+                | Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_ATTACK_BIT
+                | Main.WIZARD_ATTACK_BIT | Main.HUNTRESS_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
@@ -253,10 +181,6 @@ public class King extends Sprite {
         right.set(new Vector2(12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
         fdef.shape = right;
         b2body.createFixture(fdef).setUserData(this);
-    }
-
-    public void onCollision() {
-        Gdx.app.log("collision", "warrior");
     }
 }
 

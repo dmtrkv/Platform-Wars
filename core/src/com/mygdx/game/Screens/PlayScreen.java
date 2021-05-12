@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
+import com.mygdx.game.Sprites.Fighters.Huntress;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
 import com.mygdx.game.Sprites.Fighters.Wizard;
@@ -53,7 +54,9 @@ public class PlayScreen implements Screen {
     private final Samurai samurai;
     private final Warrior warrior;
     private final Wizard wizard;
+    private final Huntress huntress;
     private final String fighter;
+
 
     public PlayScreen(Main game, String fighter, String mapName) {
         if (mapName == "map3") {
@@ -73,11 +76,12 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        // b2dr.setDrawBodies(false);
-        king = new King(world, this);
+        b2dr.setDrawBodies(false);
+        king = new King(world);
         samurai = new Samurai(world);
-        warrior = new Warrior(world, this);
+        warrior = new Warrior(world);
         wizard = new Wizard(world);
+        huntress = new Huntress(world);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -148,6 +152,9 @@ public class PlayScreen implements Screen {
                     case "Wizard":
                         wizard.jump();
                         break;
+                    case "Huntress":
+                        huntress.jump();
+                        break;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -168,6 +175,9 @@ public class PlayScreen implements Screen {
                         break;
                     case "Wizard":
                         wizard.attack();
+                        break;
+                    case "Huntress":
+                        huntress.attack();
                         break;
                 }
                 return super.touchDown(event, x, y, pointer, button);
@@ -265,6 +275,26 @@ public class PlayScreen implements Screen {
                     wizard.moveLeft();
                 }
                 break;
+            case "Huntress":
+                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                    huntress.jump();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && huntress.b2body.getLinearVelocity().x <= 2) {
+                    huntress.moveRight();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && huntress.b2body.getLinearVelocity().x >= -2) {
+                    huntress.moveLeft();
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+                    huntress.attack();
+                }
+                if (moveRightButton.isPressed() && huntress.b2body.getLinearVelocity().x <= 2) {
+                    huntress.moveRight();
+                }
+                if (moveLeftButton.isPressed() && huntress.b2body.getLinearVelocity().x >= -2) {
+                    huntress.moveLeft();
+                }
+                break;
         }
     }
 
@@ -274,6 +304,7 @@ public class PlayScreen implements Screen {
         samurai.update(dt);
         warrior.update(dt);
         wizard.update(dt);
+        huntress.update(dt);
         world.step(1 / 60f, 6, 2);
 
         switch (fighter) {
@@ -295,6 +326,11 @@ public class PlayScreen implements Screen {
             case "Wizard":
                 if (wizard.b2body.getPosition().x > 2 && wizard.b2body.getPosition().x < 6) {
                     gameCam.position.x = wizard.b2body.getPosition().x;
+                }
+                break;
+            case "Huntress":
+                if (huntress.b2body.getPosition().x > 2 && huntress.b2body.getPosition().x < 6) {
+                    gameCam.position.x = huntress.b2body.getPosition().x;
                 }
                 break;
         }
@@ -321,6 +357,7 @@ public class PlayScreen implements Screen {
         samurai.draw(game.batch);
         warrior.draw(game.batch);
         wizard.draw(game.batch);
+        huntress.draw(game.batch);
         game.batch.end();
 
         stage.draw();
