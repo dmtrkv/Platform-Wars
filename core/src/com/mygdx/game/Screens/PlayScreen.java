@@ -100,10 +100,10 @@ public class PlayScreen implements Screen {
 
         TextButton.TextButtonStyle moveLeftButtonStyle = new TextButton.TextButtonStyle();
         moveLeftButtonStyle.font = font;
-        moveLeftButtonStyle.up = button_skin.getDrawable("leftIdle"); //Не нажатая кнопка
-        moveLeftButtonStyle.down = button_skin.getDrawable("leftPressed"); //Нажатая кнопка
+        moveLeftButtonStyle.up = button_skin.getDrawable("leftIdle");
+        moveLeftButtonStyle.down = button_skin.getDrawable("leftPressed");
         moveLeftButton = new TextButton("", moveLeftButtonStyle);
-        moveLeftButton.setSize(100, 100); //Размер кнопки, скорее всего надо изменить
+        moveLeftButton.setSize(100, 100);
         moveLeftButton.setPosition(10, 10);
 
 

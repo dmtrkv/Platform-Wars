@@ -85,7 +85,7 @@ public class King extends Fighter {
         for (int i = 0; i < framesNum; i++) {
             frames.add(new TextureRegion(new Texture(
                     String.format("Fighters/King/%s.png", animation)),
-                    i * 160, 37, 160, 111));
+                    i * 160, 34, 160, 111));
         }
 
         return new Animation<>(0.1f, frames);

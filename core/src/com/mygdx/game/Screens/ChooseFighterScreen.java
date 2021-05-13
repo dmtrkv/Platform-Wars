@@ -130,7 +130,7 @@ public class ChooseFighterScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PlayScreen(game, currentFighter, "map2"));
+                game.setScreen(new PlayScreen(game, currentFighter, "Desert"));
             }
         });
     }
@@ -163,6 +163,8 @@ public class ChooseFighterScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        WIDTH = Gdx.graphics.getWidth();
+        HEIGHT = Gdx.graphics.getHeight();
     }
 
     @Override

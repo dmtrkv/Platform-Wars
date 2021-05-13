@@ -85,7 +85,7 @@ public class Huntress extends Fighter {
         for (int i = 0; i < framesNum; i++) {
             frames.add(new TextureRegion(new Texture(
                     String.format("Fighters/Huntress/%s.png", animation)),
-                    i * 150, 10, 150, 150));
+                    i * 150, 12, 150, 150));
         }
 
         return new Animation<TextureRegion>(0.1f, frames);
