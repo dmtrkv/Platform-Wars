@@ -59,9 +59,7 @@ public class PlayScreen implements Screen {
 
 
     public PlayScreen(Main game, String fighter, String mapName) {
-        if (mapName == "map3") {
-            Main.V_HEIGHT = 256;
-        }
+
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -76,7 +74,7 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        b2dr.setDrawBodies(false);
+        // b2dr.setDrawBodies(false);
         king = new King(world);
         samurai = new Samurai(world);
         warrior = new Warrior(world);

@@ -106,7 +106,7 @@ public class Huntress extends Fighter {
             previousState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
-            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y);
             bdef.type = BodyDef.BodyType.DynamicBody;
             attack = world.createBody(bdef);
 
@@ -116,14 +116,15 @@ public class Huntress extends Fighter {
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
-            attack.setGravityScale(0.25f);
+
 
 
             if (runningRight) {
                 attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
-
+                attack.setLinearVelocity(5f, 0);
             } else {
                 attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
+                attack.setLinearVelocity(-5f, 0);
             }
 
             attackDef.shape = attackShape;
@@ -147,9 +148,9 @@ public class Huntress extends Fighter {
         } else if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 18) {
                 attackFrame = 0;
-                for (int i = 0; i < attack.getFixtureList().size; i++) {
-                    attack.destroyFixture(attack.getFixtureList().get(i));
-                }
+//                for (int i = 0; i < attack.getFixtureList().size; i++) {
+//                    attack.destroyFixture(attack.getFixtureList().get(i));
+//                }
                 return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;

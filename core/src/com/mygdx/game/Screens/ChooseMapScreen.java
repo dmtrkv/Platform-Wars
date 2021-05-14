@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
@@ -24,53 +26,74 @@ public class ChooseMapScreen implements Screen {
     private final OrthographicCamera gameCam;
     private final Stage stage;
     private TextButton startGameButton;
-    private TextButton previousFighterButton;
-    private TextButton nextFighterButton;
+    private TextButton previousMapButton;
+    private TextButton nextMapButton;
     private float WIDTH = Gdx.graphics.getWidth();
     private float HEIGHT = Gdx.graphics.getHeight();
     private Skin buttonSkin;
     private TextureAtlas buttonTextureAtlas;
     private BitmapFont font;
     private Label.LabelStyle labelStyle;
-    private Image fighterImage;
-    private String currentFighter;
-    private TextButton.TextButtonStyle previousFighterButtonStyle;
-    private TextButton.TextButtonStyle nextFighterButtonStyle;
+    private Image mapImage;
+    private String currentMap;
+    private int mapIndex = 0;
+    private String fighter;
+    private TextButton.TextButtonStyle previousMapButtonStyle;
+    private TextButton.TextButtonStyle nextMapButtonStyle;
     private TextButton.TextButtonStyle startGameButtonStyle;
+    private String[] maps = {"Dojo", "Dungeon", "Desert"};
 
     public ChooseMapScreen(Main game, String fighter) {
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
+
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         buttonSkin = new Skin();
         buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         buttonSkin.addRegions(buttonTextureAtlas);
         font = new BitmapFont();
+
+        mapImage = new Image();
+        this.fighter = fighter;
+
+        createMapTable();
         initButtons();
     }
 
-    private void initButtons() {
-        previousFighterButtonStyle = new TextButton.TextButtonStyle();
-        previousFighterButtonStyle.font = font;
-        previousFighterButtonStyle.up = buttonSkin.getDrawable("leftIdle");
-        previousFighterButtonStyle.down = buttonSkin.getDrawable("leftPressed");
-        previousFighterButton = new TextButton("", previousFighterButtonStyle);
-        previousFighterButton.setSize(150, 100);
-        previousFighterButton.setPosition(WIDTH / 5 - previousFighterButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousFighterButton.getHeight() / 2);
-        stage.addActor(previousFighterButton);
+    private void createMapTable() {
+        currentMap = maps[mapIndex];
+        mapImage.setDrawable(new TextureRegionDrawable(new Texture(String.format("ChooseMapScreen/%s.png", currentMap))));
 
-        nextFighterButtonStyle = new TextButton.TextButtonStyle();
-        nextFighterButtonStyle.font = font;
-        nextFighterButtonStyle.up = buttonSkin.getDrawable("rightIdle");
-        nextFighterButtonStyle.down = buttonSkin.getDrawable("rightPressed");
-        nextFighterButton = new TextButton("", nextFighterButtonStyle);
-        nextFighterButton.setSize(150, 100);
-        nextFighterButton.setPosition(WIDTH - WIDTH / 5 - previousFighterButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousFighterButton.getHeight() / 2);
-        stage.addActor(nextFighterButton);
+        float pictureHeight = HEIGHT / 2;
+        float pictureWidth = pictureHeight;
+
+        mapImage.setBounds(WIDTH / 2 - pictureWidth / 2, HEIGHT / 2 - pictureHeight / 2 + 100,
+                pictureWidth, pictureHeight);
+        stage.addActor(mapImage);
+    }
+
+    private void initButtons() {
+        previousMapButtonStyle = new TextButton.TextButtonStyle();
+        previousMapButtonStyle.font = font;
+        previousMapButtonStyle.up = buttonSkin.getDrawable("leftIdle");
+        previousMapButtonStyle.down = buttonSkin.getDrawable("leftPressed");
+        previousMapButton = new TextButton("", previousMapButtonStyle);
+        previousMapButton.setSize(150, 100);
+        previousMapButton.setPosition(WIDTH / 5 - previousMapButton.getWidth() / 2,
+                HEIGHT / 2 - 200 - previousMapButton.getHeight() / 2);
+        stage.addActor(previousMapButton);
+
+        nextMapButtonStyle = new TextButton.TextButtonStyle();
+        nextMapButtonStyle.font = font;
+        nextMapButtonStyle.up = buttonSkin.getDrawable("rightIdle");
+        nextMapButtonStyle.down = buttonSkin.getDrawable("rightPressed");
+        nextMapButton = new TextButton("", nextMapButtonStyle);
+        nextMapButton.setSize(150, 100);
+        nextMapButton.setPosition(WIDTH - WIDTH / 5 - previousMapButton.getWidth() / 2,
+                HEIGHT / 2 - 200 - previousMapButton.getHeight() / 2);
+        stage.addActor(nextMapButton);
 
         startGameButtonStyle = new TextButton.TextButtonStyle();
         startGameButtonStyle.font = font;
@@ -81,6 +104,34 @@ public class ChooseMapScreen implements Screen {
         startGameButton.setPosition(WIDTH / 2 - startGameButton.getWidth() / 2, 50);
         stage.addActor(startGameButton);
 
+        previousMapButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mapIndex--;
+                if (mapIndex == -1) {
+                    mapIndex = maps.length - 1;
+                }
+                createMapTable();
+            }
+        });
+
+        nextMapButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mapIndex++;
+                if (mapIndex == maps.length) {
+                    mapIndex = 0;
+                }
+                createMapTable();
+            }
+        });
+
+        startGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new PlayScreen(game, fighter, currentMap));
+            }
+        });
     }
 
     @Override

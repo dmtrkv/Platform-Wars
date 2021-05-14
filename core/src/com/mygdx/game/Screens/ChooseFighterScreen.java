@@ -130,7 +130,7 @@ public class ChooseFighterScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PlayScreen(game, currentFighter, "Desert"));
+                game.setScreen(new ChooseMapScreen(game, currentFighter));
             }
         });
     }
