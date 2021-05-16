@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
@@ -170,19 +171,31 @@ public class Wizard extends Fighter {
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
-        fdef.shape = head;
+        PolygonShape body2 = new PolygonShape();
+        body2.set(new Vector2[] {
+                new Vector2(-10 / Main.PPM, 34 / Main.PPM),
+                new Vector2(10 / Main.PPM, 34 / Main.PPM),
+                new Vector2(10 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-10 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-10 / Main.PPM, 34 / Main.PPM)
+        });
+
+        fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape left = new EdgeShape();
-        left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = left;
-        b2body.createFixture(fdef).setUserData(this);
-
-        EdgeShape right = new EdgeShape();
-        right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = right;
-        b2body.createFixture(fdef).setUserData(this);
+//        EdgeShape head = new EdgeShape();
+//        head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+//        fdef.shape = head;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape left = new EdgeShape();
+//        left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = left;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape right = new EdgeShape();
+//        right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = right;
+//        b2body.createFixture(fdef).setUserData(this);
     }
 }

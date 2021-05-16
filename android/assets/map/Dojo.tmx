@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="213">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="50" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="214">
  <tileset firstgid="1" source="tilemaps/BrightDay.tsx"/>
  <tileset firstgid="881" source="tilemaps/castle-tileset.tsx"/>
  <tileset firstgid="1009" source="tilemaps/platformtileset.tsx"/>
@@ -38,6 +38,7 @@
  <objectgroup id="12" name="clouds"/>
  <objectgroup id="13" name="spikes">
   <object id="196" x="256" y="207.289" width="112.089" height="0.688889"/>
+  <object id="213" x="96" y="112.182" width="80.1818" height="7.45455"/>
  </objectgroup>
  <layer id="1" name="background" width="50" height="13">
   <data encoding="base64" compression="zlib">

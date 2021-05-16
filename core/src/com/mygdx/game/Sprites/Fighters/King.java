@@ -1,21 +1,18 @@
 package com.mygdx.game.Sprites.Fighters;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
-import com.mygdx.game.Screens.PlayScreen;
 
 public class King extends Fighter {
 
@@ -157,30 +154,42 @@ public class King extends Fighter {
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(12 / Main.PPM);
+        CircleShape body1 = new CircleShape();
+        body1.setRadius(12 / Main.PPM);
         fdef.filter.categoryBits = Main.KING_BIT;
         fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT
                 | Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_ATTACK_BIT
                 | Main.WIZARD_ATTACK_BIT | Main.HUNTRESS_ATTACK_BIT;
 
-        fdef.shape = shape;
+        fdef.shape = body1;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 34 / Main.PPM));
-        fdef.shape = head;
+        PolygonShape body2 = new PolygonShape();
+        body2.set(new Vector2[] {
+                new Vector2(-12 / Main.PPM, 34 / Main.PPM),
+                new Vector2(12 / Main.PPM, 34 / Main.PPM),
+                new Vector2(12 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-12 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-12 / Main.PPM, 34 / Main.PPM)
+        });
+
+        fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape left = new EdgeShape();
-        left.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(-12 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = left;
-        b2body.createFixture(fdef).setUserData(this);
-
-        EdgeShape right = new EdgeShape();
-        right.set(new Vector2(12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = right;
-        b2body.createFixture(fdef).setUserData(this);
+//        EdgeShape head = new EdgeShape();
+//        head.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 34 / Main.PPM));
+//        fdef.shape = head;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape left = new EdgeShape();
+//        left.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(-12 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = left;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape right = new EdgeShape();
+//        right.set(new Vector2(12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = right;
+//        b2body.createFixture(fdef).setUserData(this);
     }
 }
 

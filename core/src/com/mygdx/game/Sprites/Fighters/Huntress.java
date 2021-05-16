@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
@@ -63,20 +64,32 @@ public class Huntress extends Fighter {
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 30 / Main.PPM));
-        fdef.shape = head;
+        PolygonShape body2 = new PolygonShape();
+        body2.set(new Vector2[] {
+                new Vector2(-9 / Main.PPM, 30 / Main.PPM),
+                new Vector2(9 / Main.PPM, 30 / Main.PPM),
+                new Vector2(9 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-9 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-9 / Main.PPM, 30 / Main.PPM)
+        });
+
+        fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape left = new EdgeShape();
-        left.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(-9 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = left;
-        b2body.createFixture(fdef).setUserData(this);
-
-        EdgeShape right = new EdgeShape();
-        right.set(new Vector2(9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = right;
-        b2body.createFixture(fdef).setUserData(this);
+//        EdgeShape head = new EdgeShape();
+//        head.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 30 / Main.PPM));
+//        fdef.shape = head;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape left = new EdgeShape();
+//        left.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(-9 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = left;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape right = new EdgeShape();
+//        right.set(new Vector2(9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = right;
+//        b2body.createFixture(fdef).setUserData(this);
     }
 
     public Animation<TextureRegion> createAnimation(String animation, int framesNum) {
@@ -106,7 +119,7 @@ public class Huntress extends Fighter {
             previousState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
-            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y);
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.05f);
             bdef.type = BodyDef.BodyType.DynamicBody;
             attack = world.createBody(bdef);
 
@@ -114,17 +127,16 @@ public class Huntress extends Fighter {
             attackDef.filter.categoryBits = Main.HUNTRESS_ATTACK_BIT;
             attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT | Main.WIZARD_BIT | Main.WARRIOR_BIT;
             attackDef.isSensor = true;
-
             EdgeShape attackShape = new EdgeShape();
 
-
+            attack.setGravityScale(0.5f);
 
             if (runningRight) {
                 attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
-                attack.setLinearVelocity(5f, 0);
+                attack.setLinearVelocity(3f, 0);
             } else {
                 attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
-                attack.setLinearVelocity(-5f, 0);
+                attack.setLinearVelocity(-3f, 0);
             }
 
             attackDef.shape = attackShape;
