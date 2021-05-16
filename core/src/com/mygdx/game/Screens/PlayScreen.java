@@ -25,10 +25,13 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Fighters.Huntress;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
+import com.mygdx.game.Sprites.Fighters.Spear;
 import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Sprites.Fighters.Warrior;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
+
+import java.util.ArrayList;
 
 public class PlayScreen implements Screen {
 
@@ -303,6 +306,11 @@ public class PlayScreen implements Screen {
         warrior.update(dt);
         wizard.update(dt);
         huntress.update(dt);
+
+        for (int i = 0; i < huntress.spears.size(); i++) {
+            huntress.spears.get(i).update(dt);
+        }
+
         world.step(1 / 60f, 6, 2);
 
         switch (fighter) {
@@ -343,7 +351,7 @@ public class PlayScreen implements Screen {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         renderer.render();
 
         b2dr.render(world, gameCam.combined);
@@ -356,6 +364,11 @@ public class PlayScreen implements Screen {
         warrior.draw(game.batch);
         wizard.draw(game.batch);
         huntress.draw(game.batch);
+
+        for (int i = 0; i < huntress.spears.size(); i++) {
+            huntress.spears.get(i).draw(game.batch);
+        }
+
         game.batch.end();
 
         stage.draw();

@@ -66,7 +66,7 @@ public class Wizard extends Fighter {
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
-            attack.setGravityScale(0.25f);
+            attack.setGravityScale(0f);
 
             if (runningRight) {
                 attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 0 / Main.PPM));
@@ -121,7 +121,7 @@ public class Wizard extends Fighter {
 
     @Override
     protected State getState(float dt) {
-        if (health == 0) {
+        if (health <= 0) {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {

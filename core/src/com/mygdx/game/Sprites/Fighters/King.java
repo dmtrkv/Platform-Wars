@@ -65,8 +65,8 @@ public class King extends Fighter {
             attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.WARRIOR_BIT | Main.WIZARD_BIT | Main.HUNTRESS_BIT;
             attackDef.isSensor = true;
 
-            EdgeShape attackShape = new EdgeShape();attack.setGravityScale(0.25f);
-            attack.setGravityScale(0.25f);
+            EdgeShape attackShape = new EdgeShape();
+            attack.setGravityScale(0f);
 
             attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM),
                     new Vector2(-40 / Main.PPM, 34 / Main.PPM));
@@ -117,7 +117,7 @@ public class King extends Fighter {
 
     @Override
     protected State getState(float dt) {
-        if (health == 0) {
+        if (health <= 0) {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {

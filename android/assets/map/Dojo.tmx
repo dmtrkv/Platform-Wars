@@ -38,7 +38,6 @@
  <objectgroup id="12" name="clouds"/>
  <objectgroup id="13" name="spikes">
   <object id="196" x="256" y="207.289" width="112.089" height="0.688889"/>
-  <object id="213" x="96" y="112.182" width="80.1818" height="7.45455"/>
  </objectgroup>
  <layer id="1" name="background" width="50" height="13">
   <data encoding="base64" compression="zlib">

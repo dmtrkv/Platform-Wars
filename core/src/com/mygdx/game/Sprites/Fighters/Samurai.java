@@ -69,7 +69,7 @@ public class Samurai extends Fighter {
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
-            attack.setGravityScale(0.25f);
+            attack.setGravityScale(0f);
 
             if (runningRight) {
                 attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 0 / Main.PPM));
@@ -125,7 +125,7 @@ public class Samurai extends Fighter {
 
     @Override
     protected State getState(float dt) {
-        if (health == 0) {
+        if (health <= 0) {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {
@@ -177,11 +177,11 @@ public class Samurai extends Fighter {
 
         PolygonShape body2 = new PolygonShape();
         body2.set(new Vector2[] {
-                new Vector2(-10 / Main.PPM, 34 / Main.PPM),
-                new Vector2(10 / Main.PPM, 34 / Main.PPM),
-                new Vector2(10 / Main.PPM, 0 / Main.PPM),
-                new Vector2(-10 / Main.PPM, 0 / Main.PPM),
-                new Vector2(-10 / Main.PPM, 34 / Main.PPM)
+                new Vector2(-9 / Main.PPM, 34 / Main.PPM),
+                new Vector2(9 / Main.PPM, 34 / Main.PPM),
+                new Vector2(9 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-9 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-9 / Main.PPM, 34 / Main.PPM)
         });
 
         fdef.shape = body2;

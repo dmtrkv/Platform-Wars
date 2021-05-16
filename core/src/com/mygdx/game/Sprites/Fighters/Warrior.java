@@ -128,7 +128,7 @@ public class Warrior extends Fighter {
 
     @Override
     protected State getState(float dt) {
-        if (health == 0) {
+        if (health <= 0) {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {

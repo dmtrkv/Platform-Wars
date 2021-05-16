@@ -13,7 +13,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 
+import java.util.ArrayList;
+
 public class Huntress extends Fighter {
+
+    public ArrayList<Spear> spears;
 
     public Huntress(World world) {
         currentState = State.STANDING;
@@ -27,6 +31,9 @@ public class Huntress extends Fighter {
 
         health = 100;
         damageFrame = 0;
+
+        spears = new ArrayList<Spear>();
+
         initAnimations();
     }
 
@@ -65,7 +72,7 @@ public class Huntress extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-9 / Main.PPM, 30 / Main.PPM),
                 new Vector2(9 / Main.PPM, 30 / Main.PPM),
                 new Vector2(9 / Main.PPM, 0 / Main.PPM),
@@ -115,38 +122,53 @@ public class Huntress extends Fighter {
     public void attack() {
         if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
             b2body.setLinearVelocity(0f, 0f);
-
             previousState = State.ATTACKING;
 
-            BodyDef bdef = new BodyDef();
-            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.05f);
-            bdef.type = BodyDef.BodyType.DynamicBody;
-            attack = world.createBody(bdef);
-
-            FixtureDef attackDef = new FixtureDef();
-            attackDef.filter.categoryBits = Main.HUNTRESS_ATTACK_BIT;
-            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT | Main.WIZARD_BIT | Main.WARRIOR_BIT;
-            attackDef.isSensor = true;
-            EdgeShape attackShape = new EdgeShape();
-
-            attack.setGravityScale(0.5f);
-
             if (runningRight) {
-                attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
-                attack.setLinearVelocity(3f, 0);
+                Spear spear = new Spear(true, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
+                spears.add(spear);
             } else {
-                attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
-                attack.setLinearVelocity(-3f, 0);
+                Spear spear = new Spear(false, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
+                spears.add(spear);
             }
-
-            attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
+//            BodyDef bdef = new BodyDef();
+//            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.05f);
+//            bdef.type = BodyDef.BodyType.DynamicBody;
+//            attack = world.createBody(bdef);
+//
+//            FixtureDef attackDef = new FixtureDef();
+//            attackDef.filter.categoryBits = Main.HUNTRESS_ATTACK_BIT;
+//            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT | Main.WIZARD_BIT | Main.WARRIOR_BIT;
+//            attackDef.isSensor = true;
+//            EdgeShape attackShape = new EdgeShape();
+//
+//
+//
+//            if (runningRight) {
+//                attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+//                attack.setLinearVelocity(10f, 0);
+//            } else {
+//                attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
+//                attack.setLinearVelocity(-10f, 0);
+//            }
+//
+//            attackDef.shape = attackShape;
+//            attack.createFixture(attackDef);
         }
     }
 
+    public void clearSpears() {
+        if (!spears.isEmpty()) {
+//            spears.get(0).removeFixture();
+            spears.remove(0);
+        }
+    }
+
+    ;
+
     @Override
     protected State getState(float dt) {
-        if (health == 0) {
+        if (health <= 0) {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {
