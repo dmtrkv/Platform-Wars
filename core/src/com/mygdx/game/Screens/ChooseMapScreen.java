@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
@@ -42,6 +43,7 @@ public class ChooseMapScreen implements Screen {
     private TextButton.TextButtonStyle nextMapButtonStyle;
     private TextButton.TextButtonStyle startGameButtonStyle;
     private String[] maps = {"Dojo", "Dungeon", "Desert"};
+    private Label mapLabel;
 
     public ChooseMapScreen(Main game, String fighter) {
         this.game = game;
@@ -53,7 +55,16 @@ public class ChooseMapScreen implements Screen {
         buttonSkin = new Skin();
         buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         buttonSkin.addRegions(buttonTextureAtlas);
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
+
+        labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        mapLabel = new Label("", labelStyle);
+        mapLabel.setWidth(WIDTH);
+        mapLabel.setFontScale(1.5f);
+        mapLabel.setAlignment(Align.center);
+        mapLabel.setPosition(WIDTH / 2 - mapLabel.getWidth() / 2, HEIGHT / 9 * 8);
 
         mapImage = new Image();
         this.fighter = fighter;
@@ -66,12 +77,17 @@ public class ChooseMapScreen implements Screen {
         currentMap = maps[mapIndex];
         mapImage.setDrawable(new TextureRegionDrawable(new Texture(String.format("ChooseMapScreen/%s.png", currentMap))));
 
-        float pictureHeight = HEIGHT / 2;
-        float pictureWidth = pictureHeight;
+        float pictureHeight = HEIGHT;
+        float pictureWidth = WIDTH;
 
-        mapImage.setBounds(WIDTH / 2 - pictureWidth / 2, HEIGHT / 2 - pictureHeight / 2 + 100,
-                pictureWidth, pictureHeight);
+        mapImage.setBounds(0, 0, pictureWidth, pictureHeight);
         stage.addActor(mapImage);
+
+        mapLabel.setText(currentMap);
+
+        Gdx.app.log(String.format("%s", WIDTH), String.format("%s", HEIGHT));
+
+        stage.addActor(mapLabel);
     }
 
     private void initButtons() {
@@ -80,9 +96,8 @@ public class ChooseMapScreen implements Screen {
         previousMapButtonStyle.up = buttonSkin.getDrawable("leftIdle");
         previousMapButtonStyle.down = buttonSkin.getDrawable("leftPressed");
         previousMapButton = new TextButton("", previousMapButtonStyle);
-        previousMapButton.setSize(150, 100);
-        previousMapButton.setPosition(WIDTH / 5 - previousMapButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousMapButton.getHeight() / 2);
+        previousMapButton.setSize(100, 100);
+        previousMapButton.setPosition(WIDTH / 5 - previousMapButton.getWidth() / 2, 50);
         stage.addActor(previousMapButton);
 
         nextMapButtonStyle = new TextButton.TextButtonStyle();
@@ -90,9 +105,8 @@ public class ChooseMapScreen implements Screen {
         nextMapButtonStyle.up = buttonSkin.getDrawable("rightIdle");
         nextMapButtonStyle.down = buttonSkin.getDrawable("rightPressed");
         nextMapButton = new TextButton("", nextMapButtonStyle);
-        nextMapButton.setSize(150, 100);
-        nextMapButton.setPosition(WIDTH - WIDTH / 5 - previousMapButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousMapButton.getHeight() / 2);
+        nextMapButton.setSize(100, 100);
+        nextMapButton.setPosition(WIDTH - WIDTH / 5 - previousMapButton.getWidth() / 2, 50);
         stage.addActor(nextMapButton);
 
         startGameButtonStyle = new TextButton.TextButtonStyle();
@@ -100,7 +114,7 @@ public class ChooseMapScreen implements Screen {
         startGameButtonStyle.up = buttonSkin.getDrawable("playIdle");
         startGameButtonStyle.down = buttonSkin.getDrawable("playPressed");
         startGameButton = new TextButton("", startGameButtonStyle);
-        startGameButton.setSize(150, 100);
+        startGameButton.setSize(100, 100);
         startGameButton.setPosition(WIDTH / 2 - startGameButton.getWidth() / 2, 50);
         stage.addActor(startGameButton);
 

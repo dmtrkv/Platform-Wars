@@ -30,8 +30,12 @@ import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class PlayScreen implements Screen {
 
@@ -66,6 +70,8 @@ public class PlayScreen implements Screen {
     public PlayScreen(Main game, String fighter, String mapName) {
 
         connectSocket();
+        configSocketEvents();
+
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -80,7 +86,7 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        // b2dr.setDrawBodies(false);
+        b2dr.setDrawBodies(false);
         king = new King(world);
         samurai = new Samurai(world);
         warrior = new Warrior(world);
@@ -91,6 +97,37 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener());
 
         initButtons();
+    }
+
+    private void configSocketEvents() {
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("SocketIO", "connected");
+            }
+        }).on("socketID", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    Gdx.app.log("SocketIO", "My ID: " + id);
+                } catch (JSONException e) {
+                    Gdx.app.log("SocketIO", "Error getting id");
+                }
+            }
+        }).on("newPlayer", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    Gdx.app.log("SocketIO", "new Player ID: " + id);
+                } catch (JSONException e) {
+                    Gdx.app.log("SocketIO", "Error getting new player's id");
+                }
+            }
+        });
     }
 
     private void connectSocket() {
@@ -110,6 +147,8 @@ public class PlayScreen implements Screen {
         BitmapFont font = new BitmapFont();
         Skin button_skin = new Skin();
 
+        float buttonSize = 150;
+
         TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         button_skin.addRegions(buttonTextureAtlas);
 
@@ -118,7 +157,7 @@ public class PlayScreen implements Screen {
         moveLeftButtonStyle.up = button_skin.getDrawable("leftIdle");
         moveLeftButtonStyle.down = button_skin.getDrawable("leftPressed");
         moveLeftButton = new TextButton("", moveLeftButtonStyle);
-        moveLeftButton.setSize(100, 100);
+        moveLeftButton.setSize(buttonSize, buttonSize);
         moveLeftButton.setPosition(10, 10);
 
 
@@ -127,24 +166,24 @@ public class PlayScreen implements Screen {
         moveRightButtonStyle.up = button_skin.getDrawable("rightIdle"); //Не нажатая кнопка
         moveRightButtonStyle.down = button_skin.getDrawable("rightPressed"); //Нажатая кнопка
         moveRightButton = new TextButton("", moveRightButtonStyle);
-        moveRightButton.setSize(100, 100); //Размер кнопки, скорее всего надо изменить
-        moveRightButton.setPosition(120, 10);
+        moveRightButton.setSize(buttonSize, buttonSize); //Размер кнопки, скорее всего надо изменить
+        moveRightButton.setPosition(buttonSize + 10, 10);
 
         TextButton.TextButtonStyle jumpButtonStyle = new TextButton.TextButtonStyle();
         jumpButtonStyle.font = font;
         jumpButtonStyle.up = button_skin.getDrawable("jumpIdle"); //Не нажатая кнопка
         jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
         jumpButton = new TextButton("", jumpButtonStyle);
-        jumpButton.setSize(100, 100);
-        jumpButton.setPosition(Gdx.graphics.getWidth() - 220, 10);
+        jumpButton.setSize(buttonSize, buttonSize);
+        jumpButton.setPosition(Gdx.graphics.getWidth() - buttonSize * 2 - 10, 10);
 
         TextButton.TextButtonStyle attackButtonStyle = new TextButton.TextButtonStyle();
         attackButtonStyle.font = font;
         attackButtonStyle.up = button_skin.getDrawable("attackIdle"); //Не нажатая кнопка
         attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
         attackButton = new TextButton("", attackButtonStyle);
-        attackButton.setSize(100, 100);
-        attackButton.setPosition(Gdx.graphics.getWidth() - 110, 10);
+        attackButton.setSize(buttonSize, buttonSize);
+        attackButton.setPosition(Gdx.graphics.getWidth() - buttonSize - 10, 10);
 
         stage.addActor(moveLeftButton);
         stage.addActor(moveRightButton);
@@ -384,7 +423,6 @@ public class PlayScreen implements Screen {
         }
 
         game.batch.end();
-
         stage.draw();
     }
 

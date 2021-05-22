@@ -47,6 +47,7 @@ public class ChooseFighterScreen implements Screen {
     private Image fighterImage;
     private String currentFighter;
     private Label fighterLabel;
+    private Image backgroundImage;
 
     private HashMap<String, String> passiveSkills;
 
@@ -65,9 +66,19 @@ public class ChooseFighterScreen implements Screen {
 
         labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
+
+
         fighterImage = new Image();
+        backgroundImage = new Image();
+        backgroundImage.setDrawable(new TextureRegionDrawable(new Texture("ChooseFighterScreen/background.png")));
+        backgroundImage.setBounds(0, 0, WIDTH, HEIGHT);
+        stage.addActor(backgroundImage);
 
         fighterLabel = new Label("", labelStyle);
+        fighterLabel.setWidth(WIDTH);
+        fighterLabel.setFontScale(1.5f);
+        fighterLabel.setAlignment(Align.center);
+        fighterLabel.setPosition(WIDTH / 4 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
 
         passiveSkills = new HashMap<>();
         passiveSkills.put("Samurai", "High jump");
@@ -85,9 +96,9 @@ public class ChooseFighterScreen implements Screen {
         previousFighterButtonStyle.up = buttonSkin.getDrawable("leftIdle");
         previousFighterButtonStyle.down = buttonSkin.getDrawable("leftPressed");
         previousFighterButton = new TextButton("", previousFighterButtonStyle);
-        previousFighterButton.setSize(150, 100);
+        previousFighterButton.setSize(100, 100);
         previousFighterButton.setPosition(WIDTH / 5 - previousFighterButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousFighterButton.getHeight() / 2);
+                50);
         stage.addActor(previousFighterButton);
 
         TextButton.TextButtonStyle nextFighterButtonStyle = new TextButton.TextButtonStyle();
@@ -95,9 +106,9 @@ public class ChooseFighterScreen implements Screen {
         nextFighterButtonStyle.up = buttonSkin.getDrawable("rightIdle");
         nextFighterButtonStyle.down = buttonSkin.getDrawable("rightPressed");
         nextFighterButton = new TextButton("", nextFighterButtonStyle);
-        nextFighterButton.setSize(150, 100);
+        nextFighterButton.setSize(100, 100);
         nextFighterButton.setPosition(WIDTH - WIDTH / 5 - previousFighterButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousFighterButton.getHeight() / 2);
+                50);
         stage.addActor(nextFighterButton);
 
         TextButton.TextButtonStyle startGameButtonStyle = new TextButton.TextButtonStyle();
@@ -105,7 +116,7 @@ public class ChooseFighterScreen implements Screen {
         startGameButtonStyle.up = buttonSkin.getDrawable("playIdle");
         startGameButtonStyle.down = buttonSkin.getDrawable("playPressed");
         startGameButton = new TextButton("", startGameButtonStyle);
-        startGameButton.setSize(150, 100);
+        startGameButton.setSize(100, 100);
         startGameButton.setPosition(WIDTH / 2 - startGameButton.getWidth() / 2, 50);
         stage.addActor(startGameButton);
 
@@ -143,19 +154,15 @@ public class ChooseFighterScreen implements Screen {
         currentFighter = fighters[fighterIndex];
         fighterImage.setDrawable(new TextureRegionDrawable(new Texture(String.format("ChooseFighterScreen/%s.png", currentFighter))));
 
-        float pictureHeight = HEIGHT / 3;
-        float pictureWidth = WIDTH / 5;
+        float pictureHeight = HEIGHT / 4;
+        float pictureWidth = WIDTH / 8;
 
-        fighterImage.setBounds(WIDTH / 2 - pictureWidth / 2, HEIGHT / 2 - pictureHeight / 2 + 100,
+        fighterImage.setBounds(WIDTH / 4 - pictureWidth / 2, HEIGHT / 17 * 6,
                 pictureWidth, pictureHeight);
         stage.addActor(fighterImage);
 
         fighterLabel.setText(currentFighter);
 //        fighterLabel.setDebug(true);
-        fighterLabel.setWidth(WIDTH);
-        fighterLabel.setFontScale(1.5f);
-        fighterLabel.setAlignment(Align.center);
-        fighterLabel.setPosition(WIDTH / 2 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
         stage.addActor(fighterLabel);
     }
 
