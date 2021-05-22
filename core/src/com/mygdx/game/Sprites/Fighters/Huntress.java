@@ -46,7 +46,7 @@ public class Huntress extends Fighter {
 
         Fall = createAnimation("Fall", 2);
 
-        Attack = createAnimation("Attack3", 8);
+        Attack = createAnimation("Attack1", 4);
 
         TakeDamage = createAnimation("TakeDamage", 3);
 
@@ -124,47 +124,47 @@ public class Huntress extends Fighter {
             b2body.setLinearVelocity(0f, 0f);
             previousState = State.ATTACKING;
 
-            if (runningRight) {
-                Spear spear = new Spear(true, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
-                spears.add(spear);
-            } else {
-                Spear spear = new Spear(false, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
-                spears.add(spear);
-            }
-//            BodyDef bdef = new BodyDef();
-//            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.05f);
-//            bdef.type = BodyDef.BodyType.DynamicBody;
-//            attack = world.createBody(bdef);
-//
-//            FixtureDef attackDef = new FixtureDef();
-//            attackDef.filter.categoryBits = Main.HUNTRESS_ATTACK_BIT;
-//            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT | Main.WIZARD_BIT | Main.WARRIOR_BIT;
-//            attackDef.isSensor = true;
-//            EdgeShape attackShape = new EdgeShape();
-//
-//
-//
 //            if (runningRight) {
-//                attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
-//                attack.setLinearVelocity(10f, 0);
+//                Spear spear = new Spear(true, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
+//                spears.add(spear);
 //            } else {
-//                attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
-//                attack.setLinearVelocity(-10f, 0);
+//                Spear spear = new Spear(false, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
+//                spears.add(spear);
 //            }
-//
-//            attackDef.shape = attackShape;
-//            attack.createFixture(attackDef);
+
+            BodyDef bdef = new BodyDef();
+            bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.05f);
+            bdef.type = BodyDef.BodyType.DynamicBody;
+            attack = world.createBody(bdef);
+
+            FixtureDef attackDef = new FixtureDef();
+            attackDef.filter.categoryBits = Main.HUNTRESS_ATTACK_BIT;
+            attackDef.filter.maskBits = Main.SAMURAI_BIT | Main.KING_BIT | Main.WIZARD_BIT | Main.WARRIOR_BIT;
+            attackDef.isSensor = true;
+            EdgeShape attackShape = new EdgeShape();
+
+            attack.setGravityScale(0);
+
+            if (runningRight) {
+                attackShape.set(new Vector2(80 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+
+            } else {
+                attackShape.set(new Vector2(-80 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 34 / Main.PPM));
+
+            }
+
+            attackDef.shape = attackShape;
+            attack.createFixture(attackDef);
         }
     }
 
     public void clearSpears() {
         if (!spears.isEmpty()) {
-//            spears.get(0).removeFixture();
+            spears.get(0).removeFixture();
             spears.remove(0);
         }
     }
 
-    ;
 
     @Override
     protected State getState(float dt) {
@@ -172,7 +172,7 @@ public class Huntress extends Fighter {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 18) {
+            if (damageFrame > dt * 17) {
                 damageFrame = 0;
                 return State.STANDING;
             } else {
@@ -180,11 +180,11 @@ public class Huntress extends Fighter {
                 return State.TAKINGDAMAGE;
             }
         } else if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 18) {
+            if (attackFrame > dt * 19) {
                 attackFrame = 0;
-//                for (int i = 0; i < attack.getFixtureList().size; i++) {
-//                    attack.destroyFixture(attack.getFixtureList().get(i));
-//                }
+                for (int i = 0; i < attack.getFixtureList().size; i++) {
+                    attack.destroyFixture(attack.getFixtureList().get(i));
+                }
                 return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;

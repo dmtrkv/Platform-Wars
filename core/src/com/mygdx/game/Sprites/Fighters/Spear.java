@@ -56,7 +56,7 @@ public class Spear extends Sprite {
         attackDef.shape = attackShape;
         b2body.createFixture(attackDef).setUserData(huntress);
 
-        setBounds(0, 200, 30 / Main.PPM, 5 / Main.PPM);
+        setBounds(0, 50, 40 / Main.PPM, 5 / Main.PPM);
     }
 
     public void update(float dt) {

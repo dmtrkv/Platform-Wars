@@ -131,6 +131,9 @@ public class King extends Fighter {
         } else if (previousState == State.ATTACKING) {
             if (attackFrame > dt * 18) {
                 attackFrame = 0;
+                for (int i = 0; i < attack.getFixtureList().size; i++) {
+                    attack.destroyFixture(attack.getFixtureList().get(i));
+                }
                 return State.STANDING;
             } else {
                 attackFrame = attackFrame + dt;
