@@ -81,6 +81,7 @@ public class PlayScreen implements Screen {
         Gdx.app.log("Fighter", fighter);
         TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load(String.format("map/%s.tmx", mapName));
+
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Main.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
