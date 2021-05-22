@@ -22,11 +22,20 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Scenes.Hud;
+import com.mygdx.game.Sprites.Fighters.Huntress;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
 import com.mygdx.game.Sprites.Fighters.Warrior;
+import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class PlayScreen implements Screen {
 
@@ -51,9 +60,18 @@ public class PlayScreen implements Screen {
     private final King king;
     private final Samurai samurai;
     private final Warrior warrior;
+    private final Wizard wizard;
+    private final Huntress huntress;
     private final String fighter;
 
-    public PlayScreen(Main game, String fighter) {
+    private Socket socket;
+
+
+    public PlayScreen(Main game, String fighter, String mapName) {
+
+        connectSocket();
+        configSocketEvents();
+
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -61,23 +79,67 @@ public class PlayScreen implements Screen {
 
         this.fighter = fighter;
         Gdx.app.log("Fighter", fighter);
-
         TmxMapLoader mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map/map1.tmx");
+        map = mapLoader.load(String.format("map/%s.tmx", mapName));
+
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Main.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        // b2dr.setDrawBodies(false);
-        king = new King(world, this);
-        samurai = new Samurai(world, this);
-        warrior = new Warrior(world, this);
+        b2dr.setDrawBodies(false);
+        king = new King(world);
+        samurai = new Samurai(world);
+        warrior = new Warrior(world);
+        wizard = new Wizard(world);
+        huntress = new Huntress(world);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
 
         initButtons();
+    }
+
+    private void configSocketEvents() {
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("SocketIO", "connected");
+            }
+        }).on("socketID", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    Gdx.app.log("SocketIO", "My ID: " + id);
+                } catch (JSONException e) {
+                    Gdx.app.log("SocketIO", "Error getting id");
+                }
+            }
+        }).on("newPlayer", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    Gdx.app.log("SocketIO", "new Player ID: " + id);
+                } catch (JSONException e) {
+                    Gdx.app.log("SocketIO", "Error getting new player's id");
+                }
+            }
+        });
+    }
+
+    private void connectSocket() {
+        try {
+            socket = IO.socket("http://localhost:8080");
+            socket.connect();
+            Gdx.app.log("server", "player connected");
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public void initButtons() {
@@ -86,15 +148,17 @@ public class PlayScreen implements Screen {
         BitmapFont font = new BitmapFont();
         Skin button_skin = new Skin();
 
+        float buttonSize = 150;
+
         TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         button_skin.addRegions(buttonTextureAtlas);
 
         TextButton.TextButtonStyle moveLeftButtonStyle = new TextButton.TextButtonStyle();
         moveLeftButtonStyle.font = font;
-        moveLeftButtonStyle.up = button_skin.getDrawable("leftIdle"); //Не нажатая кнопка
-        moveLeftButtonStyle.down = button_skin.getDrawable("leftPressed"); //Нажатая кнопка
+        moveLeftButtonStyle.up = button_skin.getDrawable("leftIdle");
+        moveLeftButtonStyle.down = button_skin.getDrawable("leftPressed");
         moveLeftButton = new TextButton("", moveLeftButtonStyle);
-        moveLeftButton.setSize(100, 100); //Размер кнопки, скорее всего надо изменить
+        moveLeftButton.setSize(buttonSize, buttonSize);
         moveLeftButton.setPosition(10, 10);
 
 
@@ -103,24 +167,24 @@ public class PlayScreen implements Screen {
         moveRightButtonStyle.up = button_skin.getDrawable("rightIdle"); //Не нажатая кнопка
         moveRightButtonStyle.down = button_skin.getDrawable("rightPressed"); //Нажатая кнопка
         moveRightButton = new TextButton("", moveRightButtonStyle);
-        moveRightButton.setSize(100, 100); //Размер кнопки, скорее всего надо изменить
-        moveRightButton.setPosition(120, 10);
+        moveRightButton.setSize(buttonSize, buttonSize); //Размер кнопки, скорее всего надо изменить
+        moveRightButton.setPosition(buttonSize + 10, 10);
 
         TextButton.TextButtonStyle jumpButtonStyle = new TextButton.TextButtonStyle();
         jumpButtonStyle.font = font;
         jumpButtonStyle.up = button_skin.getDrawable("jumpIdle"); //Не нажатая кнопка
         jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
         jumpButton = new TextButton("", jumpButtonStyle);
-        jumpButton.setSize(100, 100);
-        jumpButton.setPosition(Gdx.graphics.getWidth() - 220, 10);
+        jumpButton.setSize(buttonSize, buttonSize);
+        jumpButton.setPosition(Gdx.graphics.getWidth() - buttonSize * 2 - 10, 10);
 
         TextButton.TextButtonStyle attackButtonStyle = new TextButton.TextButtonStyle();
         attackButtonStyle.font = font;
         attackButtonStyle.up = button_skin.getDrawable("attackIdle"); //Не нажатая кнопка
         attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
         attackButton = new TextButton("", attackButtonStyle);
-        attackButton.setSize(100, 100);
-        attackButton.setPosition(Gdx.graphics.getWidth() - 110, 10);
+        attackButton.setSize(buttonSize, buttonSize);
+        attackButton.setPosition(Gdx.graphics.getWidth() - buttonSize - 10, 10);
 
         stage.addActor(moveLeftButton);
         stage.addActor(moveRightButton);
@@ -140,6 +204,12 @@ public class PlayScreen implements Screen {
                     case "Warrior":
                         warrior.jump();
                         break;
+                    case "Wizard":
+                        wizard.jump();
+                        break;
+                    case "Huntress":
+                        huntress.jump();
+                        break;
                 }
                 return super.touchDown(event, x, y, pointer, button);
             }
@@ -157,6 +227,12 @@ public class PlayScreen implements Screen {
                         break;
                     case "Warrior":
                         warrior.attack();
+                        break;
+                    case "Wizard":
+                        wizard.attack();
+                        break;
+                    case "Huntress":
+                        huntress.attack();
                         break;
                 }
                 return super.touchDown(event, x, y, pointer, button);
@@ -185,10 +261,10 @@ public class PlayScreen implements Screen {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                     king.attack();
                 }
-                if (moveRightButton.isPressed()) {
+                if (moveRightButton.isPressed() && king.b2body.getLinearVelocity().x <= 2) {
                     king.moveRight();
                 }
-                if (moveLeftButton.isPressed()) {
+                if (moveLeftButton.isPressed() && king.b2body.getLinearVelocity().x >= -2) {
                     king.moveLeft();
                 }
                 break;
@@ -197,19 +273,19 @@ public class PlayScreen implements Screen {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     samurai.jump();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.D) && king.b2body.getLinearVelocity().x <= 2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && samurai.b2body.getLinearVelocity().x <= 2) {
                     samurai.moveRight();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.A) && king.b2body.getLinearVelocity().x >= -2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && samurai.b2body.getLinearVelocity().x >= -2) {
                     samurai.moveLeft();
                 }
                 if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                     samurai.attack();
                 }
-                if (moveRightButton.isPressed()) {
+                if (moveRightButton.isPressed() && samurai.b2body.getLinearVelocity().x <= 2) {
                     samurai.moveRight();
                 }
-                if (moveLeftButton.isPressed()) {
+                if (moveLeftButton.isPressed() && samurai.b2body.getLinearVelocity().x >= -2) {
                     samurai.moveLeft();
                 }
                 break;
@@ -218,20 +294,60 @@ public class PlayScreen implements Screen {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     warrior.jump();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.D) && king.b2body.getLinearVelocity().x <= 2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && warrior.b2body.getLinearVelocity().x <= 2) {
                     warrior.moveRight();
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.A) && king.b2body.getLinearVelocity().x >= -2) {
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && warrior.b2body.getLinearVelocity().x >= -2) {
                     warrior.moveLeft();
                 }
                 if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                     warrior.attack();
                 }
-                if (moveRightButton.isPressed()) {
+                if (moveRightButton.isPressed() && warrior.b2body.getLinearVelocity().x <= 2) {
                     warrior.moveRight();
                 }
-                if (moveLeftButton.isPressed()) {
+                if (moveLeftButton.isPressed() && warrior.b2body.getLinearVelocity().x >= -2) {
                     warrior.moveLeft();
+                }
+                break;
+            case "Wizard":
+                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                    wizard.jump();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && wizard.b2body.getLinearVelocity().x <= 2) {
+                    wizard.moveRight();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && wizard.b2body.getLinearVelocity().x >= -2) {
+                    wizard.moveLeft();
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+                    wizard.attack();
+                }
+                if (moveRightButton.isPressed() && wizard.b2body.getLinearVelocity().x <= 2) {
+                    wizard.moveRight();
+                }
+                if (moveLeftButton.isPressed() && wizard.b2body.getLinearVelocity().x >= -2) {
+                    wizard.moveLeft();
+                }
+                break;
+            case "Huntress":
+                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                    huntress.jump();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && huntress.b2body.getLinearVelocity().x <= 2) {
+                    huntress.moveRight();
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.A) && huntress.b2body.getLinearVelocity().x >= -2) {
+                    huntress.moveLeft();
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+                    huntress.attack();
+                }
+                if (moveRightButton.isPressed() && huntress.b2body.getLinearVelocity().x <= 2) {
+                    huntress.moveRight();
+                }
+                if (moveLeftButton.isPressed() && huntress.b2body.getLinearVelocity().x >= -2) {
+                    huntress.moveLeft();
                 }
                 break;
         }
@@ -242,6 +358,13 @@ public class PlayScreen implements Screen {
         king.update(dt);
         samurai.update(dt);
         warrior.update(dt);
+        wizard.update(dt);
+        huntress.update(dt);
+
+        for (int i = 0; i < huntress.spears.size(); i++) {
+            huntress.spears.get(i).update(dt);
+        }
+
         world.step(1 / 60f, 6, 2);
 
         switch (fighter) {
@@ -260,6 +383,16 @@ public class PlayScreen implements Screen {
                     gameCam.position.x = warrior.b2body.getPosition().x;
                 }
                 break;
+            case "Wizard":
+                if (wizard.b2body.getPosition().x > 2 && wizard.b2body.getPosition().x < 6) {
+                    gameCam.position.x = wizard.b2body.getPosition().x;
+                }
+                break;
+            case "Huntress":
+                if (huntress.b2body.getPosition().x > 2 && huntress.b2body.getPosition().x < 6) {
+                    gameCam.position.x = huntress.b2body.getPosition().x;
+                }
+                break;
         }
 
         gameCam.update();
@@ -272,7 +405,7 @@ public class PlayScreen implements Screen {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         renderer.render();
 
         b2dr.render(world, gameCam.combined);
@@ -283,8 +416,14 @@ public class PlayScreen implements Screen {
         king.draw(game.batch);
         samurai.draw(game.batch);
         warrior.draw(game.batch);
-        game.batch.end();
+        wizard.draw(game.batch);
+        huntress.draw(game.batch);
 
+        for (int i = 0; i < huntress.spears.size(); i++) {
+            huntress.spears.get(i).draw(game.batch);
+        }
+
+        game.batch.end();
         stage.draw();
     }
 

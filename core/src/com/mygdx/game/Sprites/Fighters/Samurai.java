@@ -11,35 +11,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class Samurai extends Sprite {
+public class Samurai extends Fighter {
 
-    public World world;
-    public Body b2body;
-    public Body attack;
-
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, ATTACKING, TAKINGDAMAGE, DEAD}
-
-    public State currentState;
-    public State previousState;
-    protected Animation<TextureRegion> Run;
-    protected Animation<TextureRegion> Jump;
-    protected Animation<TextureRegion> Idle;
-    protected Animation<TextureRegion> Fall;
-    protected Animation<TextureRegion> Attack;
-    protected Animation<TextureRegion> TakeDamage;
-    protected Animation<TextureRegion> Death;
-    public int health;
-    protected float stateTimer;
-    public boolean runningRight;
-    protected float attackFrame;
-    protected float damageFrame;
-
-    public Samurai(World world, PlayScreen screen) {
+    public Samurai(World world) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
@@ -84,11 +64,12 @@ public class Samurai extends Sprite {
 
             FixtureDef attackDef = new FixtureDef();
             attackDef.filter.categoryBits = Main.SAMURAI_ATTACK_BIT;
-            attackDef.filter.maskBits = Main.WARRIOR_BIT | Main.KING_BIT;
+            attackDef.filter.maskBits = Main.WARRIOR_BIT | Main.KING_BIT
+                    | Main.WIZARD_BIT | Main.HUNTRESS_BIT;
             attackDef.isSensor = true;
 
             EdgeShape attackShape = new EdgeShape();
-            attack.setGravityScale(0.25f);
+            attack.setGravityScale(0f);
 
             if (runningRight) {
                 attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 0 / Main.PPM));
@@ -99,11 +80,6 @@ public class Samurai extends Sprite {
             attackDef.shape = attackShape;
             attack.createFixture(attackDef);
         }
-    }
-
-    public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(dt));
     }
 
     public Animation<TextureRegion> createAnimation(String animation, int framesNum) {
@@ -134,10 +110,11 @@ public class Samurai extends Sprite {
 
         Death = createAnimation("Death", 6);
 
-        defineSamurai();
+        define();
         setBounds(0, 0, 200 / Main.PPM, 200 / Main.PPM);
     }
 
+    @Override
     public void takeDamage() {
         if (currentState != State.DEAD) {
             previousState = State.TAKINGDAMAGE;
@@ -145,62 +122,14 @@ public class Samurai extends Sprite {
         }
     }
 
-    private TextureRegion getFrame(float dt) {
-        currentState = getState(dt);
-        TextureRegion region;
-        switch (currentState) {
-            case JUMPING:
-                region = Jump.getKeyFrame(stateTimer);
-                break;
-            case RUNNING:
-                region = Run.getKeyFrame(stateTimer, true);
-                break;
-            case FALLING:
-                region = Fall.getKeyFrame(stateTimer, true);
-                break;
-            default:
-            case STANDING:
-                region = Idle.getKeyFrame(stateTimer, true);
-                break;
-            case ATTACKING:
-                region = Attack.getKeyFrame(stateTimer, true);
-                break;
-            case TAKINGDAMAGE:
-                region = TakeDamage.getKeyFrame(stateTimer, true);
-                break;
-            case DEAD:
-                region = Death.getKeyFrame(stateTimer);
-        }
 
-        if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
-            region.flip(true, false);
-            runningRight = false;
-
-        } else if ((b2body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
-            region.flip(true, false);
-            runningRight = true;
-        }
-
-        stateTimer = currentState == previousState ? stateTimer + dt : 0;
-        previousState = currentState;
-        return region;
-    }
-
-    public boolean canJump() {
-        if ((currentState != State.FALLING) && (currentState != State.JUMPING)
-                && (currentState != State.ATTACKING) && (currentState != State.DEAD)
-                && (currentState != State.TAKINGDAMAGE)) {
-            return true;
-        }
-        return false;
-    }
-
-    private State getState(float dt) {
-        if (health == 0) {
+    @Override
+    protected State getState(float dt) {
+        if (health <= 0) {
             return State.DEAD;
         }
         if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 30) {
+            if (damageFrame > dt * 18) {
                 damageFrame = 0;
                 return State.STANDING;
             } else {
@@ -229,7 +158,7 @@ public class Samurai extends Sprite {
         }
     }
 
-    public void defineSamurai() {
+    public void define() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(100 / Main.PPM, 32 / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -239,24 +168,38 @@ public class Samurai extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(10 / Main.PPM);
         fdef.filter.categoryBits = Main.SAMURAI_BIT;
-        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT | Main.WARRIOR_ATTACK_BIT | Main.KING_ATTACK_BIT;
+        fdef.filter.maskBits = Main.DEFAULT_BIT | Main.BRICK_BIT | Main.SPIKE_BIT
+                | Main.WARRIOR_ATTACK_BIT | Main.KING_ATTACK_BIT | Main.WIZARD_ATTACK_BIT
+                | Main.HUNTRESS_ATTACK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
-        fdef.shape = head;
+        PolygonShape body2 = new PolygonShape();
+        body2.set(new Vector2[] {
+                new Vector2(-9 / Main.PPM, 34 / Main.PPM),
+                new Vector2(9 / Main.PPM, 34 / Main.PPM),
+                new Vector2(9 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-9 / Main.PPM, 0 / Main.PPM),
+                new Vector2(-9 / Main.PPM, 34 / Main.PPM)
+        });
+
+        fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
 
-        EdgeShape left = new EdgeShape();
-        left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = left;
-        b2body.createFixture(fdef).setUserData(this);
-
-        EdgeShape right = new EdgeShape();
-        right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
-        fdef.shape = right;
-        b2body.createFixture(fdef).setUserData(this);
+//        EdgeShape head = new EdgeShape();
+//        head.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 34 / Main.PPM));
+//        fdef.shape = head;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape left = new EdgeShape();
+//        left.set(new Vector2(-10 / Main.PPM, 34 / Main.PPM), new Vector2(-10 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = left;
+//        b2body.createFixture(fdef).setUserData(this);
+//
+//        EdgeShape right = new EdgeShape();
+//        right.set(new Vector2(10 / Main.PPM, 34 / Main.PPM), new Vector2(10 / Main.PPM, 0 / Main.PPM));
+//        fdef.shape = right;
+//        b2body.createFixture(fdef).setUserData(this);
     }
 }

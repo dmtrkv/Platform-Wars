@@ -10,10 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.MainMenuScreen;
 import com.mygdx.game.Screens.PlayScreen;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+
 public class Main extends Game {
 	public SpriteBatch batch;
-	public static final int V_WIDTH = 400;
-	public static final int V_HEIGHT = 208;
+	public static int V_WIDTH = 400;
+	public static int V_HEIGHT = 208;
 	public static final float PPM = 100;
 
 	public static final short DEFAULT_BIT = 1;
@@ -26,11 +29,28 @@ public class Main extends Game {
 	public static final short WARRIOR_ATTACK_BIT = 128;
 	public static final short SAMURAI_ATTACK_BIT = 256;
 	public static final short KING_ATTACK_BIT = 512;
+	public static final short WIZARD_BIT = 1024;
+	public static final short WIZARD_ATTACK_BIT = 2048;
+	public static final short HUNTRESS_BIT = 4096;
+	public static final short HUNTRESS_ATTACK_BIT = 8192;
+
+	private Socket socket;
+
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		setScreen(new MainMenuScreen(this));
+	}
+
+	private void connectSocket() {
+		try {
+			socket = IO.socket("http://localhost:8080");
+			socket.connect();
+		}
+		catch (Exception e) {
+			Gdx.app.log("exception", e.toString());
+		}
 	}
 
 	public void changeScreen (Screen screen) {

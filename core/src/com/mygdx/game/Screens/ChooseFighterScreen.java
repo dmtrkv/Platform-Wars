@@ -17,10 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
-import com.mygdx.game.Sprites.Fighters.Warrior;
+import com.mygdx.game.Sprites.Fighters.Wizard;
+
+import java.util.HashMap;
 
 public class ChooseFighterScreen implements Screen {
 
@@ -29,14 +32,13 @@ public class ChooseFighterScreen implements Screen {
     private TextButton previousFighterButton;
     private TextButton nextFighterButton;
 
-    private Table fightersTable;
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
     private final Main game;
     private float WIDTH = Gdx.graphics.getWidth();
     private float HEIGHT = Gdx.graphics.getHeight();
 
-    private final String[] fighters = {"Samurai", "King", "Warrior"};
+    private final String[] fighters = {"Samurai", "King", "Warrior", "Wizard", "Huntress"};
     private int fighterIndex = 0;
     private Skin buttonSkin;
     private TextureAtlas buttonTextureAtlas;
@@ -44,6 +46,10 @@ public class ChooseFighterScreen implements Screen {
     private Label.LabelStyle labelStyle;
     private Image fighterImage;
     private String currentFighter;
+    private Label fighterLabel;
+    private Image backgroundImage;
+
+    private HashMap<String, String> passiveSkills;
 
 
     public ChooseFighterScreen(Main game) {
@@ -56,20 +62,31 @@ public class ChooseFighterScreen implements Screen {
         buttonSkin = new Skin();
         buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         buttonSkin.addRegions(buttonTextureAtlas);
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
 
         labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        fightersTable = new Table();
-        fightersTable.defaults().expand();
-        fightersTable.setPosition(WIDTH / 4, 200);
-        fightersTable.setSize(WIDTH / 2, HEIGHT / 2);
-        fightersTable.debug();
+
+
 
         fighterImage = new Image();
-        fighterImage.setScaleX(5);
-        fighterImage.setScaleY(5);
+        backgroundImage = new Image();
+        backgroundImage.setDrawable(new TextureRegionDrawable(new Texture("ChooseFighterScreen/background.png")));
+        backgroundImage.setBounds(0, 0, WIDTH, HEIGHT);
+        stage.addActor(backgroundImage);
 
-        initFightersTable();
+        fighterLabel = new Label("", labelStyle);
+        fighterLabel.setWidth(WIDTH);
+        fighterLabel.setFontScale(1.5f);
+        fighterLabel.setAlignment(Align.center);
+        fighterLabel.setPosition(WIDTH / 4 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
+
+        passiveSkills = new HashMap<>();
+        passiveSkills.put("Samurai", "High jump");
+        passiveSkills.put("Warrior", "Enormous speed");
+        passiveSkills.put("King", "A lot of health");
+        passiveSkills.put("Wizard", "None");
+
+        createFightersTable();
         initButtons();
     }
 
@@ -79,9 +96,9 @@ public class ChooseFighterScreen implements Screen {
         previousFighterButtonStyle.up = buttonSkin.getDrawable("leftIdle");
         previousFighterButtonStyle.down = buttonSkin.getDrawable("leftPressed");
         previousFighterButton = new TextButton("", previousFighterButtonStyle);
-        previousFighterButton.setSize(150, 150);
+        previousFighterButton.setSize(100, 100);
         previousFighterButton.setPosition(WIDTH / 5 - previousFighterButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousFighterButton.getHeight() / 2);
+                50);
         stage.addActor(previousFighterButton);
 
         TextButton.TextButtonStyle nextFighterButtonStyle = new TextButton.TextButtonStyle();
@@ -89,9 +106,9 @@ public class ChooseFighterScreen implements Screen {
         nextFighterButtonStyle.up = buttonSkin.getDrawable("rightIdle");
         nextFighterButtonStyle.down = buttonSkin.getDrawable("rightPressed");
         nextFighterButton = new TextButton("", nextFighterButtonStyle);
-        nextFighterButton.setSize(150, 150);
+        nextFighterButton.setSize(100, 100);
         nextFighterButton.setPosition(WIDTH - WIDTH / 5 - previousFighterButton.getWidth() / 2,
-                HEIGHT / 2 - 200 - previousFighterButton.getHeight() / 2);
+                50);
         stage.addActor(nextFighterButton);
 
         TextButton.TextButtonStyle startGameButtonStyle = new TextButton.TextButtonStyle();
@@ -99,7 +116,7 @@ public class ChooseFighterScreen implements Screen {
         startGameButtonStyle.up = buttonSkin.getDrawable("playIdle");
         startGameButtonStyle.down = buttonSkin.getDrawable("playPressed");
         startGameButton = new TextButton("", startGameButtonStyle);
-        startGameButton.setSize(150, 150);
+        startGameButton.setSize(100, 100);
         startGameButton.setPosition(WIDTH / 2 - startGameButton.getWidth() / 2, 50);
         stage.addActor(startGameButton);
 
@@ -110,7 +127,7 @@ public class ChooseFighterScreen implements Screen {
                 if (fighterIndex == -1) {
                     fighterIndex = fighters.length - 1;
                 }
-                initFightersTable();
+                createFightersTable();
             }
         });
 
@@ -121,29 +138,32 @@ public class ChooseFighterScreen implements Screen {
                 if (fighterIndex == fighters.length) {
                     fighterIndex = 0;
                 }
-                initFightersTable();
+                createFightersTable();
             }
         });
 
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PlayScreen(game, currentFighter));
+                game.setScreen(new ChooseMapScreen(game, currentFighter));
             }
         });
     }
 
-    private void initFightersTable() {
-
-        fightersTable.clear();
+    private void createFightersTable() {
         currentFighter = fighters[fighterIndex];
         fighterImage.setDrawable(new TextureRegionDrawable(new Texture(String.format("ChooseFighterScreen/%s.png", currentFighter))));
-        fightersTable.add(new Label(currentFighter, labelStyle)).expandX();
-        fightersTable.row().padTop(10);
-        fightersTable.add(fighterImage).expandX();
-        fightersTable.row().padTop(10);
 
-        stage.addActor(fightersTable);
+        float pictureHeight = HEIGHT / 4;
+        float pictureWidth = WIDTH / 8;
+
+        fighterImage.setBounds(WIDTH / 4 - pictureWidth / 2, HEIGHT / 17 * 6,
+                pictureWidth, pictureHeight);
+        stage.addActor(fighterImage);
+
+        fighterLabel.setText(currentFighter);
+//        fighterLabel.setDebug(true);
+        stage.addActor(fighterLabel);
     }
 
     @Override
@@ -162,6 +182,8 @@ public class ChooseFighterScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        WIDTH = Gdx.graphics.getWidth();
+        HEIGHT = Gdx.graphics.getHeight();
     }
 
     @Override
@@ -181,6 +203,6 @@ public class ChooseFighterScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
