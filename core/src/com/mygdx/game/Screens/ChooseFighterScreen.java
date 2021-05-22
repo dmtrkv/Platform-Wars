@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
@@ -45,6 +46,7 @@ public class ChooseFighterScreen implements Screen {
     private Label.LabelStyle labelStyle;
     private Image fighterImage;
     private String currentFighter;
+    private Label fighterLabel;
 
     private HashMap<String, String> passiveSkills;
 
@@ -59,11 +61,13 @@ public class ChooseFighterScreen implements Screen {
         buttonSkin = new Skin();
         buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         buttonSkin.addRegions(buttonTextureAtlas);
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
 
         labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
         fighterImage = new Image();
+
+        fighterLabel = new Label("", labelStyle);
 
         passiveSkills = new HashMap<>();
         passiveSkills.put("Samurai", "High jump");
@@ -145,6 +149,14 @@ public class ChooseFighterScreen implements Screen {
         fighterImage.setBounds(WIDTH / 2 - pictureWidth / 2, HEIGHT / 2 - pictureHeight / 2 + 100,
                 pictureWidth, pictureHeight);
         stage.addActor(fighterImage);
+
+        fighterLabel.setText(currentFighter);
+//        fighterLabel.setDebug(true);
+        fighterLabel.setWidth(WIDTH);
+        fighterLabel.setFontScale(1.5f);
+        fighterLabel.setAlignment(Align.center);
+        fighterLabel.setPosition(WIDTH / 2 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
+        stage.addActor(fighterLabel);
     }
 
     @Override

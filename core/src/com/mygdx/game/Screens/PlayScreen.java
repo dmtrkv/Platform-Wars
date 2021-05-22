@@ -25,13 +25,13 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Fighters.Huntress;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
-import com.mygdx.game.Sprites.Fighters.Spear;
-import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Sprites.Fighters.Warrior;
+import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 
-import java.util.ArrayList;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 public class PlayScreen implements Screen {
 
@@ -60,9 +60,12 @@ public class PlayScreen implements Screen {
     private final Huntress huntress;
     private final String fighter;
 
+    private Socket socket;
+
 
     public PlayScreen(Main game, String fighter, String mapName) {
 
+        connectSocket();
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -88,6 +91,17 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener());
 
         initButtons();
+    }
+
+    private void connectSocket() {
+        try {
+            socket = IO.socket("http://localhost:8080");
+            socket.connect();
+            Gdx.app.log("server", "player connected");
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public void initButtons() {

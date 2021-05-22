@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.MainMenuScreen;
 import com.mygdx.game.Screens.PlayScreen;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+
 public class Main extends Game {
 	public SpriteBatch batch;
 	public static int V_WIDTH = 400;
@@ -31,11 +34,23 @@ public class Main extends Game {
 	public static final short HUNTRESS_BIT = 4096;
 	public static final short HUNTRESS_ATTACK_BIT = 8192;
 
+	private Socket socket;
+
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		setScreen(new MainMenuScreen(this));
+	}
+
+	private void connectSocket() {
+		try {
+			socket = IO.socket("http://localhost:8080");
+			socket.connect();
+		}
+		catch (Exception e) {
+			Gdx.app.log("exception", e.toString());
+		}
 	}
 
 	public void changeScreen (Screen screen) {
