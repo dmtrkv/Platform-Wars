@@ -54,10 +54,11 @@ public class Warrior extends Fighter {
     }
 
     public void attack() {
+
         if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
             b2body.setLinearVelocity(0f, 0f);
 
-            previousState = State.ATTACKING;
+            currentState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
             bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
@@ -139,15 +140,13 @@ public class Warrior extends Fighter {
                 damageFrame = damageFrame + dt;
                 return State.TAKINGDAMAGE;
             }
-        } else if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 18) {
-                attackFrame = 0;
+        } else if (currentState == State.ATTACKING) {
+            if (Attack.isAnimationFinished(stateTimer)) {
                 for (int i = 0; i < attack.getFixtureList().size; i++) {
                     attack.destroyFixture(attack.getFixtureList().get(i));
                 }
                 return State.STANDING;
             } else {
-                attackFrame = attackFrame + dt;
                 return State.ATTACKING;
             }
         } else if (b2body.getLinearVelocity().y > 0) {

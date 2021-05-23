@@ -48,10 +48,10 @@ public abstract class Fighter extends Sprite {
                 region = Idle.getKeyFrame(stateTimer, true);
                 break;
             case ATTACKING:
-                region = Attack.getKeyFrame(stateTimer, true);
+                region = Attack.getKeyFrame(stateTimer);
                 break;
             case TAKINGDAMAGE:
-                region = TakeDamage.getKeyFrame(stateTimer, true);
+                region = TakeDamage.getKeyFrame(stateTimer);
                 break;
             case DEAD:
                 region = Death.getKeyFrame(stateTimer);
@@ -75,6 +75,7 @@ public abstract class Fighter extends Sprite {
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
+        currentState = getState(dt);
     }
 
     protected abstract State getState(float dt);

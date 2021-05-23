@@ -87,7 +87,7 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        b2dr.setDrawBodies(false);
+//        b2dr.setDrawBodies(false);
         king = new King(world);
         samurai = new Samurai(world);
         warrior = new Warrior(world);
@@ -148,7 +148,7 @@ public class PlayScreen implements Screen {
         BitmapFont font = new BitmapFont();
         Skin button_skin = new Skin();
 
-        float buttonSize = 150;
+        float buttonSize = Gdx.graphics.getWidth() / 10f;
 
         TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
         button_skin.addRegions(buttonTextureAtlas);

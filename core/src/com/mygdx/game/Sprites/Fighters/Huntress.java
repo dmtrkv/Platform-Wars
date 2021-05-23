@@ -46,7 +46,7 @@ public class Huntress extends Fighter {
 
         Fall = createAnimation("Fall", 2);
 
-        Attack = createAnimation("Attack1", 4);
+        Attack = createAnimation("Attack1", 5);
 
         TakeDamage = createAnimation("TakeDamage", 3);
 
@@ -114,7 +114,7 @@ public class Huntress extends Fighter {
     @Override
     public void takeDamage() {
         if (currentState != State.DEAD) {
-            previousState = State.TAKINGDAMAGE;
+            currentState = State.TAKINGDAMAGE;
             health -= 10;
         }
     }
@@ -122,7 +122,7 @@ public class Huntress extends Fighter {
     public void attack() {
         if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
             b2body.setLinearVelocity(0f, 0f);
-            previousState = State.ATTACKING;
+            currentState = State.ATTACKING;
 
 //            if (runningRight) {
 //                Spear spear = new Spear(true, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
@@ -171,17 +171,14 @@ public class Huntress extends Fighter {
         if (health <= 0) {
             return State.DEAD;
         }
-        if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 17) {
-                damageFrame = 0;
+        if (currentState == State.TAKINGDAMAGE) {
+            if (TakeDamage.isAnimationFinished(stateTimer)) {
                 return State.STANDING;
             } else {
-                damageFrame = damageFrame + dt;
                 return State.TAKINGDAMAGE;
             }
-        } else if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 19) {
-                attackFrame = 0;
+        } else if (currentState == State.ATTACKING) {
+            if (Attack.isAnimationFinished(stateTimer)) {
                 for (int i = 0; i < attack.getFixtureList().size; i++) {
                     attack.destroyFixture(attack.getFixtureList().get(i));
                 }
