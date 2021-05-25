@@ -26,7 +26,7 @@ public class King extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 100;
+        health = 200;
         damageFrame = 0;
         initAnimations();
     }
@@ -110,43 +110,11 @@ public class King extends Fighter {
     @Override
     public void takeDamage() {
         if (currentState != State.DEAD) {
-            previousState = State.TAKINGDAMAGE;
+            currentState = State.TAKINGDAMAGE;
             health -= 10;
         }
     }
 
-    @Override
-    protected State getState(float dt) {
-        if (health <= 0) {
-            return State.DEAD;
-        }
-        if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 18) {
-                damageFrame = 0;
-                return State.STANDING;
-            } else {
-                damageFrame = damageFrame + dt;
-                return State.TAKINGDAMAGE;
-            }
-        } else if (currentState == State.ATTACKING) {
-            if (Attack.isAnimationFinished(stateTimer)) {
-                for (int i = 0; i < attack.getFixtureList().size; i++) {
-                    attack.destroyFixture(attack.getFixtureList().get(i));
-                }
-                return State.STANDING;
-            } else {
-                return State.ATTACKING;
-            }
-        } else if (b2body.getLinearVelocity().y > 0) {
-            return State.JUMPING;
-        } else if (b2body.getLinearVelocity().y < 0) {
-            return State.FALLING;
-        } else if (b2body.getLinearVelocity().x != 0) {
-            return State.RUNNING;
-        } else {
-            return State.STANDING;
-        }
-    }
 
     public void define() {
         BodyDef bdef = new BodyDef();
@@ -177,20 +145,6 @@ public class King extends Fighter {
         fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
 
-//        EdgeShape head = new EdgeShape();
-//        head.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 34 / Main.PPM));
-//        fdef.shape = head;
-//        b2body.createFixture(fdef).setUserData(this);
-//
-//        EdgeShape left = new EdgeShape();
-//        left.set(new Vector2(-12 / Main.PPM, 34 / Main.PPM), new Vector2(-12 / Main.PPM, 0 / Main.PPM));
-//        fdef.shape = left;
-//        b2body.createFixture(fdef).setUserData(this);
-//
-//        EdgeShape right = new EdgeShape();
-//        right.set(new Vector2(12 / Main.PPM, 34 / Main.PPM), new Vector2(12 / Main.PPM, 0 / Main.PPM));
-//        fdef.shape = right;
-//        b2body.createFixture(fdef).setUserData(this);
     }
 }
 

@@ -29,9 +29,10 @@ public class WorldContactListener implements ContactListener {
             case Main.WARRIOR_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
                     ((Warrior) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
                 } else {
                     ((Warrior) fixB.getUserData()).takeDamage();
-
+                    ((Fighter) fixA.getUserData()).disableAttacks();
                 }
                 break;
             case Main.HUNTRESS_ATTACK_BIT | Main.SAMURAI_BIT:
@@ -41,8 +42,10 @@ public class WorldContactListener implements ContactListener {
             case Main.SAMURAI_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.SAMURAI_BIT) {
                     ((Samurai) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
                 } else {
                     ((Samurai) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
                 }
                 break;
             case Main.HUNTRESS_ATTACK_BIT | Main.KING_BIT:
@@ -52,8 +55,10 @@ public class WorldContactListener implements ContactListener {
             case Main.WARRIOR_ATTACK_BIT | Main.KING_BIT:
                 if (fixA.getFilterData().categoryBits == Main.KING_BIT) {
                     ((King) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
                 } else {
                     ((King) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
                 }
                 break;
             case Main.WIZARD_BIT | Main.HUNTRESS_ATTACK_BIT:
@@ -63,8 +68,10 @@ public class WorldContactListener implements ContactListener {
             case Main.WIZARD_BIT | Main.KING_ATTACK_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WIZARD_BIT) {
                     ((Wizard) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
                 } else {
                     ((Wizard) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
                 }
                 break;
             case Main.SAMURAI_ATTACK_BIT | Main.HUNTRESS_BIT:
@@ -74,8 +81,10 @@ public class WorldContactListener implements ContactListener {
             case Main.SPIKE_BIT | Main.HUNTRESS_BIT:
                 if (fixA.getFilterData().categoryBits == Main.HUNTRESS_BIT) {
                     ((Huntress) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
                 } else {
                     ((Huntress) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
                 }
                 break;
         }

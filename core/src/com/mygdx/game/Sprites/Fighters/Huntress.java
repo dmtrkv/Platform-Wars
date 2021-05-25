@@ -29,7 +29,7 @@ public class Huntress extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 100;
+        health = 1000;
         damageFrame = 0;
 
         spears = new ArrayList<Spear>();
@@ -154,47 +154,7 @@ public class Huntress extends Fighter {
             }
 
             attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
-        }
-    }
-
-    public void clearSpears() {
-        if (!spears.isEmpty()) {
-            spears.get(0).removeFixture();
-            spears.remove(0);
-        }
-    }
-
-
-    @Override
-    protected State getState(float dt) {
-        if (health <= 0) {
-            return State.DEAD;
-        }
-        if (currentState == State.TAKINGDAMAGE) {
-            if (TakeDamage.isAnimationFinished(stateTimer)) {
-                return State.STANDING;
-            } else {
-                return State.TAKINGDAMAGE;
-            }
-        } else if (currentState == State.ATTACKING) {
-            if (Attack.isAnimationFinished(stateTimer)) {
-                for (int i = 0; i < attack.getFixtureList().size; i++) {
-                    attack.destroyFixture(attack.getFixtureList().get(i));
-                }
-                return State.STANDING;
-            } else {
-                attackFrame = attackFrame + dt;
-                return State.ATTACKING;
-            }
-        } else if (b2body.getLinearVelocity().y > 0) {
-            return State.JUMPING;
-        } else if (b2body.getLinearVelocity().y < 0) {
-            return State.FALLING;
-        } else if (b2body.getLinearVelocity().x != 0) {
-            return State.RUNNING;
-        } else {
-            return State.STANDING;
+            attack.createFixture(attackDef).setUserData(this);
         }
     }
 
