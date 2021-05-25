@@ -32,7 +32,7 @@ public class Huntress extends Fighter {
         health = 1000;
         damageFrame = 0;
 
-//        spears = new ArrayList<Spear>();
+        spears = new ArrayList<Spear>();
 
         initAnimations();
     }
