@@ -72,13 +72,13 @@ public class Samurai extends Fighter {
             attack.setGravityScale(0f);
 
             if (runningRight) {
-                attackShape.set(new Vector2(40 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 0 / Main.PPM));
+                attackShape.set(new Vector2(45 / Main.PPM, 54 / Main.PPM), new Vector2(0 / Main.PPM, 20 / Main.PPM));
             } else {
-                attackShape.set(new Vector2(-40 / Main.PPM, 34 / Main.PPM), new Vector2(0 / Main.PPM, 0 / Main.PPM));
+                attackShape.set(new Vector2(-45 / Main.PPM, 54 / Main.PPM), new Vector2(0 / Main.PPM, 20 / Main.PPM));
             }
 
             attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
+            attack.createFixture(attackDef).setUserData(this);
         }
     }
 

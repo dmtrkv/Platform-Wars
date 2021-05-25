@@ -75,7 +75,7 @@ public class Wizard extends Fighter {
             }
 
             attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
+            attack.createFixture(attackDef).setUserData(this);
         }
     }
 

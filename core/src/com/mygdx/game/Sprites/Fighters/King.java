@@ -72,7 +72,7 @@ public class King extends Fighter {
                     new Vector2(-40 / Main.PPM, 34 / Main.PPM));
 
             attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
+            attack.createFixture(attackDef).setUserData(this);
         }
     }
 
