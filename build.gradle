@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.4'
+        classpath 'com.android.tools.build:gradle:4.1.2'
         
 
     }
@@ -82,5 +82,6 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "io.socket:socket.io-client:0.6.2"
+        api "com.esotericsoftware:kryonet:2.22.0-RC1"
     }
 }

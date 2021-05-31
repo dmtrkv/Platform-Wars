@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
+
 import com.mygdx.game.Sprites.Fighters.Huntress;
 import com.mygdx.game.Sprites.Fighters.King;
 import com.mygdx.game.Sprites.Fighters.Samurai;
@@ -28,13 +29,6 @@ import com.mygdx.game.Sprites.Fighters.Warrior;
 import com.mygdx.game.Sprites.Fighters.Wizard;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 public class PlayScreen implements Screen {
 
@@ -55,20 +49,17 @@ public class PlayScreen implements Screen {
     private final World world;
     private final Box2DDebugRenderer b2dr;
 
-    private King king;
-    private Samurai samurai;
-    private Warrior warrior;
-    private Wizard wizard;
-    private Huntress huntress;
+    private final King king;
+    private final Samurai samurai;
+    private final Warrior warrior;
+    private final Wizard wizard;
+    private final Huntress huntress;
     private final String fighter;
-
-    private Socket socket;
 
 
     public PlayScreen(Main game, String fighter, String mapName) {
 
-        connectSocket();
-        configSocketEvents();
+
 
         this.game = game;
         gameCam = new OrthographicCamera();
@@ -85,73 +76,16 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 //        b2dr.setDrawBodies(false);
-
-        switch (fighter) {
-            case "Samurai":
-                samurai = new Samurai(world);
-                break;
-            case "King":
-                king = new King(world);
-                break;
-            case "Warrior":
-                warrior = new Warrior(world);
-                break;
-            case "Wizard":
-                wizard = new Wizard(world);
-                break;
-            case "Huntress":
-                huntress = new Huntress(world);
-                break;
-        }
-
+        king = new King(world);
+        samurai = new Samurai(world);
+        warrior = new Warrior(world);
+        wizard = new Wizard(world);
+        huntress = new Huntress(world);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
 
         initButtons();
-    }
-
-    private void configSocketEvents() {
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Gdx.app.log("SocketIO", "connected");
-            }
-        }).on("socketID", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String id = data.getString("id");
-                    Gdx.app.log("SocketIO", "My ID: " + id);
-                } catch (JSONException e) {
-                    Gdx.app.log("SocketIO", "Error getting id");
-                }
-            }
-        }).on("newPlayer", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String id = data.getString("id");
-                    Gdx.app.log("SocketIO", "new Player ID: " + id);
-
-                } catch (JSONException e) {
-                    Gdx.app.log("SocketIO", "Error getting new player's id");
-                }
-            }
-        });
-    }
-
-    private void connectSocket() {
-        try {
-            socket = IO.socket("http://localhost:8080");
-            socket.connect();
-            Gdx.app.log("server", "player connected");
-        }
-        catch (Exception e) {
-            System.out.println(e);
-        }
     }
 
     public void initButtons() {
@@ -258,6 +192,7 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
+
         switch (fighter) {
             case "King":
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -366,36 +301,40 @@ public class PlayScreen implements Screen {
 
     public void update(float dt) {
         handleInput(dt);
+        king.update(dt);
+        samurai.update(dt);
+        warrior.update(dt);
+        wizard.update(dt);
+        huntress.update(dt);
+
+        for (int i = 0; i < huntress.spears.size(); i++) {
+            huntress.spears.get(i).update(dt);
+        }
 
         world.step(1 / 60f, 6, 2);
 
         switch (fighter) {
             case "King":
-                king.update(dt);
                 if (king.b2body.getPosition().x > 2 && king.b2body.getPosition().x < 6) {
                     gameCam.position.x = king.b2body.getPosition().x;
                 }
                 break;
             case "Samurai":
-                samurai.update(dt);
                 if (samurai.b2body.getPosition().x > 2 && samurai.b2body.getPosition().x < 6) {
                     gameCam.position.x = samurai.b2body.getPosition().x;
                 }
                 break;
             case "Warrior":
-                warrior.update(dt);
                 if (warrior.b2body.getPosition().x > 2 && warrior.b2body.getPosition().x < 6) {
                     gameCam.position.x = warrior.b2body.getPosition().x;
                 }
                 break;
             case "Wizard":
-                wizard.update(dt);
                 if (wizard.b2body.getPosition().x > 2 && wizard.b2body.getPosition().x < 6) {
                     gameCam.position.x = wizard.b2body.getPosition().x;
                 }
                 break;
             case "Huntress":
-                huntress.update(dt);
                 if (huntress.b2body.getPosition().x > 2 && huntress.b2body.getPosition().x < 6) {
                     gameCam.position.x = huntress.b2body.getPosition().x;
                 }
@@ -420,23 +359,14 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
+        king.draw(game.batch);
+        samurai.draw(game.batch);
+        warrior.draw(game.batch);
+        wizard.draw(game.batch);
+        huntress.draw(game.batch);
 
-        switch (fighter) {
-            case "Samurai":
-                samurai.draw(game.batch);
-                break;
-            case "Warrior":
-                warrior.draw(game.batch);
-                break;
-            case "King":
-                king.draw(game.batch);
-                break;
-            case "Wizard":
-                wizard.draw(game.batch);
-                break;
-            case "Huntress":
-                huntress.draw(game.batch);
-                break;
+        for (int i = 0; i < huntress.spears.size(); i++) {
+            huntress.spears.get(i).draw(game.batch);
         }
 
         game.batch.end();
