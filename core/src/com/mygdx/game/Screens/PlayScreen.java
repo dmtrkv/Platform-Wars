@@ -59,8 +59,6 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(Main game, String fighter, String mapName) {
 
-
-
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);

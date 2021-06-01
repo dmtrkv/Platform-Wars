@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Main;
 import com.mygdx.game.Sprites.Fighters.Wizard;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class ChooseFighterScreen implements Screen {
@@ -31,6 +32,8 @@ public class ChooseFighterScreen implements Screen {
     private TextButton startGameButton;
     private TextButton previousFighterButton;
     private TextButton nextFighterButton;
+
+    private String map;
 
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
@@ -50,12 +53,16 @@ public class ChooseFighterScreen implements Screen {
     private Image backgroundImage;
 
     private HashMap<String, String> passiveSkills;
+    private String state;
 
 
-    public ChooseFighterScreen(Main game) {
+    public ChooseFighterScreen(Main game, String map, String state) {
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
+
+        this.map = map;
+        this.state = state;
 
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -65,7 +72,6 @@ public class ChooseFighterScreen implements Screen {
         font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
 
         labelStyle = new Label.LabelStyle(font, Color.WHITE);
-
 
 
         fighterImage = new Image();
@@ -145,7 +151,11 @@ public class ChooseFighterScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new ChooseMapScreen(game, currentFighter));
+                try {
+                    game.setScreen(new WaitingScreen(state, map, currentFighter, game));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

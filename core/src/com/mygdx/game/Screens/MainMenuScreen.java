@@ -131,9 +131,11 @@ public class MainMenuScreen implements Screen {
     }
 
     private void connectToGame() {
+        game.setScreen(new ChooseFighterScreen(game, "", "client"));
     }
 
     private void createNewGamge() {
+        game.setScreen(new ChooseMapScreen(game));
     }
 
     @Override

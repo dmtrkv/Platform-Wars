@@ -45,7 +45,7 @@ public class ChooseMapScreen implements Screen {
     private String[] maps = {"Dojo", "Dungeon", "Desert"};
     private Label mapLabel;
 
-    public ChooseMapScreen(Main game, String fighter) {
+    public ChooseMapScreen(Main game) {
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
@@ -67,7 +67,6 @@ public class ChooseMapScreen implements Screen {
         mapLabel.setPosition(WIDTH / 2 - mapLabel.getWidth() / 2, HEIGHT / 9 * 8);
 
         mapImage = new Image();
-        this.fighter = fighter;
 
         createMapTable();
         initButtons();
@@ -143,7 +142,7 @@ public class ChooseMapScreen implements Screen {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PlayScreen(game, fighter, currentMap));
+                game.setScreen(new ChooseFighterScreen(game, currentMap, "server"));
             }
         });
     }
