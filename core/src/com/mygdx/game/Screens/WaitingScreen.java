@@ -13,6 +13,7 @@ import com.mygdx.game.Multiplayer.ClientListener;
 import com.mygdx.game.Multiplayer.PacketMessage;
 import com.mygdx.game.Multiplayer.ServerListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
@@ -36,9 +37,9 @@ public class WaitingScreen implements Screen {
 
         init();
 
-        if (state == "server") {
+        if (state.equals("server")) {
             createServer();
-        } else if (state == "client") {
+        } else if (state.equals("client")) {
             createClient();
         }
     }
@@ -67,11 +68,15 @@ public class WaitingScreen implements Screen {
         stage.draw();
     }
 
+    public static void startgame(Main cGame, String cFighter, String cMap) {
+        cGame.setScreen(new PlayScreen(cGame, cFighter, cMap));
+    }
+
     private void createClient() throws IOException {
         Client client = new Client();
         client.getKryo().register(PacketMessage.class);
-        client.addListener(new ClientListener(game, fighter, map));
         client.start();
+        client.addListener(new ClientListener(game, fighter, map));
 
         boolean connected = false;
 
@@ -82,22 +87,22 @@ public class WaitingScreen implements Screen {
                 c = 0;
                 break;
             }
-            List<InetAddress> addressList = client.discoverHosts(54777, 3000);
+            List<InetAddress> addressList = client.discoverHosts(Main.udpPort, 3000);
             System.out.println(addressList);
             for (int i = 0; i < addressList.size(); i++) {
                 try {
-                    client.connect(3000, addressList.get(i), 54555, 54777);
+                    client.connect(3000, addressList.get(i), Main.tcpPort, Main.udpPort);
                     connected = true;
                     break;
                 } catch (Exception e) {
-                    Gdx.app.log("Exception"," in connecting");
+                    Gdx.app.log("Exception", " in connecting");
                 }
             }
             c++;
         }
 
         PacketMessage request = new PacketMessage();
-        request.text = "new_player_event";
+        request.text = Main.newPlayerEvent;
 
         client.sendTCP(request);
     }
@@ -108,10 +113,10 @@ public class WaitingScreen implements Screen {
 
     private void createServer() throws IOException {
         server = new Server();
-        server.bind(54555, 54777);
+        server.bind(Main.tcpPort, Main.udpPort);
         server.getKryo().register(PacketMessage.class);
-        server.addListener(new ServerListener(game, fighter, map));
         server.start();
+        server.addListener(new ServerListener(game, fighter, map));
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Main;
-import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Screens.WaitingScreen;
 
 public class ClientListener extends Listener {
 
@@ -21,14 +21,20 @@ public class ClientListener extends Listener {
     public void received(Connection connection, Object object) {
         if (object instanceof PacketMessage) {
             PacketMessage message = (PacketMessage) object;
-            Gdx.app.log("New Message: ", message.text);
+            Gdx.app.log("New Message on client: ", message.text);
 
-            if (message.text == "start_game_event") {
-                game.setScreen(new PlayScreen(game, fighter, map));
-            }
-
-            if (message.text.startsWith("map: ")) {
+            if (message.text.startsWith(Main.mapMessage)) {
                 map = message.text.replace("map: ", "");
+                Gdx.app.log("Received map: ", map);
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        WaitingScreen.startgame(game, fighter, map);
+                    }
+                });
+                PacketMessage fighterResponse = new PacketMessage();
+                fighterResponse.text = String.format("fighter: %s", fighter);
+                connection.sendTCP(fighterResponse);
             }
         }
     }

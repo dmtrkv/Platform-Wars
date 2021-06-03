@@ -34,6 +34,14 @@ public class Main extends Game {
 	public static final short HUNTRESS_BIT = 4096;
 	public static final short HUNTRESS_ATTACK_BIT = 8192;
 
+	public static final String newPlayerEvent = "new_player_event";
+	public static final String startGameEvent = "start_game_event";
+	public static final String mapMessage = "map: ";
+	public static final String fighterMessage = "fighter: ";
+
+	public static final int tcpPort = 27960;
+	public static final int udpPort = 27960;
+
 	private Socket socket;
 
 

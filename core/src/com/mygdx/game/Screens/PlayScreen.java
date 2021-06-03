@@ -46,25 +46,26 @@ public class PlayScreen implements Screen {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
 
-    private final World world;
+    private static World world;
     private final Box2DDebugRenderer b2dr;
 
-    private final King king;
-    private final Samurai samurai;
-    private final Warrior warrior;
-    private final Wizard wizard;
-    private final Huntress huntress;
-    private final String fighter;
+    private static King king;
+    private static Samurai samurai;
+    private static Warrior warrior;
+    private static Wizard wizard;
+    private static Huntress huntress;
+    private String firstPlayerFighter;
+    private String secondPlayerFighter;
 
 
-    public PlayScreen(Main game, String fighter, String mapName) {
+    public PlayScreen(Main game, String firstPlayerFighter, String mapName) {
 
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
 
-        this.fighter = fighter;
-        Gdx.app.log("Fighter", fighter);
+        this.firstPlayerFighter = firstPlayerFighter;
+        Gdx.app.log("Fighter", firstPlayerFighter);
         TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load(String.format("map/%s.tmx", mapName));
 
@@ -74,11 +75,23 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 //        b2dr.setDrawBodies(false);
-        king = new King(world);
-        samurai = new Samurai(world);
-        warrior = new Warrior(world);
-        wizard = new Wizard(world);
-        huntress = new Huntress(world);
+        switch (firstPlayerFighter) {
+            case "King":
+                king = new King(world);
+                break;
+            case "Samurai":
+                samurai = new Samurai(world);
+                break;
+            case "Warrior":
+                warrior = new Warrior(world);
+                break;
+            case "Wizard":
+                wizard = new Wizard(world);
+                break;
+            case "Huntress":
+                huntress = new Huntress(world);
+                break;
+        }
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -138,7 +151,7 @@ public class PlayScreen implements Screen {
         jumpButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                switch (fighter) {
+                switch (firstPlayerFighter) {
                     case "King":
                         king.jump();
                         break;
@@ -162,7 +175,7 @@ public class PlayScreen implements Screen {
         attackButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                switch (fighter) {
+                switch (firstPlayerFighter) {
                     case "King":
                         king.attack();
                         break;
@@ -191,7 +204,7 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 
-        switch (fighter) {
+        switch (firstPlayerFighter) {
             case "King":
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     king.jump();
@@ -299,19 +312,19 @@ public class PlayScreen implements Screen {
 
     public void update(float dt) {
         handleInput(dt);
-        king.update(dt);
-        samurai.update(dt);
-        warrior.update(dt);
-        wizard.update(dt);
-        huntress.update(dt);
 
-        for (int i = 0; i < huntress.spears.size(); i++) {
-            huntress.spears.get(i).update(dt);
-        }
+        updateFirstPlayer(dt);
 
         world.step(1 / 60f, 6, 2);
 
-        switch (fighter) {
+        updateFirstPlayerCamera(dt);
+
+        gameCam.update();
+        renderer.setView(gameCam);
+    }
+
+    private void updateFirstPlayerCamera(float dt) {
+        switch (firstPlayerFighter) {
             case "King":
                 if (king.b2body.getPosition().x > 2 && king.b2body.getPosition().x < 6) {
                     gameCam.position.x = king.b2body.getPosition().x;
@@ -338,9 +351,46 @@ public class PlayScreen implements Screen {
                 }
                 break;
         }
+    }
 
-        gameCam.update();
-        renderer.setView(gameCam);
+    private void updateFirstPlayer(float dt) {
+        switch (firstPlayerFighter) {
+            case "King":
+                king.update(dt);
+                break;
+            case "Samurai":
+                samurai.update(dt);
+                break;
+            case "Warrior":
+                warrior.update(dt);
+                break;
+            case "Wizard":
+                wizard.update(dt);
+                break;
+            case "Huntress":
+                huntress.update(dt);
+                break;
+        }
+    }
+
+    public static void initSecondPlayer(String secondfighter) {
+        switch (secondfighter) {
+            case "King":
+                king = new King(world);
+                break;
+            case "Samurai":
+                samurai = new Samurai(world);
+                break;
+            case "Warrior":
+                warrior = new Warrior(world);
+                break;
+            case "Wizard":
+                wizard = new Wizard(world);
+                break;
+            case "Huntress":
+                huntress = new Huntress(world);
+                break;
+        }
     }
 
     @Override
@@ -349,7 +399,7 @@ public class PlayScreen implements Screen {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+
         renderer.render();
 
         b2dr.render(world, gameCam.combined);
@@ -357,18 +407,52 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        king.draw(game.batch);
-        samurai.draw(game.batch);
-        warrior.draw(game.batch);
-        wizard.draw(game.batch);
-        huntress.draw(game.batch);
 
-        for (int i = 0; i < huntress.spears.size(); i++) {
-            huntress.spears.get(i).draw(game.batch);
-        }
+        drawFirstPlayer();
+        drawSecondPlayer();
 
         game.batch.end();
         stage.draw();
+    }
+
+    private void drawSecondPlayer() {
+        switch (secondPlayerFighter) {
+            case "King":
+                king.draw(game.batch);
+                break;
+            case "Samurai":
+                samurai.draw(game.batch);
+                break;
+            case "Warrior":
+                warrior.draw(game.batch);
+                break;
+            case "Wizard":
+                wizard.draw(game.batch);
+                break;
+            case "Huntress":
+                huntress.draw(game.batch);
+                break;
+        }
+    }
+
+    private void drawFirstPlayer() {
+        switch (firstPlayerFighter) {
+            case "King":
+                king.draw(game.batch);
+                break;
+            case "Samurai":
+                samurai.draw(game.batch);
+                break;
+            case "Warrior":
+                warrior.draw(game.batch);
+                break;
+            case "Wizard":
+                wizard.draw(game.batch);
+                break;
+            case "Huntress":
+                huntress.draw(game.batch);
+                break;
+        }
     }
 
     @Override

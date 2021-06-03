@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Main;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Screens.WaitingScreen;
 
 public class ServerListener extends Listener {
 
@@ -21,18 +22,34 @@ public class ServerListener extends Listener {
     public void received(Connection connection, Object object) {
         if (object instanceof PacketMessage) {
             PacketMessage message = (PacketMessage) object;
-            Gdx.app.log("New Message: ", message.text);
+            Gdx.app.log("New Message on server: ", message.text);
 
-            if (message.text == "new_player_event") {
-                game.setScreen(new PlayScreen(game, fighter, map));
+            if (message.text.equals(Main.newPlayerEvent)) {
+                Gdx.app.log("New screen: ", "PlayScreen");
+
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        WaitingScreen.startgame(game, fighter, map);
+                    }
+                });
 
                 PacketMessage mapResponse = new PacketMessage();
                 mapResponse.text = String.format("map: %s", map);
                 connection.sendTCP(mapResponse);
+                Gdx.app.log("Send a new message on client: ", mapResponse.text);
+            }
 
-                PacketMessage eventResponse = new PacketMessage();
-                eventResponse.text = "start_game_event";
-                connection.sendTCP(eventResponse);
+
+            if (message.text.startsWith(Main.fighterMessage)) {
+                final String secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
+                Gdx.app.log("Second player fighter: ", secondPlayerFighter);
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayScreen.initSecondPlayer(secondPlayerFighter);
+                    }
+                });
             }
         }
     }
