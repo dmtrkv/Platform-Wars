@@ -4,7 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.Main;
 
 public abstract class Fighter extends Sprite {
     public World world;
@@ -48,10 +51,10 @@ public abstract class Fighter extends Sprite {
                 region = Idle.getKeyFrame(stateTimer, true);
                 break;
             case ATTACKING:
-                region = Attack.getKeyFrame(stateTimer, true);
+                region = Attack.getKeyFrame(stateTimer);
                 break;
             case TAKINGDAMAGE:
-                region = TakeDamage.getKeyFrame(stateTimer, true);
+                region = TakeDamage.getKeyFrame(stateTimer);
                 break;
             case DEAD:
                 region = Death.getKeyFrame(stateTimer);
@@ -75,9 +78,39 @@ public abstract class Fighter extends Sprite {
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
+        currentState = getState(dt);
     }
 
-    protected abstract State getState(float dt);
+    protected State getState(float dt) {
+        if (health <= 0) {
+            return State.DEAD;
+        }
+        if (currentState == State.TAKINGDAMAGE) {
+            if (TakeDamage.isAnimationFinished(stateTimer)) {
+
+            } else {
+                return State.TAKINGDAMAGE;
+            }
+        }
+        if (currentState == State.ATTACKING) {
+            if (Attack.isAnimationFinished(stateTimer)) {
+                for (int i = 0; i < attack.getFixtureList().size; i++) {
+                    attack.destroyFixture(attack.getFixtureList().get(i));
+                }
+            } else {
+                return State.ATTACKING;
+            }
+        }
+        if (b2body.getLinearVelocity().y > 0) {
+            return State.JUMPING;
+        } else if (b2body.getLinearVelocity().y < 0) {
+            return State.FALLING;
+        } else if (b2body.getLinearVelocity().x != 0) {
+            return State.RUNNING;
+        } else {
+            return State.STANDING;
+        }
+    }
 
     public boolean canJump() {
         if ((currentState != State.FALLING) && (currentState != State.JUMPING)
@@ -86,5 +119,14 @@ public abstract class Fighter extends Sprite {
             return true;
         }
         return false;
+    }
+
+    public void disableAttacks() {
+        Filter filter = new Filter();
+        filter.categoryBits = Main.DESTROYED_BIT;
+
+        for (int i = 0; i < attack.getFixtureList().size; i++) {
+            attack.getFixtureList().get(i).setFilterData(filter);
+        }
     }
 }

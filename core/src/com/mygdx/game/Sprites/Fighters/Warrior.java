@@ -54,10 +54,11 @@ public class Warrior extends Fighter {
     }
 
     public void attack() {
+
         if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
             b2body.setLinearVelocity(0f, 0f);
 
-            previousState = State.ATTACKING;
+            currentState = State.ATTACKING;
 
             BodyDef bdef = new BodyDef();
             bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.2f);
@@ -81,7 +82,7 @@ public class Warrior extends Fighter {
             }
 
             attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
+            attack.createFixture(attackDef).setUserData(this);
         }
     }
 
@@ -121,43 +122,8 @@ public class Warrior extends Fighter {
     @Override
     public void takeDamage() {
         if (currentState != State.DEAD) {
-            previousState = State.TAKINGDAMAGE;
+            currentState = State.TAKINGDAMAGE;
             health -= 10;
-        }
-    }
-
-    @Override
-    protected State getState(float dt) {
-        if (health <= 0) {
-            return State.DEAD;
-        }
-        if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 18) {
-                damageFrame = 0;
-                return State.STANDING;
-            } else {
-                damageFrame = damageFrame + dt;
-                return State.TAKINGDAMAGE;
-            }
-        } else if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 18) {
-                attackFrame = 0;
-                for (int i = 0; i < attack.getFixtureList().size; i++) {
-                    attack.destroyFixture(attack.getFixtureList().get(i));
-                }
-                return State.STANDING;
-            } else {
-                attackFrame = attackFrame + dt;
-                return State.ATTACKING;
-            }
-        } else if (b2body.getLinearVelocity().y > 0) {
-            return State.JUMPING;
-        } else if (b2body.getLinearVelocity().y < 0) {
-            return State.FALLING;
-        } else if (b2body.getLinearVelocity().x != 0) {
-            return State.RUNNING;
-        } else {
-            return State.STANDING;
         }
     }
 
@@ -189,20 +155,5 @@ public class Warrior extends Fighter {
 
         fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
-
-//        EdgeShape head = new EdgeShape();
-//        head.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 30 / Main.PPM));
-//        fdef.shape = head;
-//        b2body.createFixture(fdef).setUserData(this);
-//
-//        EdgeShape left = new EdgeShape();
-//        left.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(-9 / Main.PPM, 0 / Main.PPM));
-//        fdef.shape = left;
-//        b2body.createFixture(fdef).setUserData(this);
-//
-//        EdgeShape right = new EdgeShape();
-//        right.set(new Vector2(9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 0 / Main.PPM));
-//        fdef.shape = right;
-//        b2body.createFixture(fdef).setUserData(this);
     }
 }

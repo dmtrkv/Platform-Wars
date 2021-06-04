@@ -26,18 +26,69 @@ public class WorldContactListener implements ContactListener {
             case Main.WARRIOR_BIT | Main.WIZARD_ATTACK_BIT:
             case Main.KING_ATTACK_BIT | Main.WARRIOR_BIT:
             case Main.SAMURAI_ATTACK_BIT | Main.WARRIOR_BIT:
-            case Main.WARRIOR_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
                     ((Warrior) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
                 } else {
                     ((Warrior) fixB.getUserData()).takeDamage();
-
+                    ((Fighter) fixA.getUserData()).disableAttacks();
                 }
                 break;
             case Main.HUNTRESS_ATTACK_BIT | Main.SAMURAI_BIT:
             case Main.SAMURAI_BIT | Main.WIZARD_ATTACK_BIT:
             case Main.KING_ATTACK_BIT | Main.SAMURAI_BIT:
             case Main.WARRIOR_ATTACK_BIT | Main.SAMURAI_BIT:
+                if (fixA.getFilterData().categoryBits == Main.SAMURAI_BIT) {
+                    ((Samurai) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
+                } else {
+                    ((Samurai) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
+                }
+                break;
+            case Main.HUNTRESS_ATTACK_BIT | Main.KING_BIT:
+            case Main.KING_BIT | Main.WIZARD_ATTACK_BIT:
+            case Main.SAMURAI_ATTACK_BIT | Main.KING_BIT:
+            case Main.WARRIOR_ATTACK_BIT | Main.KING_BIT:
+                if (fixA.getFilterData().categoryBits == Main.KING_BIT) {
+                    ((King) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
+                } else {
+                    ((King) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
+                }
+                break;
+            case Main.WIZARD_BIT | Main.HUNTRESS_ATTACK_BIT:
+            case Main.WIZARD_BIT | Main.SAMURAI_ATTACK_BIT:
+            case Main.WIZARD_BIT | Main.WARRIOR_ATTACK_BIT:
+            case Main.WIZARD_BIT | Main.KING_ATTACK_BIT:
+                if (fixA.getFilterData().categoryBits == Main.WIZARD_BIT) {
+                    ((Wizard) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
+                } else {
+                    ((Wizard) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
+                }
+                break;
+            case Main.SAMURAI_ATTACK_BIT | Main.HUNTRESS_BIT:
+            case Main.WARRIOR_ATTACK_BIT | Main.HUNTRESS_BIT:
+            case Main.WIZARD_ATTACK_BIT | Main.HUNTRESS_BIT:
+            case Main.KING_ATTACK_BIT | Main.HUNTRESS_BIT:
+                if (fixA.getFilterData().categoryBits == Main.HUNTRESS_BIT) {
+                    ((Huntress) fixA.getUserData()).takeDamage();
+                    ((Fighter) fixB.getUserData()).disableAttacks();
+                } else {
+                    ((Huntress) fixB.getUserData()).takeDamage();
+                    ((Fighter) fixA.getUserData()).disableAttacks();
+                }
+                break;
+            case Main.KING_BIT | Main.SPIKE_BIT:
+                if (fixA.getFilterData().categoryBits == Main.KING_BIT) {
+                    ((King) fixA.getUserData()).takeDamage();
+                } else {
+                    ((King) fixB.getUserData()).takeDamage();
+                }
+                break;
             case Main.SAMURAI_BIT | Main.SPIKE_BIT:
                 if (fixA.getFilterData().categoryBits == Main.SAMURAI_BIT) {
                     ((Samurai) fixA.getUserData()).takeDamage();
@@ -45,37 +96,25 @@ public class WorldContactListener implements ContactListener {
                     ((Samurai) fixB.getUserData()).takeDamage();
                 }
                 break;
-            case Main.HUNTRESS_ATTACK_BIT | Main.KING_BIT:
-            case Main.KING_BIT | Main.WIZARD_ATTACK_BIT:
-            case Main.KING_BIT | Main.SPIKE_BIT:
-            case Main.SAMURAI_ATTACK_BIT | Main.KING_BIT:
-            case Main.WARRIOR_ATTACK_BIT | Main.KING_BIT:
-                if (fixA.getFilterData().categoryBits == Main.KING_BIT) {
-                    ((King) fixA.getUserData()).takeDamage();
+            case Main.SPIKE_BIT | Main.HUNTRESS_BIT:
+                if (fixA.getFilterData().categoryBits == Main.HUNTRESS_BIT) {
+                    ((Huntress) fixA.getUserData()).takeDamage();
                 } else {
-                    ((King) fixB.getUserData()).takeDamage();
+                    ((Huntress) fixB.getUserData()).takeDamage();
                 }
                 break;
-            case Main.WIZARD_BIT | Main.HUNTRESS_ATTACK_BIT:
             case Main.WIZARD_BIT | Main.SPIKE_BIT:
-            case Main.WIZARD_BIT | Main.SAMURAI_ATTACK_BIT:
-            case Main.WIZARD_BIT | Main.WARRIOR_ATTACK_BIT:
-            case Main.WIZARD_BIT | Main.KING_ATTACK_BIT:
                 if (fixA.getFilterData().categoryBits == Main.WIZARD_BIT) {
                     ((Wizard) fixA.getUserData()).takeDamage();
                 } else {
                     ((Wizard) fixB.getUserData()).takeDamage();
                 }
                 break;
-            case Main.SAMURAI_ATTACK_BIT | Main.HUNTRESS_BIT:
-            case Main.WARRIOR_ATTACK_BIT | Main.HUNTRESS_BIT:
-            case Main.WIZARD_ATTACK_BIT | Main.HUNTRESS_BIT:
-            case Main.KING_ATTACK_BIT | Main.HUNTRESS_BIT:
-            case Main.SPIKE_BIT | Main.HUNTRESS_BIT:
-                if (fixA.getFilterData().categoryBits == Main.HUNTRESS_BIT) {
-                    ((Huntress) fixA.getUserData()).takeDamage();
+            case Main.WARRIOR_BIT | Main.SPIKE_BIT:
+                if (fixA.getFilterData().categoryBits == Main.WARRIOR_BIT) {
+                    ((Warrior) fixA.getUserData()).takeDamage();
                 } else {
-                    ((Huntress) fixB.getUserData()).takeDamage();
+                    ((Warrior) fixB.getUserData()).takeDamage();
                 }
                 break;
         }

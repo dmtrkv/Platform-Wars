@@ -29,7 +29,7 @@ public class Huntress extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 100;
+        health = 1000;
         damageFrame = 0;
 
         spears = new ArrayList<Spear>();
@@ -46,7 +46,7 @@ public class Huntress extends Fighter {
 
         Fall = createAnimation("Fall", 2);
 
-        Attack = createAnimation("Attack1", 4);
+        Attack = createAnimation("Attack1", 5);
 
         TakeDamage = createAnimation("TakeDamage", 3);
 
@@ -114,7 +114,7 @@ public class Huntress extends Fighter {
     @Override
     public void takeDamage() {
         if (currentState != State.DEAD) {
-            previousState = State.TAKINGDAMAGE;
+            currentState = State.TAKINGDAMAGE;
             health -= 10;
         }
     }
@@ -122,7 +122,7 @@ public class Huntress extends Fighter {
     public void attack() {
         if (currentState != State.DEAD && currentState != State.ATTACKING && previousState != State.ATTACKING) {
             b2body.setLinearVelocity(0f, 0f);
-            previousState = State.ATTACKING;
+            currentState = State.ATTACKING;
 
 //            if (runningRight) {
 //                Spear spear = new Spear(true, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
@@ -154,50 +154,7 @@ public class Huntress extends Fighter {
             }
 
             attackDef.shape = attackShape;
-            attack.createFixture(attackDef);
-        }
-    }
-
-    public void clearSpears() {
-        if (!spears.isEmpty()) {
-            spears.get(0).removeFixture();
-            spears.remove(0);
-        }
-    }
-
-
-    @Override
-    protected State getState(float dt) {
-        if (health <= 0) {
-            return State.DEAD;
-        }
-        if (previousState == State.TAKINGDAMAGE) {
-            if (damageFrame > dt * 17) {
-                damageFrame = 0;
-                return State.STANDING;
-            } else {
-                damageFrame = damageFrame + dt;
-                return State.TAKINGDAMAGE;
-            }
-        } else if (previousState == State.ATTACKING) {
-            if (attackFrame > dt * 19) {
-                attackFrame = 0;
-                for (int i = 0; i < attack.getFixtureList().size; i++) {
-                    attack.destroyFixture(attack.getFixtureList().get(i));
-                }
-                return State.STANDING;
-            } else {
-                attackFrame = attackFrame + dt;
-                return State.ATTACKING;
-            }
-        } else if (b2body.getLinearVelocity().y > 0) {
-            return State.JUMPING;
-        } else if (b2body.getLinearVelocity().y < 0) {
-            return State.FALLING;
-        } else if (b2body.getLinearVelocity().x != 0) {
-            return State.RUNNING;
-        } else {
-            return State.STANDING;
+            attack.createFixture(attackDef).setUserData(this);
         }
     }
 
