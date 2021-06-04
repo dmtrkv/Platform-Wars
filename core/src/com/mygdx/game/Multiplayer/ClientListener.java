@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Main;
+import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Screens.WaitingScreen;
 
 public class ClientListener extends Listener {
@@ -20,7 +21,7 @@ public class ClientListener extends Listener {
 
     public void received(Connection connection, Object object) {
         if (object instanceof PacketMessage) {
-            PacketMessage message = (PacketMessage) object;
+            final PacketMessage message = (PacketMessage) object;
             Gdx.app.log("New Message on client: ", message.text);
 
             if (message.text.startsWith(Main.mapMessage)) {
@@ -36,6 +37,29 @@ public class ClientListener extends Listener {
                 fighterResponse.text = String.format("fighter: %s", fighter);
                 connection.sendTCP(fighterResponse);
             }
+
+            if (message.text.startsWith(Main.fighterMessage)) {
+                final String secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
+                Gdx.app.log("Second player fighter: ", secondPlayerFighter);
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayScreen.initSecondPlayer(secondPlayerFighter);
+                    }
+                });
+            }
+
+            if (Main.actions.contains(message.text)) {
+                Gdx.app.log("New Action: ", message.text);
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayScreen.updateSecondPlayerActions(message.text);
+                    }
+                });
+            }
         }
+
+
     }
 }

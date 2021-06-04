@@ -20,20 +20,22 @@ import java.util.List;
 
 public class WaitingScreen implements Screen {
 
-    private Main game;
-    private String map;
-    private String fighter;
-    private Server server;
+    private final Main game;
+    private final String map;
+    private final String fighter;
+    private static final Server server = new Server();
+    private static final Client client = new Client();
     private Stage stage;
     private Label label;
-    private BitmapFont font;
-    private float WIDTH = Gdx.graphics.getWidth();
-    private float HEIGHT = Gdx.graphics.getHeight();
+    private final float WIDTH = Gdx.graphics.getWidth();
+    private final float HEIGHT = Gdx.graphics.getHeight();
+    private static String state;
 
-    public WaitingScreen(String state, String map, String fighter, Main game) throws IOException {
+    public WaitingScreen(String Cstate, String map, String fighter, Main game) throws IOException {
         this.game = game;
         this.map = map;
         this.fighter = fighter;
+        state = Cstate;
 
         init();
 
@@ -45,7 +47,7 @@ public class WaitingScreen implements Screen {
     }
 
     private void init() {
-        font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
+        BitmapFont font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
         font.getData().setScale(2);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
@@ -69,11 +71,11 @@ public class WaitingScreen implements Screen {
     }
 
     public static void startgame(Main cGame, String cFighter, String cMap) {
-        cGame.setScreen(new PlayScreen(cGame, cFighter, cMap));
+        PlayScreen playScreen = (new PlayScreen(cGame, cFighter, cMap, server, client, state));
+        cGame.setScreen(playScreen);
     }
 
     private void createClient() throws IOException {
-        Client client = new Client();
         client.getKryo().register(PacketMessage.class);
         client.start();
         client.addListener(new ClientListener(game, fighter, map));
@@ -103,7 +105,6 @@ public class WaitingScreen implements Screen {
 
         PacketMessage request = new PacketMessage();
         request.text = Main.newPlayerEvent;
-
         client.sendTCP(request);
     }
 
@@ -112,7 +113,6 @@ public class WaitingScreen implements Screen {
     }
 
     private void createServer() throws IOException {
-        server = new Server();
         server.bind(Main.tcpPort, Main.udpPort);
         server.getKryo().register(PacketMessage.class);
         server.start();

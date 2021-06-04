@@ -41,7 +41,7 @@ public class ChooseFighterScreen implements Screen {
     private float WIDTH = Gdx.graphics.getWidth();
     private float HEIGHT = Gdx.graphics.getHeight();
 
-    private final String[] fighters = {"Samurai", "King", "Warrior", "Wizard", "Huntress"};
+    public static String[] fighters = {"Samurai", "King", "Warrior", "Wizard", "Huntress"};
     private int fighterIndex = 0;
     private Skin buttonSkin;
     private TextureAtlas buttonTextureAtlas;

@@ -12,6 +12,7 @@ public class ServerListener extends Listener {
     private Main game;
     private String fighter;
     private String map;
+    private PlayScreen playScreen;
 
     public ServerListener(Main game, String fighter, String map) {
         this.game = game;
@@ -19,9 +20,9 @@ public class ServerListener extends Listener {
         this.map = map;
     }
 
-    public void received(Connection connection, Object object) {
+    public void received(final Connection connection, Object object) {
         if (object instanceof PacketMessage) {
-            PacketMessage message = (PacketMessage) object;
+            final PacketMessage message = (PacketMessage) object;
             Gdx.app.log("New Message on server: ", message.text);
 
             if (message.text.equals(Main.newPlayerEvent)) {
@@ -48,6 +49,18 @@ public class ServerListener extends Listener {
                     @Override
                     public void run() {
                         PlayScreen.initSecondPlayer(secondPlayerFighter);
+                        PacketMessage fighterMessage = new PacketMessage();
+                        fighterMessage.text = String.format("fighter: %s", fighter);
+                        connection.sendTCP(fighterMessage);
+                    }
+                });
+            }
+            if (Main.actions.contains(message.text)) {
+                Gdx.app.log("New Action: ", message.text);
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayScreen.updateSecondPlayerActions(message.text);
                     }
                 });
             }

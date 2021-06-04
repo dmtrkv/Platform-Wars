@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Screens.MainMenuScreen;
 import com.mygdx.game.Screens.PlayScreen;
 
+import java.util.ArrayList;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -39,6 +41,13 @@ public class Main extends Game {
 	public static final String mapMessage = "map: ";
 	public static final String fighterMessage = "fighter: ";
 
+	public static final String attackAction = "attack";
+	public static final String runRightAction = "run_right";
+	public static final String runLeftAction = "run_left";
+	public static final String jumpAction = "jump";
+
+	public static ArrayList<String> actions = new ArrayList<>();
+
 	public static final int tcpPort = 27960;
 	public static final int udpPort = 27960;
 
@@ -47,6 +56,10 @@ public class Main extends Game {
 
 	@Override
 	public void create () {
+		actions.add(attackAction);
+		actions.add(runLeftAction);
+		actions.add(runRightAction);
+		actions.add(jumpAction);
 		batch = new SpriteBatch();
 		setScreen(new MainMenuScreen(this));
 	}
