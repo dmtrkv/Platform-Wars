@@ -29,7 +29,7 @@ public class Wizard extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 50;
+        health = 150;
         damageFrame = 0;
         initAnimations();
     }

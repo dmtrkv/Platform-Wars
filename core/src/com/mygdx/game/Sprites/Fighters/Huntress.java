@@ -17,8 +17,6 @@ import java.util.ArrayList;
 
 public class Huntress extends Fighter {
 
-    public ArrayList<Spear> spears;
-
     public Huntress(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -32,10 +30,8 @@ public class Huntress extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 1000;
+        health = 100;
         damageFrame = 0;
-
-        spears = new ArrayList<Spear>();
 
         initAnimations();
     }

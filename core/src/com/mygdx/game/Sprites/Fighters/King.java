@@ -30,7 +30,7 @@ public class King extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 200;
+        health = 150;
         damageFrame = 0;
         initAnimations();
     }

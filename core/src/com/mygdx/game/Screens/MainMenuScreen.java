@@ -89,7 +89,7 @@ public class MainMenuScreen implements Screen {
 
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = titleFont;
-        title = new Label("Platformer Fighting", titleStyle);
+        title = new Label(Main.title, titleStyle);
         title.setPosition(WIDTH / 2 - title.getWidth() / 2, HEIGHT / 6 * 5);
         stage.addActor(title);
 

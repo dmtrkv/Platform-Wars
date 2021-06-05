@@ -16,8 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.Main;
 
-import java.util.HashMap;
-
 public class WinnerScreen implements Screen {
 
     private final Stage stage;

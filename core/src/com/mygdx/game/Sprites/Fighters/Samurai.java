@@ -32,7 +32,7 @@ public class Samurai extends Fighter {
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 180;
+        health = 100;
         damageFrame = 0;
         initAnimations();
     }

@@ -98,7 +98,7 @@ public class ChooseFighterScreen implements Screen {
         fighterLabel.setWidth(WIDTH);
         fighterLabel.setFontScale(1.5f);
         fighterLabel.setAlignment(Align.center);
-        fighterLabel.setPosition(WIDTH / 4 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
+        fighterLabel.setPosition(WIDTH / 2 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
 
         passiveSkills = new HashMap<>();
         passiveSkills.put("Samurai", "High jump");
@@ -217,8 +217,7 @@ public class ChooseFighterScreen implements Screen {
         float pictureHeight = HEIGHT / 4;
         float pictureWidth = WIDTH / 8;
 
-        fighterImage.setBounds(WIDTH / 4 - pictureWidth / 2, HEIGHT / 17 * 6,
-                pictureWidth, pictureHeight);
+        fighterImage.setBounds(WIDTH / 2 - pictureWidth / 2, HEIGHT / 14 * 8 - 5, pictureWidth, pictureHeight);
         stage.addActor(fighterImage);
 
         fighterLabel.setText(currentFighter);
