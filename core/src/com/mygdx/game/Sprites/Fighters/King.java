@@ -17,12 +17,15 @@ import com.mygdx.game.Screens.PlayScreen;
 
 public class King extends Fighter {
 
-    public King(World world) {
+    public King(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
         this.world = world;
         runningRight = true;
+
+        x = xPos;
+        y = yPos;
 
         stateTimer = 0;
         attackFrame = 0;
@@ -123,7 +126,7 @@ public class King extends Fighter {
 
     public void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(40 / Main.PPM, 40 / Main.PPM);
+        bdef.position.set(x / Main.PPM, y / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

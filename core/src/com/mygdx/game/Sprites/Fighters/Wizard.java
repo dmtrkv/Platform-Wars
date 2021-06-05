@@ -16,12 +16,15 @@ import com.mygdx.game.Main;
 
 public class Wizard extends Fighter {
 
-    public Wizard(World world) {
+    public Wizard(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
         this.world = world;
         runningRight = true;
+
+        x = xPos;
+        y = yPos;
 
         stateTimer = 0;
         attackFrame = 0;
@@ -125,7 +128,7 @@ public class Wizard extends Fighter {
 
     public void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(100 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(x / Main.PPM, y / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

@@ -34,9 +34,9 @@ public class ClientListener extends Listener {
                 Gdx.app.log("Received map: ", map);
                 Gdx.app.log("Received fighter: ", secondPlayerFighter);
 
-                PacketMessage fighterResponse = new PacketMessage();
-                fighterResponse.text = String.format("fighter: %s", fighter);
-                connection.sendTCP(fighterResponse);
+//                PacketMessage fighterResponse = new PacketMessage();
+//                fighterResponse.text = String.format("fighter: %s", fighter);
+//                connection.sendTCP(fighterResponse);
 
                 Gdx.app.postRunnable(new Runnable() {
                     @Override

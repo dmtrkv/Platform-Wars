@@ -19,12 +19,15 @@ import com.mygdx.game.Screens.PlayScreen;
 
 public class Samurai extends Fighter {
 
-    public Samurai(World world) {
+    public Samurai(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
         this.world = world;
         runningRight = true;
+
+        x = xPos;
+        y = yPos;
 
         stateTimer = 0;
         attackFrame = 0;
@@ -129,7 +132,7 @@ public class Samurai extends Fighter {
 
     public void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(400 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(x / Main.PPM, y / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

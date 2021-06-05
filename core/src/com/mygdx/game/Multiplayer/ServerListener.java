@@ -34,7 +34,19 @@ public class ServerListener extends Listener {
                 Gdx.app.log("Send a new message on client: ", response.text);
             }
 
-            if (message.text.equals(Main.startGameEvent)) {
+//            if (message.text.equals(Main.startGameEvent)) {
+//                Gdx.app.log("New Screen:", "PlayScreen");
+//                Gdx.app.postRunnable(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        WaitingScreen.startgame(game, fighter, secondPlayerFighter, map, Main.serverState);
+//                    }
+//                });
+//            }
+
+            if (message.text.startsWith(Main.fighterMessage)) {
+                secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
+                Gdx.app.log("Second player fighter: ", secondPlayerFighter);
                 Gdx.app.log("New Screen:", "PlayScreen");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
@@ -42,11 +54,6 @@ public class ServerListener extends Listener {
                         WaitingScreen.startgame(game, fighter, secondPlayerFighter, map, Main.serverState);
                     }
                 });
-            }
-
-            if (message.text.startsWith(Main.fighterMessage)) {
-                secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
-                Gdx.app.log("Second player fighter: ", secondPlayerFighter);
             }
 
             if (Main.actions.contains(message.text)) {

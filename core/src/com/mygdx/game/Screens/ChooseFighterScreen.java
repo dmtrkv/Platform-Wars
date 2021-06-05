@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -24,10 +23,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.Main;
 import com.mygdx.game.Multiplayer.PacketMessage;
-import com.mygdx.game.Sprites.Fighters.Wizard;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -184,14 +181,13 @@ public class ChooseFighterScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 try {
                     if (state.equals(Main.clientState)) {
-                        PacketMessage request = new PacketMessage();
-                        request.text = Main.startGameEvent;
-                        client.sendTCP(request);
+                        PacketMessage fighterResponse = new PacketMessage();
+                        fighterResponse.text = String.format("fighter: %s", currentFighter);
+                        client.sendTCP(fighterResponse);
                         game.setScreen(new PlayScreen(game, currentFighter, secondFighter, map, server, client, Main.clientState));
                     } else if (state.equals(Main.serverState)) {
                         game.setScreen(new WaitingScreen(Main.serverState, map, currentFighter, game));
                     }
-                    game.setScreen(new WaitingScreen(state, map, currentFighter, game));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

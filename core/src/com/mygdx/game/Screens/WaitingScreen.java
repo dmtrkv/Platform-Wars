@@ -96,7 +96,7 @@ public class WaitingScreen implements Screen {
         buttonSkin.addRegions(buttonTextureAtlas);
         backButtonStyle.up = buttonSkin.getDrawable("backIdle");
         backButtonStyle.down = buttonSkin.getDrawable("backPressed");
-        TextButton backButton = new TextButton("", backButtonStyle);
+        backButton = new TextButton("", backButtonStyle);
         backButton.setSize(buttonSize, buttonSize);
         backButton.setPosition(10, 10);
         stage.addActor(backButton);

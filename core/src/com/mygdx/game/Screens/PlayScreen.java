@@ -65,6 +65,11 @@ public class PlayScreen implements Screen {
     private Client client;
     private String state;
 
+    private int x1;
+    private int y1;
+    private int x2;
+    private int y2;
+
     public PlayScreen(Main game, String firstPlayerFighter, String CsecondPlayerFighter, String mapName, Server server, Client client, String state) {
 
         this.game = game;
@@ -89,8 +94,21 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 //        b2dr.setDrawBodies(false);
-        initFirstPlayer();
-        initSecondPlayer();
+
+        y1 = 32;
+        y2 = 32;
+
+        if (state.equals(Main.serverState)) {
+            x1 = 20;
+            x2 = 780;
+        } else if (state.equals(Main.clientState)) {
+            x1 = 780;
+            x2 = 20;
+            gameCam.position.x = 6;
+        }
+
+        initFirstPlayer(x1, y1);
+        initSecondPlayer(x2, y2);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
@@ -98,42 +116,42 @@ public class PlayScreen implements Screen {
         initButtons();
     }
 
-    private void initSecondPlayer() {
+    private void initSecondPlayer(int x, int y) {
         switch (secondPlayerFighter) {
             case "King":
-                king = new King(world);
+                king = new King(world, x, y);
                 break;
             case "Samurai":
-                samurai = new Samurai(world);
+                samurai = new Samurai(world, x, y);
                 break;
             case "Warrior":
-                warrior = new Warrior(world);
+                warrior = new Warrior(world, x, y);
                 break;
             case "Wizard":
-                wizard = new Wizard(world);
+                wizard = new Wizard(world, x, y);
                 break;
             case "Huntress":
-                huntress = new Huntress(world);
+                huntress = new Huntress(world,x , y);
                 break;
         }
     }
 
-    private void initFirstPlayer() {
+    private void initFirstPlayer(int x, int y) {
         switch (firstPlayerFighter) {
             case "King":
-                king = new King(world);
+                king = new King(world, x, y);
                 break;
             case "Samurai":
-                samurai = new Samurai(world);
+                samurai = new Samurai(world, x, y);
                 break;
             case "Warrior":
-                warrior = new Warrior(world);
+                warrior = new Warrior(world, x, y);
                 break;
             case "Wizard":
-                wizard = new Wizard(world);
+                wizard = new Wizard(world, x, y);
                 break;
             case "Huntress":
-                huntress = new Huntress(world);
+                huntress = new Huntress(world, x, y);
                 break;
         }
     }

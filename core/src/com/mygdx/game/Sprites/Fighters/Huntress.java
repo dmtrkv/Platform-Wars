@@ -19,12 +19,15 @@ public class Huntress extends Fighter {
 
     public ArrayList<Spear> spears;
 
-    public Huntress(World world) {
+    public Huntress(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
         this.world = world;
         runningRight = true;
+
+        x = xPos;
+        y = yPos;
 
         stateTimer = 0;
         attackFrame = 0;
@@ -58,7 +61,7 @@ public class Huntress extends Fighter {
 
     private void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(20 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(x / Main.PPM, y / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
