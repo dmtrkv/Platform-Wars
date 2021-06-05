@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
+import com.mygdx.game.Screens.PlayScreen;
 
 public class King extends Fighter {
 
@@ -45,6 +46,8 @@ public class King extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 
@@ -73,6 +76,8 @@ public class King extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.huntressAttackSound.play();
         }
     }
 
@@ -134,7 +139,7 @@ public class King extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-12 / Main.PPM, 34 / Main.PPM),
                 new Vector2(12 / Main.PPM, 34 / Main.PPM),
                 new Vector2(12 / Main.PPM, 0 / Main.PPM),

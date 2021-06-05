@@ -48,6 +48,8 @@ public class Samurai extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 5f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 
@@ -79,6 +81,8 @@ public class Samurai extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.samuraiAttackSound.play();
         }
     }
 
@@ -141,7 +145,7 @@ public class Samurai extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-9 / Main.PPM, 34 / Main.PPM),
                 new Vector2(9 / Main.PPM, 34 / Main.PPM),
                 new Vector2(9 / Main.PPM, 0 / Main.PPM),

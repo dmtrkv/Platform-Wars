@@ -3,8 +3,16 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
@@ -23,13 +31,18 @@ public class WaitingScreen implements Screen {
     private final Main game;
     private final String map;
     private final String fighter;
+
     private static final Server server = new Server();
     private static final Client client = new Client();
-    private Stage stage;
-    private Label label;
+    private static String state;
+
     private final float WIDTH = Gdx.graphics.getWidth();
     private final float HEIGHT = Gdx.graphics.getHeight();
-    private static String state;
+
+    private Stage stage;
+    private Label label;
+    private Label title;
+    private TextButton backButton;
 
     public WaitingScreen(String Cstate, String map, String fighter, Main game) throws IOException {
         this.game = game;
@@ -39,16 +52,19 @@ public class WaitingScreen implements Screen {
 
         init();
 
-        if (state.equals("server")) {
+        if (state.equals(Main.serverState)) {
             createServer();
-        } else if (state.equals("client")) {
+        } else if (state.equals(Main.clientState)) {
             createClient();
         }
     }
 
     private void init() {
         BitmapFont font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
-        font.getData().setScale(2);
+        BitmapFont titleFont = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
+        font.getData().setScale(2.1f, 2.5f);
+        titleFont.getData().setScale(3, 3);
+
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
 
@@ -58,8 +74,54 @@ public class WaitingScreen implements Screen {
 
         stage = new Stage();
 
-        label.setPosition(0, HEIGHT / 2 - label.getHeight() / 2);
+        Gdx.input.setInputProcessor(stage);
+
+        Image backgroundImage = new Image();
+        backgroundImage.setDrawable(new TextureRegionDrawable(new Texture("MainMenuScreen/background.png")));
+        backgroundImage.setBounds(0, 0, WIDTH, HEIGHT);
+        stage.addActor(backgroundImage);
+
+        Label.LabelStyle titleStyle = new Label.LabelStyle();
+        titleStyle.font = titleFont;
+        title = new Label("Platformer Fighting", titleStyle);
+        title.setPosition(WIDTH / 2 - title.getWidth() / 2, HEIGHT / 6 * 5);
+        stage.addActor(title);
+
+        float buttonSize = WIDTH / 15;
+
+        TextButton.TextButtonStyle backButtonStyle = new TextButton.TextButtonStyle();
+        backButtonStyle.font = font;
+        Skin buttonSkin = new Skin();
+        TextureAtlas buttonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/Buttons.pack"));
+        buttonSkin.addRegions(buttonTextureAtlas);
+        backButtonStyle.up = buttonSkin.getDrawable("backIdle");
+        backButtonStyle.down = buttonSkin.getDrawable("backPressed");
+        TextButton backButton = new TextButton("", backButtonStyle);
+        backButton.setSize(buttonSize, buttonSize);
+        backButton.setPosition(10, 10);
+        stage.addActor(backButton);
+
+        label.setPosition(0, HEIGHT / 3 - label.getHeight() / 2);
         stage.addActor(label);
+
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (state.equals(Main.clientState)) {
+                    try {
+                        client.stop();
+                    } catch (Exception ignored) {
+                    }
+                    game.setScreen(new MainMenuScreen(game));
+                } else if (state.equals(Main.serverState)) {
+                    try {
+                        server.stop();
+                    } catch (Exception ignored) {
+                    }
+                    game.setScreen(new ChooseMapScreen(game));
+                }
+            }
+        });
 
         preRender();
     }
@@ -70,9 +132,13 @@ public class WaitingScreen implements Screen {
         stage.draw();
     }
 
-    public static void startgame(Main cGame, String cFighter, String cMap) {
-        PlayScreen playScreen = (new PlayScreen(cGame, cFighter, cMap, server, client, state));
-        cGame.setScreen(playScreen);
+    public static void startgame(Main cGame, String cFighter, String cFighter2, String cMap, String state) {
+        if (state.equals(Main.serverState)) {
+            PlayScreen playScreen = (new PlayScreen(cGame, cFighter, cFighter2, cMap, server, client, state));
+            cGame.setScreen(playScreen);
+        } else if (state.equals(Main.clientState)) {
+            cGame.setScreen(new ChooseFighterScreen(cGame, cMap, state, cFighter2, client, server));
+        }
     }
 
     private void createClient() throws IOException {
@@ -84,16 +150,15 @@ public class WaitingScreen implements Screen {
 
         int c = 0;
         while (!connected) {
-            if (c == 2) {
+            if (c == 1) {
                 noServersFound();
-                c = 0;
                 break;
             }
-            List<InetAddress> addressList = client.discoverHosts(Main.udpPort, 3000);
+            List<InetAddress> addressList = client.discoverHosts(Main.udpPort, 2000);
             System.out.println(addressList);
             for (int i = 0; i < addressList.size(); i++) {
                 try {
-                    client.connect(3000, addressList.get(i), Main.tcpPort, Main.udpPort);
+                    client.connect(2000, addressList.get(i), Main.tcpPort, Main.udpPort);
                     connected = true;
                     break;
                 } catch (Exception e) {

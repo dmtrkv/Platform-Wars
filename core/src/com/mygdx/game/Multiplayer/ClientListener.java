@@ -12,6 +12,7 @@ public class ClientListener extends Listener {
     private Main game;
     private String fighter;
     private String map;
+    private String secondPlayerFighter;
 
     public ClientListener(Main game, String fighter, String map) {
         this.game = game;
@@ -25,26 +26,22 @@ public class ClientListener extends Listener {
             Gdx.app.log("New Message on client: ", message.text);
 
             if (message.text.startsWith(Main.mapMessage)) {
-                map = message.text.replace("map: ", "");
+                String[] mapAndFighter = message.text.replace("map: ", "").replace("fighter: ", "").split(" ");
+
+                map = mapAndFighter[0];
+                secondPlayerFighter = mapAndFighter[1];
+
                 Gdx.app.log("Received map: ", map);
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        WaitingScreen.startgame(game, fighter, map);
-                    }
-                });
+                Gdx.app.log("Received fighter: ", secondPlayerFighter);
+
                 PacketMessage fighterResponse = new PacketMessage();
                 fighterResponse.text = String.format("fighter: %s", fighter);
                 connection.sendTCP(fighterResponse);
-            }
 
-            if (message.text.startsWith(Main.fighterMessage)) {
-                final String secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
-                Gdx.app.log("Second player fighter: ", secondPlayerFighter);
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        PlayScreen.initSecondPlayer(secondPlayerFighter);
+                        WaitingScreen.startgame(game, "", secondPlayerFighter, map, Main.clientState);
                     }
                 });
             }

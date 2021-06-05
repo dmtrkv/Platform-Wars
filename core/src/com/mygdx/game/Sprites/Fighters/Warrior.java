@@ -50,6 +50,8 @@ public class Warrior extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 3.8f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 
@@ -83,6 +85,8 @@ public class Warrior extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.warriorAttackSound.play();
         }
     }
 
@@ -145,7 +149,7 @@ public class Warrior extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-9 / Main.PPM, 30 / Main.PPM),
                 new Vector2(9 / Main.PPM, 30 / Main.PPM),
                 new Vector2(9 / Main.PPM, 0 / Main.PPM),

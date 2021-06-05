@@ -3,18 +3,20 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.Main;
+
+import java.io.IOException;
 
 public class MainMenuScreen implements Screen {
 
@@ -28,22 +30,23 @@ public class MainMenuScreen implements Screen {
     private Label connectToServerLabel;
     private Label settingsLabel;
 
-    private final OrthographicCamera gameCam;
-    private final Viewport gamePort;
     private final Main game;
     private float WIDTH = Gdx.graphics.getWidth();
     private float HEIGHT = Gdx.graphics.getHeight();
 
     public MainMenuScreen(Main game) {
         this.game = game;
-        gameCam = new OrthographicCamera();
-        gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
 
-        initButtons();
+        stage = new Stage();
+        Image backgroundImage = new Image();
+        backgroundImage.setDrawable(new TextureRegionDrawable(new Texture("MainMenuScreen/background.png")));
+        backgroundImage.setBounds(0, 0, WIDTH, HEIGHT);
+        stage.addActor(backgroundImage);
+
+        init();
     }
 
-    private void initButtons() {
-        stage = new Stage();
+    private void init() {
         Gdx.input.setInputProcessor(stage);
         BitmapFont titleFont = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
         BitmapFont pointsFont = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
@@ -109,29 +112,40 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 createNewGamge();
+                if (Main.playSounds)
+                    Main.buttonSound.play();
             }
         });
-        
+
         connectToServerButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                connectToGame();
+                try {
+                    connectToGame();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (Main.playSounds)
+                    Main.buttonSound.play();
             }
         });
-        
+
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 openSettings();
+                if (Main.playSounds)
+                    Main.buttonSound.play();
             }
         });
     }
 
     private void openSettings() {
+        game.setScreen(new OptionsScreen(game));
     }
 
-    private void connectToGame() {
-        game.setScreen(new ChooseFighterScreen(game, "", "client"));
+    private void connectToGame() throws IOException {
+        game.setScreen(new WaitingScreen(Main.clientState, "", "", game));
     }
 
     private void createNewGamge() {
@@ -153,7 +167,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        gamePort.update(width, height);
+//        gamePort.update(width, height);
     }
 
     @Override

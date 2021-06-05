@@ -45,6 +45,8 @@ public class Wizard extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 
@@ -76,6 +78,8 @@ public class Wizard extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.wizardAttackSound.play();
         }
     }
 
@@ -137,7 +141,7 @@ public class Wizard extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-10 / Main.PPM, 34 / Main.PPM),
                 new Vector2(10 / Main.PPM, 34 / Main.PPM),
                 new Vector2(10 / Main.PPM, 0 / Main.PPM),

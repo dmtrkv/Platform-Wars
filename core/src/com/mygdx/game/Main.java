@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,13 +47,23 @@ public class Main extends Game {
 	public static final String runLeftAction = "run_left";
 	public static final String jumpAction = "jump";
 
+	public static final String serverState = "server";
+	public static final String clientState = "client";
+
+	public static boolean playSounds = true;
+
 	public static ArrayList<String> actions = new ArrayList<>();
 
 	public static final int tcpPort = 27960;
 	public static final int udpPort = 27960;
 
-	private Socket socket;
-
+	public static Sound jumpSound;
+	public static Sound samuraiAttackSound;
+	public static Sound warriorAttackSound;
+	public static Sound kingAttackSound;
+	public static Sound huntressAttackSound;
+	public static Sound wizardAttackSound;
+	public static Sound buttonSound;
 
 	@Override
 	public void create () {
@@ -60,18 +71,18 @@ public class Main extends Game {
 		actions.add(runLeftAction);
 		actions.add(runRightAction);
 		actions.add(jumpAction);
+
+		jumpSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/jump.mp3"));
+
+		samuraiAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/Samurai/attack.mp3"));
+		warriorAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/Warrior/attack.mp3"));
+		kingAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/King/attack.mp3"));
+		huntressAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/Huntress/attack.mp3"));
+		wizardAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/Wizard/attack.mp3"));
+		buttonSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/button.mp3"));
+
 		batch = new SpriteBatch();
 		setScreen(new MainMenuScreen(this));
-	}
-
-	private void connectSocket() {
-		try {
-			socket = IO.socket("http://localhost:8080");
-			socket.connect();
-		}
-		catch (Exception e) {
-			Gdx.app.log("exception", e.toString());
-		}
 	}
 
 	public void changeScreen (Screen screen) {

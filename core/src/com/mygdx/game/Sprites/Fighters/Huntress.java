@@ -82,21 +82,6 @@ public class Huntress extends Fighter {
 
         fdef.shape = body2;
         b2body.createFixture(fdef).setUserData(this);
-
-//        EdgeShape head = new EdgeShape();
-//        head.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 30 / Main.PPM));
-//        fdef.shape = head;
-//        b2body.createFixture(fdef).setUserData(this);
-//
-//        EdgeShape left = new EdgeShape();
-//        left.set(new Vector2(-9 / Main.PPM, 30 / Main.PPM), new Vector2(-9 / Main.PPM, 0 / Main.PPM));
-//        fdef.shape = left;
-//        b2body.createFixture(fdef).setUserData(this);
-//
-//        EdgeShape right = new EdgeShape();
-//        right.set(new Vector2(9 / Main.PPM, 30 / Main.PPM), new Vector2(9 / Main.PPM, 0 / Main.PPM));
-//        fdef.shape = right;
-//        b2body.createFixture(fdef).setUserData(this);
     }
 
     public Animation<TextureRegion> createAnimation(String animation, int framesNum) {
@@ -124,14 +109,6 @@ public class Huntress extends Fighter {
             b2body.setLinearVelocity(0f, 0f);
             currentState = State.ATTACKING;
 
-//            if (runningRight) {
-//                Spear spear = new Spear(true, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
-//                spears.add(spear);
-//            } else {
-//                Spear spear = new Spear(false, world, b2body.getPosition().x, b2body.getPosition().y - 0.05f, this);
-//                spears.add(spear);
-//            }
-
             BodyDef bdef = new BodyDef();
             bdef.position.set(b2body.getPosition().x, b2body.getPosition().y - 0.05f);
             bdef.type = BodyDef.BodyType.DynamicBody;
@@ -155,6 +132,8 @@ public class Huntress extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.huntressAttackSound.play();
         }
     }
 
@@ -174,6 +153,8 @@ public class Huntress extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 3.8f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 }
