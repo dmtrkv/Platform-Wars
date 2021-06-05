@@ -34,14 +34,21 @@ public class ClientListener extends Listener {
                 Gdx.app.log("Received map: ", map);
                 Gdx.app.log("Received fighter: ", secondPlayerFighter);
 
-//                PacketMessage fighterResponse = new PacketMessage();
-//                fighterResponse.text = String.format("fighter: %s", fighter);
-//                connection.sendTCP(fighterResponse);
-
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
                         WaitingScreen.startgame(game, "", secondPlayerFighter, map, Main.clientState);
+                    }
+                });
+            }
+
+            if (message.text.startsWith(Main.winnerMessage)) {
+                final String winner = message.text.replace(Main.winnerMessage, "");
+
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayScreen.setWinnerScreen(winner);
                     }
                 });
             }

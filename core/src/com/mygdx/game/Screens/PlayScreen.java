@@ -3,7 +3,6 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -36,7 +36,7 @@ import com.mygdx.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
-    private final Main game;
+    private static Main game;
 
     private Stage stage;
     private TextButton moveLeftButton;
@@ -44,11 +44,19 @@ public class PlayScreen implements Screen {
     private TextButton jumpButton;
     private TextButton attackButton;
 
+    private Label firstPlayerLabel;
+    private Label firstPlayerHealthLabel;
+    private Label secondPlayerLabel;
+    private Label secondPlayerHealthLabel;
+
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
 
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
+
+    private final float WIDTH = Gdx.graphics.getWidth();
+    private final float HEIGHT = Gdx.graphics.getHeight();
 
     private static World world;
     private final Box2DDebugRenderer b2dr;
@@ -113,7 +121,7 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
-        initButtons();
+        init();
     }
 
     private void initSecondPlayer(int x, int y) {
@@ -156,10 +164,10 @@ public class PlayScreen implements Screen {
         }
     }
 
-    public void initButtons() {
+    public void init() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        BitmapFont font = new BitmapFont();
+        BitmapFont font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
         Skin button_skin = new Skin();
 
         float buttonSize = Gdx.graphics.getWidth() / 10f;
@@ -204,6 +212,23 @@ public class PlayScreen implements Screen {
         stage.addActor(moveRightButton);
         stage.addActor(jumpButton);
         stage.addActor(attackButton);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        firstPlayerLabel = new Label(firstPlayerFighter, labelStyle);
+        firstPlayerLabel.setPosition(10, HEIGHT - 50);
+        secondPlayerLabel = new Label(secondPlayerFighter, labelStyle);
+        secondPlayerLabel.setPosition(10, HEIGHT - 70 - firstPlayerLabel.getHeight());
+
+        firstPlayerHealthLabel = new Label(getFighterHealth(firstPlayerFighter), labelStyle);
+        firstPlayerHealthLabel.setPosition(20 + firstPlayerLabel.getWidth(), HEIGHT - 50);
+        secondPlayerHealthLabel = new Label(getFighterHealth(secondPlayerFighter), labelStyle);
+        secondPlayerHealthLabel.setPosition(20 + secondPlayerLabel.getWidth(), HEIGHT - 70 - firstPlayerLabel.getHeight());
+
+        stage.addActor(firstPlayerLabel);
+        stage.addActor(secondPlayerLabel);
+        stage.addActor(firstPlayerHealthLabel);
+        stage.addActor(secondPlayerHealthLabel);
 
         jumpButton.addListener(new InputListener() {
             @Override
@@ -254,6 +279,22 @@ public class PlayScreen implements Screen {
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
+    }
+
+    private String getFighterHealth(String fighter) {
+        switch (fighter) {
+            case "King":
+                return Integer.toString(king.health);
+            case "Samurai":
+                return Integer.toString(samurai.health);
+            case "Warrior":
+                return Integer.toString(warrior.health);
+            case "Wizard":
+                return Integer.toString(wizard.health);
+            case "Huntress":
+                return Integer.toString(huntress.health);
+        }
+        return "";
     }
 
     @Override
@@ -392,7 +433,7 @@ public class PlayScreen implements Screen {
         handleInput(dt);
 
         updateFirstPlayer(dt);
-
+        updateFighterHealth();
         try {
             updateSecondPlayer(dt);
         } catch (Exception ignored) {
@@ -407,6 +448,39 @@ public class PlayScreen implements Screen {
         renderer.setView(gameCam);
     }
 
+    private void updateFighterHealth() {
+        String firstPlayerHealth = getFighterHealth(firstPlayerFighter);
+        String secondPlayerHealth = getFighterHealth(secondPlayerFighter);
+
+        firstPlayerHealthLabel.setText(firstPlayerHealth);
+        secondPlayerHealthLabel.setText(secondPlayerHealth);
+
+        if (Integer.parseInt(firstPlayerHealth) <= 0) {
+            PacketMessage winnerMessage = new PacketMessage();
+            winnerMessage.text = String.format("winner: %s", secondPlayerFighter);
+            if (state.equals(Main.serverState)) {
+                server.sendToAllTCP(winnerMessage);
+            } else if (state.equals(Main.clientState)) {
+                client.sendTCP(winnerMessage);
+            }
+            setWinnerScreen(secondPlayerFighter);
+        }
+
+        if (Integer.parseInt(secondPlayerHealth) <= 0) {
+            PacketMessage winnerMessage = new PacketMessage();
+            winnerMessage.text = String.format("winner: %s", firstPlayerFighter);
+            if (state.equals(Main.serverState)) {
+                server.sendToAllTCP(winnerMessage);
+            } else if (state.equals(Main.clientState)) {
+                client.sendTCP(winnerMessage);
+            }
+            setWinnerScreen(firstPlayerFighter);
+        }
+    }
+
+    public static void setWinnerScreen(String winner) {
+        game.setScreen(new WinnerScreen(game, winner));
+    }
 
     public static void updateSecondPlayerActions(String action) {
         switch (action) {
@@ -652,14 +726,10 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
     public void hide() {

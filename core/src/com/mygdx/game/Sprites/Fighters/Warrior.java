@@ -131,6 +131,8 @@ public class Warrior extends Fighter {
         if (currentState != State.DEAD) {
             currentState = State.TAKINGDAMAGE;
             health -= 10;
+            if (Main.playSounds)
+                Main.takeDamageSound.play();
         }
     }
 

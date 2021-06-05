@@ -44,6 +44,17 @@ public class ServerListener extends Listener {
 //                });
 //            }
 
+            if (message.text.startsWith(Main.winnerMessage)) {
+                final String winner = message.text.replace(Main.winnerMessage, "");
+
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayScreen.setWinnerScreen(winner);
+                    }
+                });
+            }
+
             if (message.text.startsWith(Main.fighterMessage)) {
                 secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
                 Gdx.app.log("Second player fighter: ", secondPlayerFighter);

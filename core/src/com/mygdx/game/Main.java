@@ -39,6 +39,7 @@ public class Main extends Game {
 
 	public static final String newPlayerEvent = "new_player_event";
 	public static final String startGameEvent = "start_game_event";
+	public static final String winnerMessage = "winner: ";
 	public static final String mapMessage = "map: ";
 	public static final String fighterMessage = "fighter: ";
 
@@ -64,6 +65,9 @@ public class Main extends Game {
 	public static Sound huntressAttackSound;
 	public static Sound wizardAttackSound;
 	public static Sound buttonSound;
+	public static Sound takeDamageSound;
+
+	public static final String title = "Platform Wars";
 
 	@Override
 	public void create () {
@@ -80,6 +84,7 @@ public class Main extends Game {
 		huntressAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/Huntress/attack.mp3"));
 		wizardAttackSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/Wizard/attack.mp3"));
 		buttonSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/button.mp3"));
+		takeDamageSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Sounds/takeDamage.mp3"));
 
 		batch = new SpriteBatch();
 		setScreen(new MainMenuScreen(this));
