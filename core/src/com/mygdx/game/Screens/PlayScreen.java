@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -35,19 +36,23 @@ import com.mygdx.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
-    private final Main game;
+    private static Main game;
 
     private Stage stage;
     private TextButton moveLeftButton;
     private TextButton moveRightButton;
-    private TextButton jumpButton;
-    private TextButton attackButton;
+
+    private Label firstPlayerHealthLabel;
+    private Label secondPlayerHealthLabel;
 
     private final OrthographicCamera gameCam;
     private final Viewport gamePort;
 
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
+
+    private final float WIDTH = Gdx.graphics.getWidth();
+    private final float HEIGHT = Gdx.graphics.getHeight();
 
     private static World world;
     private final Box2DDebugRenderer b2dr;
@@ -57,17 +62,19 @@ public class PlayScreen implements Screen {
     private static Warrior warrior;
     private static Wizard wizard;
     private static Huntress huntress;
-    private static String firstPlayerFighter;
+    private final String firstPlayerFighter;
     private static String secondPlayerFighter;
 
-    private Server server;
-    private Client client;
-    private String state;
+    private final Server server;
+    private final Client client;
+    private final String state;
 
+    private int x1;
+    private int x2;
 
-    public PlayScreen(Main game, String firstPlayerFighter, String mapName, Server server, Client client, String state) {
+    public PlayScreen(Main game, String firstPlayerFighter, String CsecondPlayerFighter, String mapName, Server server, Client client, String state) {
 
-        this.game = game;
+        PlayScreen.game = game;
         this.server = server;
         this.client = client;
         this.state = state;
@@ -78,6 +85,7 @@ public class PlayScreen implements Screen {
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
 
         this.firstPlayerFighter = firstPlayerFighter;
+        secondPlayerFighter = CsecondPlayerFighter;
         Gdx.app.log("Fighter", firstPlayerFighter);
         TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load(String.format("map/%s.tmx", mapName));
@@ -88,38 +96,72 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 //        b2dr.setDrawBodies(false);
-        initFirstPlayer();
+
+        int y1 = 32;
+        int y2 = 32;
+
+        if (state.equals(Main.serverState)) {
+            x1 = 20;
+            x2 = 780;
+        } else if (state.equals(Main.clientState)) {
+            x1 = 780;
+            x2 = 20;
+            gameCam.position.x = 6;
+        }
+
+        initFirstPlayer(x1, y1);
+        initSecondPlayer(x2, y2);
         new B2WorldCreator(world, map);
 
         world.setContactListener(new WorldContactListener());
 
-        initButtons();
+        init();
     }
 
-    private void initFirstPlayer() {
-        switch (firstPlayerFighter) {
+    private void initSecondPlayer(int x, int y) {
+        switch (secondPlayerFighter) {
             case "King":
-                king = new King(world);
+                king = new King(world, x, y);
                 break;
             case "Samurai":
-                samurai = new Samurai(world);
+                samurai = new Samurai(world, x, y);
                 break;
             case "Warrior":
-                warrior = new Warrior(world);
+                warrior = new Warrior(world, x, y);
                 break;
             case "Wizard":
-                wizard = new Wizard(world);
+                wizard = new Wizard(world, x, y);
                 break;
             case "Huntress":
-                huntress = new Huntress(world);
+                huntress = new Huntress(world,x , y);
                 break;
         }
     }
 
-    public void initButtons() {
+    private void initFirstPlayer(int x, int y) {
+        switch (firstPlayerFighter) {
+            case "King":
+                king = new King(world, x, y);
+                break;
+            case "Samurai":
+                samurai = new Samurai(world, x, y);
+                break;
+            case "Warrior":
+                warrior = new Warrior(world, x, y);
+                break;
+            case "Wizard":
+                wizard = new Wizard(world, x, y);
+                break;
+            case "Huntress":
+                huntress = new Huntress(world, x, y);
+                break;
+        }
+    }
+
+    public void init() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        BitmapFont font = new BitmapFont();
+        BitmapFont font = new BitmapFont(Gdx.files.internal("Font/font.fnt"));
         Skin button_skin = new Skin();
 
         float buttonSize = Gdx.graphics.getWidth() / 10f;
@@ -144,11 +186,11 @@ public class PlayScreen implements Screen {
         moveRightButton.setSize(buttonSize, buttonSize); //Размер кнопки, скорее всего надо изменить
         moveRightButton.setPosition(buttonSize + 10, 10);
 
-        TextButton.TextButtonStyle jumpButtonStyle = new TextButton.TextButtonStyle();
+        final TextButton.TextButtonStyle jumpButtonStyle = new TextButton.TextButtonStyle();
         jumpButtonStyle.font = font;
         jumpButtonStyle.up = button_skin.getDrawable("jumpIdle"); //Не нажатая кнопка
         jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
-        jumpButton = new TextButton("", jumpButtonStyle);
+        TextButton jumpButton = new TextButton("", jumpButtonStyle);
         jumpButton.setSize(buttonSize, buttonSize);
         jumpButton.setPosition(Gdx.graphics.getWidth() - buttonSize * 2 - 10, 10);
 
@@ -156,7 +198,7 @@ public class PlayScreen implements Screen {
         attackButtonStyle.font = font;
         attackButtonStyle.up = button_skin.getDrawable("attackIdle"); //Не нажатая кнопка
         attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
-        attackButton = new TextButton("", attackButtonStyle);
+        TextButton attackButton = new TextButton("", attackButtonStyle);
         attackButton.setSize(buttonSize, buttonSize);
         attackButton.setPosition(Gdx.graphics.getWidth() - buttonSize - 10, 10);
 
@@ -164,6 +206,23 @@ public class PlayScreen implements Screen {
         stage.addActor(moveRightButton);
         stage.addActor(jumpButton);
         stage.addActor(attackButton);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        Label firstPlayerLabel = new Label(firstPlayerFighter, labelStyle);
+        firstPlayerLabel.setPosition(10, HEIGHT - 50);
+        Label secondPlayerLabel = new Label(secondPlayerFighter, labelStyle);
+        secondPlayerLabel.setPosition(10, HEIGHT - 70 - firstPlayerLabel.getHeight());
+
+        firstPlayerHealthLabel = new Label(getFighterHealth(firstPlayerFighter), labelStyle);
+        firstPlayerHealthLabel.setPosition(20 + firstPlayerLabel.getWidth(), HEIGHT - 50);
+        secondPlayerHealthLabel = new Label(getFighterHealth(secondPlayerFighter), labelStyle);
+        secondPlayerHealthLabel.setPosition(20 + secondPlayerLabel.getWidth(), HEIGHT - 70 - firstPlayerLabel.getHeight());
+
+        stage.addActor(firstPlayerLabel);
+        stage.addActor(secondPlayerLabel);
+        stage.addActor(firstPlayerHealthLabel);
+        stage.addActor(secondPlayerHealthLabel);
 
         jumpButton.addListener(new InputListener() {
             @Override
@@ -185,13 +244,7 @@ public class PlayScreen implements Screen {
                         huntress.jump();
                         break;
                 }
-                PacketMessage actionMessage = new PacketMessage();
-                actionMessage.text = Main.jumpAction;
-                if (state.equals("server")) {
-                    server.sendToAllUDP(actionMessage);
-                } else if (state.equals("client")) {
-                    client.sendUDP(actionMessage);
-                }
+                sendActionUdp(Main.jumpAction, state);
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
@@ -216,16 +269,26 @@ public class PlayScreen implements Screen {
                         huntress.attack();
                         break;
                 }
-                PacketMessage actionMessage = new PacketMessage();
-                actionMessage.text = Main.attackAction;
-                if (state.equals("server")) {
-                    server.sendToAllUDP(actionMessage);
-                } else if (state.equals("client")) {
-                    client.sendUDP(actionMessage);
-                }
+                sendActionUdp(Main.attackAction, state);
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
+    }
+
+    private String getFighterHealth(String fighter) {
+        switch (fighter) {
+            case "King":
+                return Integer.toString(king.health);
+            case "Samurai":
+                return Integer.toString(samurai.health);
+            case "Warrior":
+                return Integer.toString(warrior.health);
+            case "Wizard":
+                return Integer.toString(wizard.health);
+            case "Huntress":
+                return Integer.toString(huntress.health);
+        }
+        return "";
     }
 
     @Override
@@ -354,9 +417,9 @@ public class PlayScreen implements Screen {
         PacketMessage actionMessage = new PacketMessage();
         actionMessage.text = action;
         if (state.equals("server")) {
-            server.sendToAllTCP(actionMessage);
+            server.sendToAllUDP(actionMessage);
         } else if (state.equals("client")) {
-            client.sendTCP(actionMessage);
+            client.sendUDP(actionMessage);
         }
     }
 
@@ -364,7 +427,7 @@ public class PlayScreen implements Screen {
         handleInput(dt);
 
         updateFirstPlayer(dt);
-
+        updateFighterHealth();
         try {
             updateSecondPlayer(dt);
         } catch (Exception ignored) {
@@ -379,27 +442,38 @@ public class PlayScreen implements Screen {
         renderer.setView(gameCam);
     }
 
-    public static void initSecondPlayer(String secondfighter) {
+    private void updateFighterHealth() {
+        String firstPlayerHealth = getFighterHealth(firstPlayerFighter);
+        String secondPlayerHealth = getFighterHealth(secondPlayerFighter);
 
-        secondPlayerFighter = secondfighter;
+        firstPlayerHealthLabel.setText(firstPlayerHealth);
+        secondPlayerHealthLabel.setText(secondPlayerHealth);
 
-        switch (secondfighter) {
-            case "King":
-                king = new King(world);
-                break;
-            case "Samurai":
-                samurai = new Samurai(world);
-                break;
-            case "Warrior":
-                warrior = new Warrior(world);
-                break;
-            case "Wizard":
-                wizard = new Wizard(world);
-                break;
-            case "Huntress":
-                huntress = new Huntress(world);
-                break;
+        if (Integer.parseInt(firstPlayerHealth) <= 0) {
+            PacketMessage winnerMessage = new PacketMessage();
+            winnerMessage.text = String.format("winner: %s", secondPlayerFighter);
+            if (state.equals(Main.serverState)) {
+                server.sendToAllTCP(winnerMessage);
+            } else if (state.equals(Main.clientState)) {
+                client.sendTCP(winnerMessage);
+            }
+            setWinnerScreen(secondPlayerFighter);
         }
+
+        if (Integer.parseInt(secondPlayerHealth) <= 0) {
+            PacketMessage winnerMessage = new PacketMessage();
+            winnerMessage.text = String.format("winner: %s", firstPlayerFighter);
+            if (state.equals(Main.serverState)) {
+                server.sendToAllTCP(winnerMessage);
+            } else if (state.equals(Main.clientState)) {
+                client.sendTCP(winnerMessage);
+            }
+            setWinnerScreen(firstPlayerFighter);
+        }
+    }
+
+    public static void setWinnerScreen(String winner) {
+        game.setScreen(new WinnerScreen(game, winner));
     }
 
     public static void updateSecondPlayerActions(String action) {
@@ -445,38 +519,58 @@ public class PlayScreen implements Screen {
             case Main.runRightAction:
                 switch (secondPlayerFighter) {
                     case "King":
-                        king.moveRight();
+                        if (king.b2body.getLinearVelocity().x <= 2) {
+                            king.moveRight();
+                        }
                         break;
                     case "Samurai":
-                        samurai.moveRight();
+                        if (samurai.b2body.getLinearVelocity().x <= 2) {
+                            samurai.moveRight();
+                        }
                         break;
                     case "Warrior":
-                        warrior.moveRight();
+                        if (warrior.b2body.getLinearVelocity().x <= 2) {
+                            warrior.moveRight();
+                        }
                         break;
                     case "Wizard":
-                        wizard.moveRight();
+                        if (wizard.b2body.getLinearVelocity().x <= 2) {
+                            wizard.moveRight();
+                        }
                         break;
                     case "Huntress":
-                        huntress.moveRight();
+                        if (huntress.b2body.getLinearVelocity().x <= 2) {
+                            huntress.moveRight();
+                        }
                         break;
                 }
                 break;
             case Main.runLeftAction:
                 switch (secondPlayerFighter) {
                     case "King":
-                        king.moveLeft();
+                        if (king.b2body.getLinearVelocity().x >= -2) {
+                            king.moveLeft();
+                        }
                         break;
                     case "Samurai":
-                        samurai.moveLeft();
+                        if (samurai.b2body.getLinearVelocity().x >= -2) {
+                            samurai.moveLeft();
+                        }
                         break;
                     case "Warrior":
-                        warrior.moveLeft();
+                        if (warrior.b2body.getLinearVelocity().x >= -2) {
+                            warrior.moveLeft();
+                        }
                         break;
                     case "Wizard":
-                        wizard.moveLeft();
+                        if (wizard.b2body.getLinearVelocity().x >= -2) {
+                            wizard.moveLeft();
+                        }
                         break;
                     case "Huntress":
-                        huntress.moveLeft();
+                        if (huntress.b2body.getLinearVelocity().x >= -2) {
+                            huntress.moveLeft();
+                        }
                         break;
                 }
                 break;
@@ -626,14 +720,10 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
     public void hide() {

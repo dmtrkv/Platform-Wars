@@ -19,12 +19,15 @@ import com.mygdx.game.Screens.PlayScreen;
 
 public class Warrior extends Fighter {
 
-    public Warrior(World world) {
+    public Warrior(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
         this.world = world;
         runningRight = true;
+
+        x = xPos;
+        y = yPos;
 
         stateTimer = 0;
         attackFrame = 0;
@@ -50,6 +53,8 @@ public class Warrior extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 3.8f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 
@@ -83,6 +88,8 @@ public class Warrior extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.warriorAttackSound.play();
         }
     }
 
@@ -124,12 +131,14 @@ public class Warrior extends Fighter {
         if (currentState != State.DEAD) {
             currentState = State.TAKINGDAMAGE;
             health -= 10;
+            if (Main.playSounds)
+                Main.takeDamageSound.play();
         }
     }
 
     public void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(200 / Main.PPM, 32 / Main.PPM);
+        bdef.position.set(x / Main.PPM, y / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -145,7 +154,7 @@ public class Warrior extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-9 / Main.PPM, 30 / Main.PPM),
                 new Vector2(9 / Main.PPM, 30 / Main.PPM),
                 new Vector2(9 / Main.PPM, 0 / Main.PPM),

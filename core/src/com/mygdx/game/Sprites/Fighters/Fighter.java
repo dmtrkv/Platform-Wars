@@ -25,11 +25,14 @@ public abstract class Fighter extends Sprite {
     protected Animation<TextureRegion> Attack;
     protected Animation<TextureRegion> TakeDamage;
     protected Animation<TextureRegion> Death;
+
     public int health;
     protected float stateTimer;
     public boolean runningRight;
     protected float attackFrame;
     protected float damageFrame;
+    protected int x;
+    protected int y;
 
     protected abstract void takeDamage();
 

@@ -12,6 +12,7 @@ public class ClientListener extends Listener {
     private Main game;
     private String fighter;
     private String map;
+    private String secondPlayerFighter;
 
     public ClientListener(Main game, String fighter, String map) {
         this.game = game;
@@ -25,26 +26,29 @@ public class ClientListener extends Listener {
             Gdx.app.log("New Message on client: ", message.text);
 
             if (message.text.startsWith(Main.mapMessage)) {
-                map = message.text.replace("map: ", "");
+                String[] mapAndFighter = message.text.replace("map: ", "").replace("fighter: ", "").split(" ");
+
+                map = mapAndFighter[0];
+                secondPlayerFighter = mapAndFighter[1];
+
                 Gdx.app.log("Received map: ", map);
+                Gdx.app.log("Received fighter: ", secondPlayerFighter);
+
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        WaitingScreen.startgame(game, fighter, map);
+                        WaitingScreen.startgame(game, "", secondPlayerFighter, map, Main.clientState);
                     }
                 });
-                PacketMessage fighterResponse = new PacketMessage();
-                fighterResponse.text = String.format("fighter: %s", fighter);
-                connection.sendTCP(fighterResponse);
             }
 
-            if (message.text.startsWith(Main.fighterMessage)) {
-                final String secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
-                Gdx.app.log("Second player fighter: ", secondPlayerFighter);
+            if (message.text.startsWith(Main.winnerMessage)) {
+                final String winner = message.text.replace(Main.winnerMessage, "");
+
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        PlayScreen.initSecondPlayer(secondPlayerFighter);
+                        PlayScreen.setWinnerScreen(winner);
                     }
                 });
             }

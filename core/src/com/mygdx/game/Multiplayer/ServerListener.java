@@ -12,7 +12,7 @@ public class ServerListener extends Listener {
     private Main game;
     private String fighter;
     private String map;
-    private PlayScreen playScreen;
+    private String secondPlayerFighter;
 
     public ServerListener(Main game, String fighter, String map) {
         this.game = game;
@@ -26,35 +26,47 @@ public class ServerListener extends Listener {
             Gdx.app.log("New Message on server: ", message.text);
 
             if (message.text.equals(Main.newPlayerEvent)) {
-                Gdx.app.log("New screen: ", "PlayScreen");
+                PacketMessage response = new PacketMessage();
+                response.text = String.format("map: %s fighter: %s", map, fighter);
+
+                connection.sendTCP(response);
+
+                Gdx.app.log("Send a new message on client: ", response.text);
+            }
+
+//            if (message.text.equals(Main.startGameEvent)) {
+//                Gdx.app.log("New Screen:", "PlayScreen");
+//                Gdx.app.postRunnable(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        WaitingScreen.startgame(game, fighter, secondPlayerFighter, map, Main.serverState);
+//                    }
+//                });
+//            }
+
+            if (message.text.startsWith(Main.winnerMessage)) {
+                final String winner = message.text.replace(Main.winnerMessage, "");
 
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        WaitingScreen.startgame(game, fighter, map);
+                        PlayScreen.setWinnerScreen(winner);
                     }
                 });
-
-                PacketMessage mapResponse = new PacketMessage();
-                mapResponse.text = String.format("map: %s", map);
-                connection.sendTCP(mapResponse);
-                Gdx.app.log("Send a new message on client: ", mapResponse.text);
             }
-
 
             if (message.text.startsWith(Main.fighterMessage)) {
-                final String secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
+                secondPlayerFighter = message.text.replace(Main.fighterMessage, "");
                 Gdx.app.log("Second player fighter: ", secondPlayerFighter);
+                Gdx.app.log("New Screen:", "PlayScreen");
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        PlayScreen.initSecondPlayer(secondPlayerFighter);
-                        PacketMessage fighterMessage = new PacketMessage();
-                        fighterMessage.text = String.format("fighter: %s", fighter);
-                        connection.sendTCP(fighterMessage);
+                        WaitingScreen.startgame(game, fighter, secondPlayerFighter, map, Main.serverState);
                     }
                 });
             }
+
             if (Main.actions.contains(message.text)) {
                 Gdx.app.log("New Action: ", message.text);
                 Gdx.app.postRunnable(new Runnable() {

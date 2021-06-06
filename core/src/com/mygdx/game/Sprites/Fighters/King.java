@@ -13,20 +13,24 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
+import com.mygdx.game.Screens.PlayScreen;
 
 public class King extends Fighter {
 
-    public King(World world) {
+    public King(World world, int xPos, int yPos) {
         currentState = State.STANDING;
         previousState = State.STANDING;
 
         this.world = world;
         runningRight = true;
 
+        x = xPos;
+        y = yPos;
+
         stateTimer = 0;
         attackFrame = 0;
 
-        health = 200;
+        health = 150;
         damageFrame = 0;
         initAnimations();
     }
@@ -45,6 +49,8 @@ public class King extends Fighter {
         if (currentState != State.DEAD)
             if (canJump()) {
                 b2body.applyLinearImpulse(new Vector2(0, 3.5f), b2body.getWorldCenter(), true);
+                if (Main.playSounds)
+                    Main.jumpSound.play();
             }
     }
 
@@ -73,6 +79,8 @@ public class King extends Fighter {
 
             attackDef.shape = attackShape;
             attack.createFixture(attackDef).setUserData(this);
+            if (Main.playSounds)
+                Main.huntressAttackSound.play();
         }
     }
 
@@ -112,13 +120,15 @@ public class King extends Fighter {
         if (currentState != State.DEAD) {
             currentState = State.TAKINGDAMAGE;
             health -= 10;
+            if (Main.playSounds)
+                Main.takeDamageSound.play();
         }
     }
 
 
     public void define() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(40 / Main.PPM, 40 / Main.PPM);
+        bdef.position.set(x / Main.PPM, y / Main.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -134,7 +144,7 @@ public class King extends Fighter {
         b2body.createFixture(fdef).setUserData(this);
 
         PolygonShape body2 = new PolygonShape();
-        body2.set(new Vector2[] {
+        body2.set(new Vector2[]{
                 new Vector2(-12 / Main.PPM, 34 / Main.PPM),
                 new Vector2(12 / Main.PPM, 34 / Main.PPM),
                 new Vector2(12 / Main.PPM, 0 / Main.PPM),
