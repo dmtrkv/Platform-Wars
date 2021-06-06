@@ -41,8 +41,6 @@ public class WaitingScreen implements Screen {
 
     private Stage stage;
     private Label label;
-    private Label title;
-    private TextButton backButton;
 
     public WaitingScreen(String Cstate, String map, String fighter, Main game) throws IOException {
         this.game = game;
@@ -83,7 +81,7 @@ public class WaitingScreen implements Screen {
 
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = titleFont;
-        title = new Label(Main.title, titleStyle);
+        Label title = new Label(Main.title, titleStyle);
         title.setPosition(WIDTH / 2 - title.getWidth() / 2, HEIGHT / 6 * 5);
         stage.addActor(title);
 
@@ -96,7 +94,7 @@ public class WaitingScreen implements Screen {
         buttonSkin.addRegions(buttonTextureAtlas);
         backButtonStyle.up = buttonSkin.getDrawable("backIdle");
         backButtonStyle.down = buttonSkin.getDrawable("backPressed");
-        backButton = new TextButton("", backButtonStyle);
+        TextButton backButton = new TextButton("", backButtonStyle);
         backButton.setSize(buttonSize, buttonSize);
         backButton.setPosition(10, 10);
         stage.addActor(backButton);

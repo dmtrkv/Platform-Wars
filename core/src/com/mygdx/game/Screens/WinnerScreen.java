@@ -19,12 +19,12 @@ import com.mygdx.game.Main;
 public class WinnerScreen implements Screen {
 
     private final Stage stage;
-    private Main game;
+    private final Main game;
 
     private final float WIDTH = Gdx.graphics.getWidth();
     private final float HEIGHT = Gdx.graphics.getHeight();
 
-    private String winner;
+    private final String winner;
 
     public WinnerScreen(Main game, String winner) {
         this.game = game;

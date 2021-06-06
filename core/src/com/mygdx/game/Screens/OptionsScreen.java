@@ -19,18 +19,13 @@ import com.mygdx.game.Main;
 
 public class OptionsScreen implements Screen {
 
-    private Main game;
+    private final Main game;
 
     private final float WIDTH = Gdx.graphics.getWidth();
     private final float HEIGHT = Gdx.graphics.getHeight();
 
     private Slider volumeSlider;
-    private TextButton noVolumeButton;
-    private TextButton fullVolumeButton;
-    private TextButton backButton;
-    private Label title;
-    private Label volumeLabel;
-    private Stage stage;
+    private final Stage stage;
 
     public OptionsScreen(Main game) {
         this.game = game;
@@ -60,13 +55,13 @@ public class OptionsScreen implements Screen {
 
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = titleFont;
-        title = new Label(Main.title, titleStyle);
+        Label title = new Label(Main.title, titleStyle);
         title.setPosition(WIDTH / 2 - title.getWidth() / 2, HEIGHT / 6 * 5);
         stage.addActor(title);
 
         Label.LabelStyle volumeLabelStyle = new Label.LabelStyle();
         volumeLabelStyle.font = pointsFont;
-        volumeLabel = new Label("Volume", volumeLabelStyle);
+        Label volumeLabel = new Label("Volume", volumeLabelStyle);
         volumeLabel.setPosition(WIDTH / 2 - volumeLabel.getWidth() / 2, HEIGHT / 5 * 2);
         stage.addActor(volumeLabel);
 
@@ -74,7 +69,7 @@ public class OptionsScreen implements Screen {
         backButtonStyle.font = pointsFont;
         backButtonStyle.up = buttonSkin.getDrawable("backIdle");
         backButtonStyle.down = buttonSkin.getDrawable("backPressed");
-        backButton = new TextButton("", backButtonStyle);
+        TextButton backButton = new TextButton("", backButtonStyle);
         backButton.setSize(buttonSize, buttonSize);
         backButton.setPosition(10, 10);
         stage.addActor(backButton);
@@ -83,7 +78,7 @@ public class OptionsScreen implements Screen {
         noVolumeButtonStyle.font = pointsFont;
         noVolumeButtonStyle.up = buttonSkin.getDrawable("noVolumeIdle");
         noVolumeButtonStyle.down = buttonSkin.getDrawable("noVolumePressed");
-        noVolumeButton = new TextButton("", noVolumeButtonStyle);
+        TextButton noVolumeButton = new TextButton("", noVolumeButtonStyle);
         noVolumeButton.setSize(buttonSize, buttonSize);
         noVolumeButton.setPosition(WIDTH / 5, HEIGHT / 5);
         stage.addActor(noVolumeButton);
@@ -92,7 +87,7 @@ public class OptionsScreen implements Screen {
         fullVolumeButtonStyle.font = pointsFont;
         fullVolumeButtonStyle.up = buttonSkin.getDrawable("fullVolumeIdle");
         fullVolumeButtonStyle.down = buttonSkin.getDrawable("fullVolumePressed");
-        fullVolumeButton = new TextButton("", fullVolumeButtonStyle);
+        TextButton fullVolumeButton = new TextButton("", fullVolumeButtonStyle);
         fullVolumeButton.setSize(buttonSize, buttonSize);
         fullVolumeButton.setPosition(WIDTH / 5 * 4 - fullVolumeButton.getWidth(), HEIGHT / 5);
         stage.addActor(fullVolumeButton);

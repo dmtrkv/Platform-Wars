@@ -20,19 +20,11 @@ import java.io.IOException;
 
 public class MainMenuScreen implements Screen {
 
-    private Stage stage;
-    private TextButton createServerButton;
-    private TextButton connectToServerButton;
-    private TextButton settingsButton;
-
-    private Label title;
-    private Label createServerLabel;
-    private Label connectToServerLabel;
-    private Label settingsLabel;
+    private final Stage stage;
 
     private final Main game;
-    private float WIDTH = Gdx.graphics.getWidth();
-    private float HEIGHT = Gdx.graphics.getHeight();
+    private final float WIDTH = Gdx.graphics.getWidth();
+    private final float HEIGHT = Gdx.graphics.getHeight();
 
     public MainMenuScreen(Main game) {
         this.game = game;
@@ -64,7 +56,7 @@ public class MainMenuScreen implements Screen {
         createServerButtonStyle.font = titleFont;
         createServerButtonStyle.up = buttonSkin.getDrawable("localIdle");
         createServerButtonStyle.down = buttonSkin.getDrawable("localPressed");
-        createServerButton = new TextButton("", createServerButtonStyle);
+        TextButton createServerButton = new TextButton("", createServerButtonStyle);
         createServerButton.setSize(buttonSize, buttonSize);
         createServerButton.setPosition(WIDTH / 4, HEIGHT / 6 * 3);
         stage.addActor(createServerButton);
@@ -73,7 +65,7 @@ public class MainMenuScreen implements Screen {
         connectToServerButtonStyle.font = titleFont;
         connectToServerButtonStyle.up = buttonSkin.getDrawable("onlineIdle");
         connectToServerButtonStyle.down = buttonSkin.getDrawable("onlinePressed");
-        connectToServerButton = new TextButton("", connectToServerButtonStyle);
+        TextButton connectToServerButton = new TextButton("", connectToServerButtonStyle);
         connectToServerButton.setSize(buttonSize, buttonSize);
         connectToServerButton.setPosition(WIDTH / 4, HEIGHT / 6 * 2);
         stage.addActor(connectToServerButton);
@@ -82,29 +74,29 @@ public class MainMenuScreen implements Screen {
         settingsButtonStyle.font = titleFont;
         settingsButtonStyle.up = buttonSkin.getDrawable("settingsIdle");
         settingsButtonStyle.down = buttonSkin.getDrawable("settingsPressed");
-        settingsButton = new TextButton("", settingsButtonStyle);
+        TextButton settingsButton = new TextButton("", settingsButtonStyle);
         settingsButton.setSize(buttonSize, buttonSize);
         settingsButton.setPosition(WIDTH / 4, HEIGHT / 6 * 1);
         stage.addActor(settingsButton);
 
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = titleFont;
-        title = new Label(Main.title, titleStyle);
+        Label title = new Label(Main.title, titleStyle);
         title.setPosition(WIDTH / 2 - title.getWidth() / 2, HEIGHT / 6 * 5);
         stage.addActor(title);
 
         Label.LabelStyle pointsStyle = new Label.LabelStyle();
         pointsStyle.font = pointsFont;
 
-        createServerLabel = new Label("Create a game", pointsStyle);
+        Label createServerLabel = new Label("Create a game", pointsStyle);
         createServerLabel.setPosition(WIDTH / 4 * 1.3f, HEIGHT / 6 * 3);
         stage.addActor(createServerLabel);
 
-        connectToServerLabel = new Label("Connect to a game", pointsStyle);
+        Label connectToServerLabel = new Label("Connect to a game", pointsStyle);
         connectToServerLabel.setPosition(WIDTH / 4 * 1.3f, HEIGHT / 6 * 2);
         stage.addActor(connectToServerLabel);
 
-        settingsLabel = new Label("Settings", pointsStyle);
+        Label settingsLabel = new Label("Settings", pointsStyle);
         settingsLabel.setPosition(WIDTH / 4 * 1.3f, HEIGHT / 6 * 1);
         stage.addActor(settingsLabel);
 

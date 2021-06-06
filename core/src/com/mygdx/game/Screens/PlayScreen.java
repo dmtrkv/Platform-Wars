@@ -41,12 +41,8 @@ public class PlayScreen implements Screen {
     private Stage stage;
     private TextButton moveLeftButton;
     private TextButton moveRightButton;
-    private TextButton jumpButton;
-    private TextButton attackButton;
 
-    private Label firstPlayerLabel;
     private Label firstPlayerHealthLabel;
-    private Label secondPlayerLabel;
     private Label secondPlayerHealthLabel;
 
     private final OrthographicCamera gameCam;
@@ -66,21 +62,19 @@ public class PlayScreen implements Screen {
     private static Warrior warrior;
     private static Wizard wizard;
     private static Huntress huntress;
-    private String firstPlayerFighter;
+    private final String firstPlayerFighter;
     private static String secondPlayerFighter;
 
-    private Server server;
-    private Client client;
-    private String state;
+    private final Server server;
+    private final Client client;
+    private final String state;
 
     private int x1;
-    private int y1;
     private int x2;
-    private int y2;
 
     public PlayScreen(Main game, String firstPlayerFighter, String CsecondPlayerFighter, String mapName, Server server, Client client, String state) {
 
-        this.game = game;
+        PlayScreen.game = game;
         this.server = server;
         this.client = client;
         this.state = state;
@@ -103,8 +97,8 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         b2dr.setDrawBodies(false);
 
-        y1 = 32;
-        y2 = 32;
+        int y1 = 32;
+        int y2 = 32;
 
         if (state.equals(Main.serverState)) {
             x1 = 20;
@@ -196,7 +190,7 @@ public class PlayScreen implements Screen {
         jumpButtonStyle.font = font;
         jumpButtonStyle.up = button_skin.getDrawable("jumpIdle"); //Не нажатая кнопка
         jumpButtonStyle.down = button_skin.getDrawable("jumpPressed"); //Нажатая кнопка
-        jumpButton = new TextButton("", jumpButtonStyle);
+        TextButton jumpButton = new TextButton("", jumpButtonStyle);
         jumpButton.setSize(buttonSize, buttonSize);
         jumpButton.setPosition(Gdx.graphics.getWidth() - buttonSize * 2 - 10, 10);
 
@@ -204,7 +198,7 @@ public class PlayScreen implements Screen {
         attackButtonStyle.font = font;
         attackButtonStyle.up = button_skin.getDrawable("attackIdle"); //Не нажатая кнопка
         attackButtonStyle.down = button_skin.getDrawable("attackPressed"); //Нажатая кнопка
-        attackButton = new TextButton("", attackButtonStyle);
+        TextButton attackButton = new TextButton("", attackButtonStyle);
         attackButton.setSize(buttonSize, buttonSize);
         attackButton.setPosition(Gdx.graphics.getWidth() - buttonSize - 10, 10);
 
@@ -215,9 +209,9 @@ public class PlayScreen implements Screen {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
-        firstPlayerLabel = new Label(firstPlayerFighter, labelStyle);
+        Label firstPlayerLabel = new Label(firstPlayerFighter, labelStyle);
         firstPlayerLabel.setPosition(10, HEIGHT - 50);
-        secondPlayerLabel = new Label(secondPlayerFighter, labelStyle);
+        Label secondPlayerLabel = new Label(secondPlayerFighter, labelStyle);
         secondPlayerLabel.setPosition(10, HEIGHT - 70 - firstPlayerLabel.getHeight());
 
         firstPlayerHealthLabel = new Label(getFighterHealth(firstPlayerFighter), labelStyle);

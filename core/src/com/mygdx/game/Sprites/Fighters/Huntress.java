@@ -13,8 +13,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Main;
 
-import java.util.ArrayList;
-
 public class Huntress extends Fighter {
 
     public Huntress(World world, int xPos, int yPos) {
@@ -140,13 +138,13 @@ public class Huntress extends Fighter {
 
     public void moveRight() {
         if (currentState != State.DEAD && currentState != State.ATTACKING) {
-            b2body.applyLinearImpulse(new Vector2(0.225f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(0.27f, 0), b2body.getWorldCenter(), true);
         }
     }
 
     public void moveLeft() {
         if (currentState != State.DEAD && currentState != State.ATTACKING) {
-            b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(-0.27f, 0), b2body.getWorldCenter(), true);
         }
     }
 

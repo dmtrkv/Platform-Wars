@@ -36,12 +36,12 @@ public class Wizard extends Fighter {
 
     public void moveRight() {
         if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(0.15f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(0.225f, 0), b2body.getWorldCenter(), true);
     }
 
     public void moveLeft() {
         if (currentState != State.DEAD)
-            b2body.applyLinearImpulse(new Vector2(-0.15f, 0), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(-0.225f, 0), b2body.getWorldCenter(), true);
     }
 
     public void jump() {

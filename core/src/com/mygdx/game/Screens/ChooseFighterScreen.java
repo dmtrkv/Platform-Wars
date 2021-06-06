@@ -34,7 +34,6 @@ public class ChooseFighterScreen implements Screen {
 
     private final String map;
 
-    private final OrthographicCamera gameCam;
     private final Viewport gamePort;
     private final Main game;
     private float WIDTH = Gdx.graphics.getWidth();
@@ -48,12 +47,11 @@ public class ChooseFighterScreen implements Screen {
     private String currentFighter;
     private final Label fighterLabel;
 
-    private final HashMap<String, String> passiveSkills;
     private final String state;
 
-    private Client client;
-    private Server server;
-    private String secondFighter;
+    private final Client client;
+    private final Server server;
+    private final String secondFighter;
 
 
     public ChooseFighterScreen(Main game, String map, String state, String removeFighter, Client client, Server server) {
@@ -69,7 +67,7 @@ public class ChooseFighterScreen implements Screen {
         }
 
         this.game = game;
-        gameCam = new OrthographicCamera();
+        OrthographicCamera gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Main.V_WIDTH / Main.PPM, Main.V_HEIGHT / Main.PPM, gameCam);
 
         this.map = map;
@@ -100,7 +98,7 @@ public class ChooseFighterScreen implements Screen {
         fighterLabel.setAlignment(Align.center);
         fighterLabel.setPosition(WIDTH / 2 - fighterLabel.getWidth() / 2, HEIGHT / 9 * 8);
 
-        passiveSkills = new HashMap<>();
+        HashMap<String, String> passiveSkills = new HashMap<>();
         passiveSkills.put("Samurai", "High jump");
         passiveSkills.put("Warrior", "Enormous speed");
         passiveSkills.put("King", "A lot of health");
